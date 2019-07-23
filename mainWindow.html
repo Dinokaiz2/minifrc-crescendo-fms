@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Alfredo Deep Space FMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body bgcolor="#DDDDDD" id="body">
+    <div class="main">
+        <div class="timer-bg"></div>
+        <div class="timer-bar"></div>
+        <div class="time" id="time">0</div>
+        <div class="info-bar">
+            <div class="info-up-next-red"></div>
+            <div class="info-match"></div>
+            <div class="info-up-next-blue"></div>
+        </div>
+        <div class="red-bg"></div>
+        <div class="blue-bg"></div>
+        <div class="score-container">
+            <div class="red-score">0</div>
+            <div class="blue-score">0</div>
+        </div>
+        <div class="team-container">
+            <div class="team-number" id="team-num-red-1" style="right: 0; border-top: 0px"></div>
+            <div class="team-name" id="team-name-red-1" style="right: 70px; border-top: 0px"></div>
+            <div class="team-number" id="team-num-red-2" style="top: 50px; right: 0;"></div>
+            <div class="team-name" id="team-name-red-2" style="top: 50px; right: 70px;"></div>
+            <div class="team-number" id="team-num-red-3" style="top: 100px; right: 0; border-bottom-width: 5px"></div>
+            <div class="team-name" id="team-name-red-3" style="top: 100px; right: 70px; border-bottom-width: 5px"></div>
+        </div>
+        <div class="team-container" style="left: 1160px">
+            <div class="team-number" id="team-num-blue-1" style="left: 0; border-top: 0px; border-left-width: 0px;"></div>
+            <div class="team-name" id="team-name-blue-1" style="left: 70px; border-top: 0px; border-right-width: 5px;"></div>
+            <div class="team-number" id="team-num-blue-2" style="top: 50px; left: 0; border-left-width: 0px;"></div>
+            <div class="team-name" id="team-name-blue-2" style="top: 50px; left: 70px; border-right-width: 5px;"></div>
+            <div class="team-number" id="team-num-blue-3" style="top: 100px; left: 0; border-bottom-width: 5px; border-left-width: 0px;"></div>
+            <div class="team-name" id="team-name-blue-3" style="top: 100px; left: 70px; border-bottom-width: 5px; border-right-width: 5px;"></div>
+        </div>
+        <div class="red-rocket-rp"><img src="images/rocket-icon-grey.png"></div>
+        <div class="red-climb-rp"><img src="images/hab-icon-grey.png"></div>
+        <div class="blue-rocket-rp"><img src="images/rocket-icon-grey.png"></div>
+        <div class="blue-climb-rp"><img src="images/hab-icon-grey.png"></div>
+        <div class="red-foul-counter">+0</div>
+        <div class="red-cargo-counter">0</div>
+        <div class="red-hatch-counter">0</div>
+        <div class="blue-foul-counter">+0</div>
+        <div class="blue-cargo-counter">0</div>
+        <div class="blue-hatch-counter">0</div>
+        <div class="rocket-container" style="top: 90px">
+            <div class="rocket-top-red"></div>
+            <div class="rocket-fin-left"></div>
+            <div class="rocket-fin-right"></div>
+            <div class="rocket-body"></div>
+            <div class="hatch-container" style="margin-top: 110px">
+                <div class="empty-red-hatch"></div>
+                <div class="no-hatch" id="hatch-red-r1-top">
+                    <div class="empty-red-cargo"></div>
+                    <div class="no-cargo" id="cargo-red-r1-top"></div>
+                </div>
+            </div>
+            <div class="hatch-container" style="margin-top: 235px">
+                <div class="empty-red-hatch"></div>
+                <div class="no-hatch" id="hatch-red-r1-mid">
+                    <div class="empty-red-cargo"></div>
+                    <div class="no-cargo" id="cargo-red-r1-mid"></div>
+                </div>
+            </div>
+            <div class="hatch-container" style="margin-top: 360px">
+                <div class="empty-red-hatch"></div>
+                <div class="no-hatch" id="hatch-red-r1-bot">
+                    <div class="empty-red-cargo"></div>
+                    <div class="no-cargo" id="cargo-red-r1-bot"></div>
+                </div>
+            </div>
+        </div>
+        <div class="rocket-container" style="bottom: 10px">
+            <div class="rocket-top-red"></div>
+            <div class="rocket-fin-left"></div>
+            <div class="rocket-fin-right"></div>
+            <div class="rocket-body"></div>
+            <div class="hatch-container" style="margin-top: 110px">
+                <div class="empty-red-hatch"></div>
+                <div class="no-hatch" id="hatch-red-r2-top">
+                    <div class="empty-red-cargo"></div>
+                    <div class="no-cargo" id="cargo-red-r2-top"></div>
+                </div>
+            </div>
+            <div class="hatch-container" style="margin-top: 235px">
+                <div class="empty-red-hatch"></div>
+                <div class="no-hatch" id="hatch-red-r2-mid">
+                    <div class="empty-red-cargo"></div>
+                    <div class="no-cargo" id="cargo-red-r2-mid"></div>
+                </div>
+            </div>
+            <div class="hatch-container" style="margin-top: 360px">
+                <div class="empty-red-hatch"></div>
+                <div class="no-hatch" id="hatch-red-r2-bot">
+                    <div class="empty-red-cargo"></div>
+                    <div class="no-cargo" id="cargo-red-r2-bot"></div>
+                </div>
+            </div>
+        </div>
+        <div class="rocket-container" style="right: 0">
+            <div class="rocket-top-blue"></div>
+            <div class="rocket-fin-left"></div>
+            <div class="rocket-fin-right"></div>
+            <div class="rocket-body"></div>
+            <div class="hatch-container" style="margin-top: 110px">
+                <div class="empty-blue-hatch"></div>
+                <div class="no-hatch" id="hatch-blue-r1-top">
+                    <div class="empty-blue-cargo"></div>
+                    <div class="no-cargo" id="cargo-blue-r1-top"></div>
+                </div>
+            </div>
+            <div class="hatch-container" style="margin-top: 235px">
+                <div class="empty-blue-hatch"></div>
+                <div class="no-hatch" id="hatch-blue-r1-mid">
+                    <div class="empty-blue-cargo"></div>
+                    <div class="no-cargo" id="cargo-blue-r1-mid"></div>
+                </div>
+            </div>
+            <div class="hatch-container" style="margin-top: 360px">
+                <div class="empty-blue-hatch"></div>
+                <div class="no-hatch" id="hatch-blue-r1-bot">
+                    <div class="empty-blue-cargo"></div>
+                    <div class="no-cargo" id="cargo-blue-r1-bot"></div>
+                </div>
+            </div>
+        </div>
+        <div class="rocket-container" style="right: 0; bottom: 10px">
+            <div class="rocket-top-blue"></div>
+            <div class="rocket-fin-left"></div>
+            <div class="rocket-fin-right"></div>
+            <div class="rocket-body"></div>
+            <div class="hatch-container" style="margin-top: 110px">
+                <div class="empty-blue-hatch"></div>
+                <div class="no-hatch" id="hatch-blue-r2-top">
+                    <div class="empty-blue-cargo"></div>
+                    <div class="no-cargo" id="cargo-blue-r2-top"></div>
+                </div>
+            </div>
+            <div class="hatch-container" style="margin-top: 235px">
+                <div class="empty-blue-hatch"></div>
+                <div class="no-hatch" id="hatch-blue-r2-mid">
+                    <div class="empty-blue-cargo"></div>
+                    <div class="no-cargo" id="cargo-blue-r2-mid"></div>
+                </div>
+            </div>
+            <div class="hatch-container" style="margin-top: 360px">
+                <div class="empty-blue-hatch"></div>
+                <div class="no-hatch" id="hatch-blue-r2-bot">
+                    <div class="empty-blue-cargo"></div>
+                    <div class="no-cargo" id="cargo-blue-r2-bot"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ship-container">
+            <div class="ship-body-red">
+                <div class="ship-red-bevel"></div>
+                <div class="ship-red-top-chamfer"></div>
+                <div class="ship-red-bot-chamfer"></div>
+                <div class="hatch-container" style="margin-top: 50px; margin-left: 10px">
+                    <div class="empty-red-hatch"></div>
+                    <div class="no-hatch" id="hatch-red-top-front">
+                        <div class="empty-red-cargo"></div>
+                        <div class="no-cargo" id="cargo-red-top-front"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-bottom: 50px; margin-left: 10px; bottom: 0">
+                    <div class="empty-red-hatch"></div>
+                    <div class="no-hatch" id="hatch-red-bot-front">
+                        <div class="empty-red-cargo"></div>
+                        <div class="no-cargo" id="cargo-red-bot-front"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-top: 20px; margin-left: 160px">
+                    <div class="empty-red-hatch"></div>
+                    <div class="no-hatch" id="hatch-red-top-left">
+                        <div class="empty-red-cargo"></div>
+                        <div class="no-cargo" id="cargo-red-top-left"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-top: 20px; margin-left: 290px">
+                    <div class="empty-red-hatch"></div>
+                    <div class="no-hatch" id="hatch-red-top-mid">
+                        <div class="empty-red-cargo"></div>
+                        <div class="no-cargo" id="cargo-red-top-mid"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-top: 20px; margin-left: 420px">
+                    <div class="empty-red-hatch"></div>
+                    <div class="no-hatch" id="hatch-red-top-right">
+                        <div class="empty-red-cargo"></div>
+                        <div class="no-cargo" id="cargo-red-top-right"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-bottom: 20px; margin-left: 160px; bottom: 0">
+                    <div class="empty-red-hatch"></div>
+                    <div class="no-hatch" id="hatch-red-bot-left">
+                        <div class="empty-red-cargo"></div>
+                        <div class="no-cargo" id="cargo-red-bot-left"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-bottom: 20px; margin-left: 290px; bottom: 0">
+                    <div class="empty-red-hatch"></div>
+                    <div class="no-hatch" id="hatch-red-bot-mid">
+                        <div class="empty-red-cargo"></div>
+                        <div class="no-cargo" id="cargo-red-bot-mid"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-bottom: 20px; margin-left: 420px; bottom: 0">
+                    <div class="empty-red-hatch"></div>
+                    <div class="no-hatch" id="hatch-red-bot-right">
+                        <div class="empty-red-cargo"></div>
+                        <div class="no-cargo" id="cargo-red-bot-right"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="ship-body-blue">
+                <div class="ship-blue-bevel"></div>
+                <div class="ship-blue-top-chamfer"></div>
+                <div class="ship-blue-bot-chamfer"></div>
+                <div class="hatch-container" style="margin-top: 50px; margin-right: 10px">
+                    <div class="empty-blue-hatch"></div>
+                    <div class="no-hatch" id="hatch-blue-top-front">
+                        <div class="empty-blue-cargo"></div>
+                        <div class="no-cargo" id="cargo-blue-top-front"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-bottom: 50px; margin-right: 10px; bottom: 0">
+                    <div class="empty-blue-hatch"></div>
+                    <div class="no-hatch" id="hatch-blue-bot-front">
+                        <div class="empty-blue-cargo"></div>
+                        <div class="no-cargo" id="cargo-blue-bot-front"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-top: 20px; margin-right: 160px">
+                    <div class="empty-blue-hatch"></div>
+                    <div class="no-hatch" id="hatch-blue-top-right">
+                        <div class="empty-blue-cargo"></div>
+                        <div class="no-cargo" id="cargo-blue-top-right"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-top: 20px; margin-right: 290px">
+                    <div class="empty-blue-hatch"></div>
+                    <div class="no-hatch" id="hatch-blue-top-mid">
+                        <div class="empty-blue-cargo"></div>
+                        <div class="no-cargo" id="cargo-blue-top-mid"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-top: 20px; margin-right: 420px">
+                    <div class="empty-blue-hatch"></div>
+                    <div class="no-hatch" id="hatch-blue-top-left">
+                        <div class="empty-blue-cargo"></div>
+                        <div class="no-cargo" id="cargo-blue-top-left"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-bottom: 20px; margin-right: 160px; bottom: 0">
+                    <div class="empty-blue-hatch"></div>
+                    <div class="no-hatch" id="hatch-blue-bot-right">
+                        <div class="empty-blue-cargo"></div>
+                        <div class="no-cargo" id="cargo-blue-bot-right"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-bottom: 20px; margin-right: 290px; bottom: 0">
+                    <div class="empty-blue-hatch"></div>
+                    <div class="no-hatch" id="hatch-blue-bot-mid">
+                        <div class="empty-blue-cargo"></div>
+                        <div class="no-cargo" id="cargo-blue-bot-mid"></div>
+                    </div>
+                </div>
+                <div class="hatch-container" style="margin-bottom: 20px; margin-right: 420px; bottom: 0">
+                    <div class="empty-blue-hatch"></div>
+                    <div class="no-hatch" id="hatch-blue-bot-left">
+                        <div class="empty-blue-cargo"></div>
+                        <div class="no-cargo" id="cargo-blue-bot-left"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hab-container" style="left: -600px">
+            <div class="hab-climb-red" id="climb-red-left" style="left: -66%"></div>
+            <div class="hab-climb-red" id="climb-red-mid"></div>
+            <div class="hab-climb-red" id="climb-red-right" style="left: 66%"></div>
+            <div class="hab-dismount-red" id="dismount-red-left" style="left: -66%"></div>
+            <div class="hab-dismount-red" id="dismount-red-mid"></div>
+            <div class="hab-dismount-red" id="dismount-red-right" style="left: 66%"></div>
+            <div class="hab-underline"></div>
+        </div>
+        <div class="hab-container" style="right: -600px">
+            <div class="hab-climb-blue" id="climb-blue-left" style="left: -66%"></div>
+            <div class="hab-climb-blue" id="climb-blue-mid"></div>
+            <div class="hab-climb-blue" id="climb-blue-right" style="left: 66%"></div>
+            <div class="hab-dismount-blue" id="dismount-blue-left" style="left: -66%"></div>
+            <div class="hab-dismount-blue" id="dismount-blue-mid"></div>
+            <div class="hab-dismount-blue" id="dismount-blue-right" style="left: 66%"></div>
+            <div class="hab-underline"></div>
+        </div>
+        <div class="display-bg">
+            <div class="display-panel">
+                <div class="display-match"></div>
+                <div class="display-alfredo">FMS provided by Alfredo</div>
+                <div class="display-alfredo-image"><img src="images/alfredo.png"></div>
+                <div class="display-red-panel">
+                    <div class="display-team-title-red">Team</div>
+                    <div class="display-rank-title-red">Rank</div>
+                    <div class="display-team-number-red" style="top: 60px" id="display-red-1-num"></div>
+                    <div class="display-team-rank-red" style="top: 60px" id="display-red-1-rank"></div>
+                    <div class="display-team-name-red" style="top: 120px" id="display-red-1-name"></div>
+                    <div class="display-team-number-red" style="top: 150px" id="display-red-2-num"></div>
+                    <div class="display-team-rank-red" style="top: 150px" id="display-red-2-rank"></div>
+                    <div class="display-team-name-red" style="top: 210px" id="display-red-2-name"></div>
+                    <div class="display-team-number-red" style="top: 240px" id="display-red-3-num"></div>
+                    <div class="display-team-rank-red" style="top: 240px" id="display-red-3-rank"></div>
+                    <div class="display-team-name-red" style="top: 300px" id="display-red-3-name"></div>
+                    <div class="display-avatar-red" style = "top: 55px" id="display-red-1-avatar"></div>
+                    <div class="display-avatar-red" style = "top: 145px" id="display-red-2-avatar"></div>
+                    <div class="display-avatar-red" style = "top: 235px" id="display-red-3-avatar"></div>
+
+                    <div class="display-team-name-red" style="left: 30px; top: 50px; width: 300px" id="display-red-alliance-name-playoffs"></div>
+                    <div class="display-team-number-red" style="top: 80px" id="display-red-1-num-playoffs"></div>
+                    <div class="display-team-name-red" style="top: 140px; width: 160px" id="display-red-1-name-playoffs"></div>
+                    <div class="display-team-number-red" style="left: 200px; top: 80px" id="display-red-2-num-playoffs"></div>
+                    <div class="display-team-name-red" style="left: 200px; top: 140px; width: 160px" id="display-red-2-name-playoffs"></div>
+                    <div class="display-team-number-red" style="top: 200px" id="display-red-3-num-playoffs"></div>
+                    <div class="display-team-name-red" style="top: 260px; width: 160px" id="display-red-3-name-playoffs"></div>
+                    <div class="display-team-number-red" style="left: 200px; top: 200px" id="display-red-4-num-playoffs"></div>
+                    <div class="display-team-name-red" style="left: 200px; top: 260px; width: 160px" id="display-red-4-name-playoffs"></div>
+                    <div class="display-avatar-red" style = "top: 75px" id="display-red-1-avatar-playoffs"></div>
+                    <div class="display-avatar-red" style = "top: 75px; left: 280px" id="display-red-2-avatar-playoffs"></div>
+                    <div class="display-avatar-red" style = "top: 195px" id="display-red-3-avatar-playoffs"></div>
+                    <div class="display-avatar-red" style = "top: 195px; left: 280px" id="display-red-4-avatar-playoffs"></div>
+                    
+                    <div class="display-score-panel-red">
+                        <div class="display-high-score" id="display-high-score-red"></div>
+                        <div class="display-score" id="display-score-red">0</div>
+                        <div class="display-win" id="display-win-red"></div>
+                    </div>
+                    <div class="display-rp-panel-red">
+                        <div class="display-rocket-rp-red"><img src="images/rocket-icon-grey.png"></div>
+                        <div class="display-climb-rp-red"><img src="images/hab-icon-grey.png"></div>
+                        <div class="display-win-rp-red"><img src="images/win-icon-grey.png"></div>
+                        <div class="display-wins" id="display-red-series-wins"></div>
+                    </div>
+                    <div class="display-stats-panel-red">
+                        <div class="display-stat-name-red" style="top: 20px">AUTONOMOUS</div>
+                        <div class="display-stat-name-red" style="top: 75px">HATCH PANELS</div>
+                        <div class="display-stat-name-red" style="top: 130px">CARGO</div>
+                        <div class="display-stat-name-red" style="top: 185px">HAB CLIMB</div>
+                        <div class="display-stat-name-red" style="top: 240px">BLUE PENALTY</div>
+                        <div class="display-stat-number-red" id="red-auto-stat" style="top: 20px"></div>
+                        <div class="display-stat-number-red" id="red-hatch-stat" style="top: 75px"></div>
+                        <div class="display-stat-number-red" id="red-cargo-stat" style="top: 130px"></div>
+                        <div class="display-stat-number-red" id="red-climb-stat" style="top: 185px"></div>
+                        <div class="display-stat-number-red" id="red-foul-stat" style="top: 240px"></div>
+                    </div>
+                </div>
+                <div class="display-blue-panel">
+                    <div class="display-team-title-blue">Team</div>
+                    <div class="display-rank-title-blue">Rank</div>
+                    <div class="display-team-number-blue" style="top: 60px" id="display-blue-1-num"></div>
+                    <div class="display-team-rank-blue" style="top: 60px" id="display-blue-1-rank"></div>
+                    <div class="display-team-name-blue" style="top: 120px" id="display-blue-1-name"></div>
+                    <div class="display-team-number-blue" style="top: 150px" id="display-blue-2-num"></div>
+                    <div class="display-team-rank-blue" style="top: 150px" id="display-blue-2-rank"></div>
+                    <div class="display-team-name-blue" style="top: 210px" id="display-blue-2-name"></div>
+                    <div class="display-team-number-blue" style="top: 240px" id="display-blue-3-num"></div>
+                    <div class="display-team-rank-blue" style="top: 240px" id="display-blue-3-rank"></div>
+                    <div class="display-team-name-blue" style="top: 300px" id="display-blue-3-name"></div>
+                    <div class="display-avatar-blue" style = "top: 55px" id="display-blue-1-avatar"></div>
+                    <div class="display-avatar-blue" style = "top: 145px" id="display-blue-2-avatar"></div>
+                    <div class="display-avatar-blue" style = "top: 235px" id="display-blue-3-avatar"></div>
+
+                    <div class="display-team-name-blue" style="left: 390px; top: 50px; width: 300px;" id="display-blue-alliance-name-playoffs"></div>
+                    <div class="display-team-number-blue" style="top: 80px" id="display-blue-1-num-playoffs"></div>
+                    <div class="display-team-name-blue" style="top: 140px; width: 160px" id="display-blue-1-name-playoffs"></div>
+                    <div class="display-team-number-blue" style="left: 560px; top: 80px" id="display-blue-2-num-playoffs"></div>
+                    <div class="display-team-name-blue" style="left: 560px; top: 140px; width: 160px" id="display-blue-2-name-playoffs"></div>
+                    <div class="display-team-number-blue" style="top: 200px" id="display-blue-3-num-playoffs"></div>
+                    <div class="display-team-name-blue" style="top: 260px; width: 160px" id="display-blue-3-name-playoffs"></div>
+                    <div class="display-team-number-blue" style="left: 560px; top: 200px" id="display-blue-4-num-playoffs"></div>
+                    <div class="display-team-name-blue" style="left: 560px; top: 260px; width: 160px" id="display-blue-4-name-playoffs"></div>
+                    <div class="display-avatar-blue" style = "top: 75px" id="display-blue-1-avatar-playoffs"></div>
+                    <div class="display-avatar-blue" style = "top: 75px; left: 635px" id="display-blue-2-avatar-playoffs"></div>
+                    <div class="display-avatar-blue" style = "top: 195px" id="display-blue-3-avatar-playoffs"></div>
+                    <div class="display-avatar-blue" style = "top: 195px; left: 635px" id="display-blue-4-avatar-playoffs"></div>
+
+                    <div class="display-score-panel-blue">
+                        <div class="display-high-score" id="display-high-score-blue"></div>
+                        <div class="display-score" id="display-score-blue">0</div>
+                        <div class="display-win" id="display-win-blue"></div>
+                    </div>
+                    <div class="display-rp-panel-blue">
+                        <div class="display-rocket-rp-blue"><img src="images/rocket-icon-grey.png"></div>
+                        <div class="display-climb-rp-blue"><img src="images/hab-icon-grey.png"></div>
+                        <div class="display-win-rp-blue"><img src="images/win-icon-grey.png"></div>
+                        <div class="display-wins" id="display-blue-series-wins"></div>
+                    </div>
+                    <div class="display-stats-panel-blue">
+                        <div class="display-stat-name-blue" style="top: 20px">AUTONOMOUS</div>
+                        <div class="display-stat-name-blue" style="top: 75px">HATCH PANELS</div>
+                        <div class="display-stat-name-blue" style="top: 130px">CARGO</div>
+                        <div class="display-stat-name-blue" style="top: 185px">HAB CLIMB</div>
+                        <div class="display-stat-name-blue" style="top: 240px">RED PENALTY</div>
+                        <div class="display-stat-number-blue" id="blue-auto-stat" style="top: 20px"></div>
+                        <div class="display-stat-number-blue" id="blue-hatch-stat" style="top: 75px"></div>
+                        <div class="display-stat-number-blue" id="blue-cargo-stat" style="top: 130px"></div>
+                        <div class="display-stat-number-blue" id="blue-climb-stat" style="top: 185px"></div>
+                        <div class="display-stat-number-blue" id="blue-foul-stat" style="top: 240px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="node_modules/fitty/dist/fitty.min.js"></script>
+    <script>
+        require("./renderer");
+        fitty("#team-name-red-1", {maxSize: 40});
+        fitty("#team-name-red-2", {maxSize: 40});
+        fitty("#team-name-red-3", {maxSize: 40});
+        fitty("#team-name-blue-1", {maxSize: 40});
+        fitty("#team-name-blue-2", {maxSize: 40});
+        fitty("#team-name-blue-3", {maxSize: 40});
+    </script>
+</body>
+
+</html>
