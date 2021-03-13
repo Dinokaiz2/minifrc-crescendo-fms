@@ -3,6 +3,8 @@ const excel = require('exceljs');
 const fs = require("fs");
 const {Howl, Howler} = require('howler');
 
+
+
 var timerContainer;
 var timer = 150;
 
@@ -12,7 +14,6 @@ var leftCtrlPressed = false;
 var rightCtrlPressed = false;
 var crossModPressed = false;
 var climbDelPressed = false;
-var nullHatchModPressed = false;
 
 var currentMatchName = "";
 var totalMatchNumber = "";
@@ -22,25 +23,41 @@ var redScore = 0;
 var blueScore = 0;
 var redClimbScore = 0;
 var blueClimbScore = 0;
-var redHatchScore = 0;
-var blueHatchScore = 0;
-var redCargoScore = 0;
-var blueCargoScore = 0;
+var redHighGoalScore = 0;
+var blueHighGoalScore = 0;
+var redLowGoalScore = 0;
+var blueLowGoalScore = 0;
 var redAutoScore = 0;
 var blueAutoScore = 0;
 var foulsByBlue = 0;
 var foulsByRed = 0;
 var redRP = 0;
 var blueRP = 0;
-var redRocketRP = 0;
-var blueRocketRP = 0;
+var redSpinnerRP = 0;
+var blueSpinnerRP = 0;
 var redClimbRP = 0;
 var blueClimbRP = 0;
 
-var redRocket1Score = 0;
-var redRocket2Score = 0;
-var blueRocket1Score = 0;
-var blueRocket2Score = 0;
+var redRotationScore = 0; 
+var redPositionScore = 0; 
+var blueRotationScore = 0;
+var bluePositionScore = 0;
+
+const points = {
+    INITIATION_LINE: 5,
+    HIGH_GOAL: 2,
+    LOW_GOAL: 1,
+    ROTATION_CONTROL: 10,
+    POSITION_CONTROL: 20,
+    CLIMB: 15,
+    PARK: 5,
+    BALANCE: 15
+}
+
+const foul = {
+    REGULAR: 3,
+    TECH: 6
+}
 
 var redHighScore = false;
 var blueHighScore = false;
@@ -79,6 +96,8 @@ var redAllianceName;
 var blueAllianceName;
 var redAllianceWins;
 var blueAllianceWins;
+
+var blueTeam = new Team("blue");
 
 var preMatch = true;
 var inMatch = false;
@@ -226,248 +245,10 @@ function runTimer() {
     }
 }
 
-function updateScore() {
-    redScore = 0;
-    blueScore = 0;
-    redClimbScore = 0;
-    blueClimbScore = 0;
-    redHatchScore = 0;
-    blueHatchScore = 0;
-    redCargoScore = 0;
-    blueCargoScore = 0;
-    redAutoScore = 0;
-    blueAutoScore = 0;
-    redRocket1Score = 0;
-    redRocket2Score = 0;
-    blueRocket1Score = 0;
-    blueRocket2Score = 0;
-    redRP = 0;
-    blueRP = 0;
-
-    Array.from(document.getElementsByClassName("hatch")).forEach(element => {
-        if (element.id.includes("r1") || element.id.includes("r2")) {
-            if (element.id.includes("red")) {
-                redScore += 6;
-                redHatchScore += 6;
-                if (element.id.includes("r1")) redRocket1Score += 6;
-                else redRocket2Score += 6;
-            }
-            else {
-                blueScore += 6;
-                blueHatchScore += 6;
-                if (element.id.includes("r1")) blueRocket1Score += 6;
-                else blueRocket2Score += 6;
-            }
-        } else {
-            if (element.id.includes("red")) {
-                redScore += 3;
-                redHatchScore += 3;
-            }
-            else {
-                blueScore += 3;
-                blueHatchScore += 3;
-            }
-        }
-    });
-    Array.from(document.getElementsByClassName("left-half-hatch")).forEach(element => {
-        if (element.id.includes("red")) {
-            redScore += 3;
-            redHatchScore += 3;
-            if (element.id.includes("r1")) redRocket1Score += 3;
-            else redRocket2Score += 3;
-        }
-        else {
-            blueScore += 3;
-            blueHatchScore += 3;
-            if (element.id.includes("r1")) blueRocket1Score += 3;
-            else blueRocket2Score += 3;
-        }
-    });
-    Array.from(document.getElementsByClassName("right-half-hatch")).forEach(element => {
-        if (element.id.includes("red")) {
-            redScore += 3;
-            redHatchScore += 3;
-            if (element.id.includes("r1")) redRocket1Score += 3;
-            else redRocket2Score += 3;
-        }
-        else {
-            blueScore += 3;
-            blueHatchScore += 3;
-            if (element.id.includes("r1")) blueRocket1Score += 3;
-            else blueRocket2Score += 3;
-        }
-    });
-    Array.from(document.getElementsByClassName("cargo")).forEach(element => {
-        if (element.id.includes("r1") || element.id.includes("r2")) {
-            if (element.id.includes("red")) {
-                redScore += 6;
-                redCargoScore += 6;
-                if (element.id.includes("r1")) redRocket1Score += 6;
-                else redRocket2Score += 6;
-            }
-            else {
-                blueScore += 6;
-                blueCargoScore += 6;
-                if (element.id.includes("r1")) blueRocket1Score += 6;
-                else blueRocket2Score += 6;
-            }
-        } else {
-            if (element.id.includes("red")) {
-                redScore += 3;
-                redCargoScore += 3;
-            }
-            else {
-                blueScore += 3;
-                blueCargoScore += 3;
-            }
-        }
-    });
-    Array.from(document.getElementsByClassName("left-half-cargo")).forEach(element => {
-        if (element.id.includes("red")) {
-            redScore += 3;
-            redCargoScore += 3;
-            if (element.id.includes("r1")) redRocket1Score += 3;
-            else redRocket2Score += 3;
-        }
-        else {
-            blueScore += 3;
-            blueCargoScore += 3;
-            if (element.id.includes("r1")) blueRocket1Score += 3;
-            else blueRocket2Score += 3;
-        }
-    });
-    Array.from(document.getElementsByClassName("right-half-cargo")).forEach(element => {
-        if (element.id.includes("red")) {
-            redScore += 3;
-            redCargoScore += 3;
-            if (element.id.includes("r1")) redRocket1Score += 3;
-            else redRocket2Score += 3;
-        }
-        else {
-            blueScore += 3;
-            blueCargoScore += 3;
-            if (element.id.includes("r1")) blueRocket1Score += 3;
-            else blueRocket2Score += 3;
-        }
-    });
-    Array.from(document.getElementsByClassName("hab-dismount-red")).forEach(element => {
-        if (window.getComputedStyle(element).height == "100px") {
-            redScore += 3;
-            redAutoScore += 3;
-        }
-        else if (window.getComputedStyle(element).height == "200px") {
-            redScore += 6;
-            redAutoScore += 6;
-        }
-        else if (window.getComputedStyle(element).height == "300px") {
-            redScore += 9;
-            redAutoScore += 9;
-        }
-    });
-    Array.from(document.getElementsByClassName("hab-dismount-blue")).forEach(element => {
-        if (window.getComputedStyle(element).height == "100px") {
-            blueScore += 3;
-            blueAutoScore += 3;
-        }
-        else if (window.getComputedStyle(element).height == "200px") {
-            blueScore += 6;
-            blueAutoScore += 6;
-        }
-        else if (window.getComputedStyle(element).height == "300px") {
-            blueScore += 9;
-            blueAutoScore += 9;
-        }
-    });
-    Array.from(document.getElementsByClassName("hab-climb-red")).forEach(element => {
-        if (window.getComputedStyle(element).height == "100px") {
-            redScore += 3;
-            redClimbScore += 3;
-        }
-        else if (window.getComputedStyle(element).height == "200px") {
-            redScore += 6;
-            redClimbScore += 6;
-        }
-        else if (window.getComputedStyle(element).height == "300px") {
-            redScore += 12;
-            redClimbScore += 12;
-        }
-    });
-    Array.from(document.getElementsByClassName("hab-climb-blue")).forEach(element => {
-        if (window.getComputedStyle(element).height == "100px") {
-            blueScore += 3;
-            blueClimbScore += 3;
-        }
-        else if (window.getComputedStyle(element).height == "200px") {
-            blueScore += 6;
-            blueClimbScore += 6;
-        }
-        else if (window.getComputedStyle(element).height == "300px") {
-            blueScore += 12;
-            blueClimbScore += 12;
-        }
-    });
-    if (foulsByRed < 0) foulsByRed = 0;
-    if (foulsByBlue < 0) foulsByBlue = 0;
-    redScore += foulsByBlue;
-    blueScore += foulsByRed;
-
-    document.getElementsByClassName("red-score")[0].innerHTML = redScore;
-    document.getElementsByClassName("blue-score")[0].innerHTML = blueScore;
+function updateScore(points, team) {
     
-    if (redClimbScore >= 15) {
-        document.getElementsByClassName("red-climb-rp")[0].style.backgroundColor = "red";
-        document.getElementsByClassName("red-climb-rp")[0].innerHTML = "<img src='images/hab-icon.png'>"
-        redRP += 1;
-        redClimbRP = 1;
-    } else {
-        document.getElementsByClassName("red-climb-rp")[0].style.backgroundColor = "rgb(184, 184, 184)";
-        document.getElementsByClassName("red-climb-rp")[0].innerHTML = "<img src='images/hab-icon-grey.png'>"
-        redClimbRP = 0;
-    }
-    if (redRocket1Score == 36 || redRocket2Score == 36) {
-        document.getElementsByClassName("red-rocket-rp")[0].style.backgroundColor = "red";
-        document.getElementsByClassName("red-rocket-rp")[0].innerHTML = "<img src='images/rocket-icon.png'>"
-        redRP += 1;
-        redRocketRP = 1;
-    } else {
-        document.getElementsByClassName("red-rocket-rp")[0].style.backgroundColor = "rgb(184, 184, 184)";
-        document.getElementsByClassName("red-rocket-rp")[0].innerHTML = "<img src='images/rocket-icon-grey.png'>"
-        redRocketRP = 0;
-    }
-    if (blueRocket1Score == 36 || blueRocket2Score == 36) {
-        document.getElementsByClassName("blue-rocket-rp")[0].style.backgroundColor = "blue";
-        document.getElementsByClassName("blue-rocket-rp")[0].innerHTML = "<img src='images/rocket-icon.png'>"
-        blueRP += 1;
-        blueRocketRP = 1;
-    } else {
-        document.getElementsByClassName("blue-rocket-rp")[0].style.backgroundColor = "rgb(184, 184, 184)";
-        document.getElementsByClassName("blue-rocket-rp")[0].innerHTML = "<img src='images/rocket-icon-grey.png'>"
-        blueRocketRP = 0;
-    }
-    if (blueClimbScore >= 15) {
-        document.getElementsByClassName("blue-climb-rp")[0].style.backgroundColor = "blue";
-        document.getElementsByClassName("blue-climb-rp")[0].innerHTML = "<img src='images/hab-icon.png'>"
-        blueRP += 1;
-        blueClimbRP = 1;
-    } else {
-        document.getElementsByClassName("blue-climb-rp")[0].style.backgroundColor = "rgb(184, 184, 184)";
-        document.getElementsByClassName("blue-climb-rp")[0].innerHTML = "<img src='images/hab-icon-grey.png'>"
-        blueClimbRP = 0;
-    }
 
-    if (redScore > blueScore) redRP += 2;
-    else if (redScore < blueScore) blueRP += 2;
-    else {
-        redRP += 1;
-        blueRP += 1;
-    }
 
-    document.getElementsByClassName("red-foul-counter")[0].innerHTML = "+" + foulsByBlue;
-    document.getElementsByClassName("blue-foul-counter")[0].innerHTML = "+" + foulsByRed;
-    document.getElementsByClassName("red-cargo-counter")[0].innerHTML = redCargoScore / 3;
-    document.getElementsByClassName("blue-cargo-counter")[0].innerHTML = blueCargoScore / 3;
-    document.getElementsByClassName("red-hatch-counter")[0].innerHTML = redHatchScore / 3;
-    document.getElementsByClassName("blue-hatch-counter")[0].innerHTML = blueHatchScore / 3;
 }
 
 function updateDisplay() {
