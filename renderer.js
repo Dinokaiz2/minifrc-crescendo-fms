@@ -1,8 +1,7 @@
-import Team from 'Team.js'
-const remote = require('electron').remote
-const excel = require('exceljs')
-const fs = require('fs')
-const { Howl } = require('howler')
+// const remote = require('electron').remote
+// const excel = require('exceljs')
+// const fs = require('fs')
+// const { Howl } = require('howler')
 
 let timerContainer
 let timer = 150
@@ -15,7 +14,7 @@ let crossModPressed = false
 let climbDelPressed = false
 
 let currentMatchName = ''
-let totalMatchNumber = ''
+let totalMatchNumber = 0
 let friendlyMatchName = ''
 
 const redScore = 0
@@ -71,7 +70,8 @@ let blueAllianceName
 let redAllianceWins
 let blueAllianceWins
 
-// const blueTeam = new Team('blue')
+const blueTeam = new Team('blue')
+const redTeam = new Team('red')
 
 let preMatch = true
 let inMatch = false
@@ -90,105 +90,53 @@ let teleopSound;
     }
   }
   function init () {
-    const window = remote.getCurrentWindow()
+    //const window = remote.getCurrentWindow()
     incrementMatch(false)
-    autoSound = new Howl({ src: ['sounds/auto.wav'] })
-    endSound = new Howl({ src: ['sounds/end.wav'] })
-    endgameSound = new Howl({ src: ['sounds/endgame.wav'] })
-    faultSound = new Howl({ src: ['sounds/fault.wav'] })
-    teleopSound = new Howl({ src: ['sounds/teleop.wav'] })
-    window.on('resize', function () {
-      document.body.style.transform = 'scale(' + (remote.getCurrentWindow().webContents.getOwnerBrowserWindow().getBounds().width / 1920) + ', ' +
-                                                    (remote.getCurrentWindow().webContents.getOwnerBrowserWindow().getBounds().height / 1080) + ')'
-    }
-    )
+    // autoSound = new Howl({ src: ['sounds/auto.wav'] })
+    // endSound = new Howl({ src: ['sounds/end.wav'] })
+    // endgameSound = new Howl({ src: ['sounds/endgame.wav'] })
+    // faultSound = new Howl({ src: ['sounds/fault.wav'] })
+    // teleopSound = new Howl({ src: ['sounds/teleop.wav'] })
+    // window.on('resize', function () {
+    //   document.body.style.transform = 'scale(' + (remote.getCurrentWindow().webContents.getOwnerBrowserWindow().getBounds().width / 1920) + ', ' +
+    //                                                 (remote.getCurrentWindow().webContents.getOwnerBrowserWindow().getBounds().height / 1080) + ')'
+    // }
+		// )
+		
+		document.addEventListener('keyup', function (e) {
+      if (e.code === 'ShiftLeft') leftShiftPressed = false
+      else if (e.code === 'ShiftRight') rightShiftPressed = false
+      else if (e.code === 'ControlLeft') leftCtrlPressed = false
+      else if (e.code === 'ControlRight') rightCtrlPressed = false
+      else if (e.code === 'NumpadMultiply') crossModPressed = false
+      else if (e.code === 'NumpadSubtract') climbDelPressed = false
+      else if (e.code === 'Backspace') nullHatchModPressed = false
+		})
+		
     document.addEventListener('keydown', function (e) {
       if (e.code === 'F1' && !inMatch) startMatch()
       else if (e.code === 'F2' && !inMatch) publishAndDisplayScores()
       else if (e.code === 'F3' && !inMatch) nextMatchAndRemoveDisplay()
-      else if (e.code === 'F6') incrementMatch(true)
-      else if (e.code === 'F7') incrementMatch(false)
-      else if (e.code === 'F8') toggleDisplay()
-      else if (e.code === 'F9') resetMatch()
-      else if (e.code === 'F10') publishScores()
-      else if (e.code === 'F12' && inMatch) fieldFault()
+      else if (e.code === 'Digit6') incrementMatch(true)
+			else if (e.code === 'Digit7') incrementMatch(false)
+			else if (e.code === 'ShiftLeft') leftShiftPressed = true
+			else if (e.code === 'KeyQ') blueTeam.updateScore(Team.PointType.HIGH_GOAL, false, leftShiftPressed)
+			else if (e.code === 'ControlLeft') leftCtrlPressed = true
+			else if (e.code === 'KeyA') blueTeam.updateScore(Team.PointType.LOW_GOAL, false, leftCtrlPressed)
+			else if (e.code === 'ShiftRight') rightShiftPressed = true
+			else if (e.code === 'BracketLeft') redTeam.updateScore(Team.PointType.HIGH_GOAL, false, rightShiftPressed)
+			else if (e.code === 'ControlRight') rightCtrlPressed = true
+			else if (e.code === 'Quote') redTeam.updateScore(Team.PointType.LOW_GOAL, false, rightCtrlPressed)
+			else if (e.code === 'KeyS') blueTeam.updateScore(Team.PointType.ROTATION_CONTROL, false, false)
+			else if (e.code === 'KeyD') blueTeam.updateScore(Team.PointType.POSITION_CONTROL, false, false)
+			else if (e.code === 'Semicolon') redTeam.updateScore(Team.PointType.ROTATION_CONTROL, false, false)
+			else if (e.code === 'KeyL') redTeam.updateScore(Team.PointType.POSITION_CONTROL, false, false)
 
-      else if (e.code === 'KeyQ') updateRocketHatch('hatch-red-r1-top', true, leftShiftPressed)
-      else if (e.code === 'KeyW') updateRocketHatch('hatch-red-r1-top', false, leftShiftPressed)
-      else if (e.code === 'KeyA') updateRocketHatch('hatch-red-r1-mid', true, leftShiftPressed)
-      else if (e.code === 'KeyS') updateRocketHatch('hatch-red-r1-mid', false, leftShiftPressed)
-      else if (e.code === 'KeyZ') updateRocketHatch('hatch-red-r1-bot', true, leftShiftPressed)
-      else if (e.code === 'KeyX') updateRocketHatch('hatch-red-r1-bot', false, leftShiftPressed)
-      else if (e.code === 'Digit1') updateCargoHatch('hatch-red-bot-front', leftShiftPressed)
-      else if (e.code === 'Digit2') updateCargoHatch('hatch-red-bot-left', leftShiftPressed)
-      else if (e.code === 'Digit3') updateCargoHatch('hatch-red-bot-mid', leftShiftPressed)
-      else if (e.code === 'Digit4') updateCargoHatch('hatch-red-bot-right', leftShiftPressed)
-
-      else if (e.code === 'KeyE') updateRocketHatch('hatch-red-r2-top', false, leftCtrlPressed)
-      else if (e.code === 'KeyR') updateRocketHatch('hatch-red-r2-top', true, leftCtrlPressed)
-      else if (e.code === 'KeyD') updateRocketHatch('hatch-red-r2-mid', false, leftCtrlPressed)
-      else if (e.code === 'KeyF') updateRocketHatch('hatch-red-r2-mid', true, leftCtrlPressed)
-      else if (e.code === 'KeyC') updateRocketHatch('hatch-red-r2-bot', false, leftCtrlPressed)
-      else if (e.code === 'KeyV') updateRocketHatch('hatch-red-r2-bot', true, leftCtrlPressed)
-      else if (e.code === 'Digit5') updateCargoHatch('hatch-red-top-right', leftCtrlPressed)
-      else if (e.code === 'Digit6') updateCargoHatch('hatch-red-top-mid', leftCtrlPressed)
-      else if (e.code === 'Digit7') updateCargoHatch('hatch-red-top-left', leftCtrlPressed)
-      else if (e.code === 'Digit8') updateCargoHatch('hatch-red-top-front', leftCtrlPressed)
-
-      else if (e.code === 'KeyT') updateRocketHatch('hatch-blue-r1-top', true, rightShiftPressed)
-      else if (e.code === 'KeyY') updateRocketHatch('hatch-blue-r1-top', false, rightShiftPressed)
-      else if (e.code === 'KeyG') updateRocketHatch('hatch-blue-r1-mid', true, rightShiftPressed)
-      else if (e.code === 'KeyH') updateRocketHatch('hatch-blue-r1-mid', false, rightShiftPressed)
-      else if (e.code === 'KeyB') updateRocketHatch('hatch-blue-r1-bot', true, rightShiftPressed)
-      else if (e.code === 'KeyN') updateRocketHatch('hatch-blue-r1-bot', false, rightShiftPressed)
-      else if (e.code === 'Digit9') updateCargoHatch('hatch-blue-bot-left', rightShiftPressed)
-      else if (e.code === 'Digit0') updateCargoHatch('hatch-blue-bot-mid', rightShiftPressed)
-      else if (e.code === 'Minus') updateCargoHatch('hatch-blue-bot-right', rightShiftPressed)
-      else if (e.code === 'Equal') updateCargoHatch('hatch-blue-bot-front', rightShiftPressed)
-
-      else if (e.code === 'KeyU') updateRocketHatch('hatch-blue-r2-top', false, rightCtrlPressed)
-      else if (e.code === 'KeyI') updateRocketHatch('hatch-blue-r2-top', true, rightCtrlPressed)
-      else if (e.code === 'KeyJ') updateRocketHatch('hatch-blue-r2-mid', false, rightCtrlPressed)
-      else if (e.code === 'KeyK') updateRocketHatch('hatch-blue-r2-mid', true, rightCtrlPressed)
-      else if (e.code === 'KeyM') updateRocketHatch('hatch-blue-r2-bot', false, rightCtrlPressed)
-      else if (e.code === 'Comma') updateRocketHatch('hatch-blue-r2-bot', true, rightCtrlPressed)
-      else if (e.code === 'KeyO') updateCargoHatch('hatch-blue-top-front', rightCtrlPressed)
-      else if (e.code === 'KeyP') updateCargoHatch('hatch-blue-top-right', rightCtrlPressed)
-      else if (e.code === 'BracketLeft') updateCargoHatch('hatch-blue-top-mid', rightCtrlPressed)
-      else if (e.code === 'BracketRight') updateCargoHatch('hatch-blue-top-left', rightCtrlPressed)
-
-      else if (e.code === 'Numpad1') updateHab('100px', true)
-      else if (e.code === 'Numpad4') updateHab('200px', true)
-      else if (e.code === 'Numpad7') updateHab('300px', true)
-
-      else if (e.code === 'Numpad2') updateHab('100px', false)
-      else if (e.code === 'Numpad5') updateHab('200px', false)
-      else if (e.code === 'Numpad8') updateHab('300px', false)
-
-      else if (e.code === 'Numpad6') foulsByRed += (climbDelPressed ? -1 : 1) * 5
-      else if (e.code === 'Numpad3') foulsByRed += (climbDelPressed ? -1 : 1) * 3
-      else if (e.code === 'NumpadAdd') foulsByBlue += (climbDelPressed ? -1 : 1) * 5
-      else if (e.code === 'NumpadEnter') foulsByBlue += (climbDelPressed ? -1 : 1) * 3
-
-      else if (e.code === 'ShiftLeft') leftShiftPressed = true
-      else if (e.code === 'ShiftRight') rightShiftPressed = true
-      else if (e.code === 'ControlLeft') leftCtrlPressed = true
-      else if (e.code === 'AltRight') rightCtrlPressed = true
-      else if (e.code === 'NumpadMultiply') crossModPressed = true
-      else if (e.code === 'NumpadSubtract') climbDelPressed = true
-      else if (e.code === 'Backspace') nullHatchModPressed = true
-      updateScore()
+		 
+		 updateScore()
     })
 
-    document.addEventListener('keyup', function (e) {
-      if (e.code === 'ShiftLeft') leftShiftPressed = false
-      else if (e.code === 'ShiftRight') rightShiftPressed = false
-      else if (e.code === 'ControlLeft') leftCtrlPressed = false
-      else if (e.code === 'AltRight') rightCtrlPressed = false
-      else if (e.code === 'NumpadMultiply') crossModPressed = false
-      else if (e.code === 'NumpadSubtract') climbDelPressed = false
-      else if (e.code === 'Backspace') nullHatchModPressed = false
-    })
+   
   }
 })()
 
@@ -220,8 +168,9 @@ function runTimer () {
   }
 }
 
-function updateScore (points, team) {
-
+function updateScore () {
+	document.getElementById('blue_team').innerHTML = blueTeam.getScore()
+	document.getElementById('red_team').innerHTML = redTeam.getScore()
 }
 
 function updateDisplay () {
@@ -604,110 +553,113 @@ function updateRocketHatch (id, left, del) {
 }
 
 function incrementMatch (backward) {
-  const workbook = new excel.Workbook()
-  workbook.xlsx.readFile('EventInfo.xlsx').then(function () {
-    const worksheet = workbook.getWorksheet('Matches')
-    const matchNameCol = worksheet.getColumn('A')
-    matchNameCol.eachCell(function (cell) {
-      if (cell.text.includes('Qualification')) totalMatchNumber = cell.text.split(' ')[cell.text.split(' ').length - 1]
-    })
-  }).then(function () {
-    if (currentMatchName === '') {
-      var worksheet = workbook.getWorksheet('Matches')
-      currentMatchName = worksheet.getCell('A2').text
-    } else {
-      var worksheet = workbook.getWorksheet('Matches')
-      var matchNameCol = worksheet.getColumn('A')
-      let found = false
-      let next = false
-      let lastCell
-      matchNameCol.eachCell(function (cell) {
-        if (!found && cell.text === currentMatchName) {
-          if (backward) currentMatchName = lastCell.text
-          else next = true
-        } else if (next) {
-          found = true
-          next = false
-          if (!backward) currentMatchName = cell.text
-        }
-        lastCell = cell
-      })
-      if (currentMatchName === 'Match Name') {
-        currentMatchName = worksheet.getCell('A2').text
-      }
-    }
-    let matchRow
-    let nextMatchRow
-    let justFound
-    var matchNameCol = worksheet.getColumn('A')
-    matchNameCol.eachCell(function (cell) {
-      if (justFound) {
-        nextMatchRow = worksheet.getRow(cell.row)
-        justFound = false
-      }
-      if (cell.text === currentMatchName) {
-        matchRow = worksheet.getRow(cell.row)
-        justFound = true
-      }
-    })
+	document.getElementById('match-number-container').innerHTML = 'Match Number: ' + totalMatchNumber++
+	if (backward) document.getElementById('match-number-container').innerHTML = 'Match Number: ' + totalMatchNumber--
 
-    red1Num = matchRow.getCell('B').text
-    red2Num = matchRow.getCell('C').text
-    red3Num = matchRow.getCell('D').text
-    blue1Num = matchRow.getCell('E').text
-    blue2Num = matchRow.getCell('F').text
-    blue3Num = matchRow.getCell('G').text
-    document.getElementById('team-num-red-1').innerHTML = red1Num
-    document.getElementById('team-num-red-2').innerHTML = red2Num
-    document.getElementById('team-num-red-3').innerHTML = red3Num
-    document.getElementById('team-num-blue-1').innerHTML = blue1Num
-    document.getElementById('team-num-blue-2').innerHTML = blue2Num
-    document.getElementById('team-num-blue-3').innerHTML = blue3Num
-    if (!currentMatchName.startsWith('Qualification')) {
-      red4Num = matchRow.getCell('Z').text
-      blue4Num = matchRow.getCell('AA').text
-      redAllianceNum = matchRow.getCell('AB').text
-      blueAllianceNum = matchRow.getCell('AC').text
-      redAllianceName = matchRow.getCell('AD').text
-      blueAllianceName = matchRow.getCell('AE').text
-    }
+//   const workbook = new excel.Workbook()
+//   workbook.xlsx.readFile('EventInfo.xlsx').then(function () {
+//     const worksheet = workbook.getWorksheet('Matches')
+//     const matchNameCol = worksheet.getColumn('A')
+//     matchNameCol.eachCell(function (cell) {
+//       if (cell.text.includes('Qualification')) totalMatchNumber = cell.text.split(' ')[cell.text.split(' ').length - 1]
+//     })
+//   }).then(function () {
+//     if (currentMatchName === '') {
+//       var worksheet = workbook.getWorksheet('Matches')
+//       currentMatchName = worksheet.getCell('A2').text
+//     } else {
+//       var worksheet = workbook.getWorksheet('Matches')
+//       var matchNameCol = worksheet.getColumn('A')
+//       let found = false
+//       let next = false
+//       let lastCell
+//       matchNameCol.eachCell(function (cell) {
+//         if (!found && cell.text === currentMatchName) {
+//           if (backward) currentMatchName = lastCell.text
+//           else next = true
+//         } else if (next) {
+//           found = true
+//           next = false
+//           if (!backward) currentMatchName = cell.text
+//         }
+//         lastCell = cell
+//       })
+//       if (currentMatchName === 'Match Name') {
+//         currentMatchName = worksheet.getCell('A2').text
+//       }
+//     }
+//     let matchRow
+//     let nextMatchRow
+//     let justFound
+//     var matchNameCol = worksheet.getColumn('A')
+//     matchNameCol.eachCell(function (cell) {
+//       if (justFound) {
+//         nextMatchRow = worksheet.getRow(cell.row)
+//         justFound = false
+//       }
+//       if (cell.text === currentMatchName) {
+//         matchRow = worksheet.getRow(cell.row)
+//         justFound = true
+//       }
+//     })
 
-    if (nextMatchRow === undefined || currentMatchName.startsWith('Final') || !nextMatchRow.getCell('B').text) {
-      document.getElementsByClassName('info-up-next-red')[0].innerHTML = ''
-      document.getElementsByClassName('info-up-next-blue')[0].innerHTML = ''
-    } else {
-      document.getElementsByClassName('info-up-next-red')[0].innerHTML = 'Up next: ' + nextMatchRow.getCell('B').text + ', ' +
-                nextMatchRow.getCell('C').text + ', ' + nextMatchRow.getCell('D').text
-      document.getElementsByClassName('info-up-next-blue')[0].innerHTML = 'Up next: ' + nextMatchRow.getCell('E').text + ', ' +
-                nextMatchRow.getCell('F').text + ', ' + nextMatchRow.getCell('G').text
-    }
+//     red1Num = matchRow.getCell('B').text
+//     red2Num = matchRow.getCell('C').text
+//     red3Num = matchRow.getCell('D').text
+//     blue1Num = matchRow.getCell('E').text
+//     blue2Num = matchRow.getCell('F').text
+//     blue3Num = matchRow.getCell('G').text
+//     document.getElementById('team-num-red-1').innerHTML = red1Num
+//     document.getElementById('team-num-red-2').innerHTML = red2Num
+//     document.getElementById('team-num-red-3').innerHTML = red3Num
+//     document.getElementById('team-num-blue-1').innerHTML = blue1Num
+//     document.getElementById('team-num-blue-2').innerHTML = blue2Num
+//     document.getElementById('team-num-blue-3').innerHTML = blue3Num
+//     if (!currentMatchName.startsWith('Qualification')) {
+//       red4Num = matchRow.getCell('Z').text
+//       blue4Num = matchRow.getCell('AA').text
+//       redAllianceNum = matchRow.getCell('AB').text
+//       blueAllianceNum = matchRow.getCell('AC').text
+//       redAllianceName = matchRow.getCell('AD').text
+//       blueAllianceName = matchRow.getCell('AE').text
+//     }
 
-    const teamLookupSheet = workbook.getWorksheet('Teams')
-    teamLookupSheet.getColumn('A').eachCell(function (cell) {
-      if (matchRow.getCell('B').text === cell.text) red1Name = teamLookupSheet.getRow(cell.row).getCell(2)
-      else if (matchRow.getCell('C').text === cell.text) red2Name = teamLookupSheet.getRow(cell.row).getCell(2)
-      else if (matchRow.getCell('D').text === cell.text) red3Name = teamLookupSheet.getRow(cell.row).getCell(2)
-      else if (matchRow.getCell('E').text === cell.text) blue1Name = teamLookupSheet.getRow(cell.row).getCell(2)
-      else if (matchRow.getCell('F').text === cell.text) blue2Name = teamLookupSheet.getRow(cell.row).getCell(2)
-      else if (matchRow.getCell('G').text === cell.text) blue3Name = teamLookupSheet.getRow(cell.row).getCell(2)
-      else if (!currentMatchName.startsWith('Qualification')) {
-        if (matchRow.getCell('Z').text === cell.text) red4Name = teamLookupSheet.getRow(cell.row).getCell(2)
-        else if (matchRow.getCell('AA').text === cell.text) blue4Name = teamLookupSheet.getRow(cell.row).getCell(2)
-        if (!matchRow.getCell('Z').text) red4Name = ''
-        if (!matchRow.getCell('AA').text) blue4Name = ''
-      }
-    })
-    document.getElementById('team-name-red-1').innerHTML = red1Name
-    document.getElementById('team-name-red-2').innerHTML = red2Name
-    document.getElementById('team-name-red-3').innerHTML = red3Name
-    document.getElementById('team-name-blue-1').innerHTML = blue1Name
-    document.getElementById('team-name-blue-2').innerHTML = blue2Name
-    document.getElementById('team-name-blue-3').innerHTML = blue3Name
-  }).then(function () {
-    if (currentMatchName.startsWith('Qualification')) friendlyMatchName = currentMatchName + ' of ' + totalMatchNumber
-    else friendlyMatchName = currentMatchName
-    document.getElementsByClassName('info-match')[0].innerHTML = friendlyMatchName
-  })
+//     if (nextMatchRow === undefined || currentMatchName.startsWith('Final') || !nextMatchRow.getCell('B').text) {
+//       document.getElementsByClassName('info-up-next-red')[0].innerHTML = ''
+//       document.getElementsByClassName('info-up-next-blue')[0].innerHTML = ''
+//     } else {
+//       document.getElementsByClassName('info-up-next-red')[0].innerHTML = 'Up next: ' + nextMatchRow.getCell('B').text + ', ' +
+//                 nextMatchRow.getCell('C').text + ', ' + nextMatchRow.getCell('D').text
+//       document.getElementsByClassName('info-up-next-blue')[0].innerHTML = 'Up next: ' + nextMatchRow.getCell('E').text + ', ' +
+//                 nextMatchRow.getCell('F').text + ', ' + nextMatchRow.getCell('G').text
+//     }
+
+//     const teamLookupSheet = workbook.getWorksheet('Teams')
+//     teamLookupSheet.getColumn('A').eachCell(function (cell) {
+//       if (matchRow.getCell('B').text === cell.text) red1Name = teamLookupSheet.getRow(cell.row).getCell(2)
+//       else if (matchRow.getCell('C').text === cell.text) red2Name = teamLookupSheet.getRow(cell.row).getCell(2)
+//       else if (matchRow.getCell('D').text === cell.text) red3Name = teamLookupSheet.getRow(cell.row).getCell(2)
+//       else if (matchRow.getCell('E').text === cell.text) blue1Name = teamLookupSheet.getRow(cell.row).getCell(2)
+//       else if (matchRow.getCell('F').text === cell.text) blue2Name = teamLookupSheet.getRow(cell.row).getCell(2)
+//       else if (matchRow.getCell('G').text === cell.text) blue3Name = teamLookupSheet.getRow(cell.row).getCell(2)
+//       else if (!currentMatchName.startsWith('Qualification')) {
+//         if (matchRow.getCell('Z').text === cell.text) red4Name = teamLookupSheet.getRow(cell.row).getCell(2)
+//         else if (matchRow.getCell('AA').text === cell.text) blue4Name = teamLookupSheet.getRow(cell.row).getCell(2)
+//         if (!matchRow.getCell('Z').text) red4Name = ''
+//         if (!matchRow.getCell('AA').text) blue4Name = ''
+//       }
+//     })
+//     document.getElementById('team-name-red-1').innerHTML = red1Name
+//     document.getElementById('team-name-red-2').innerHTML = red2Name
+//     document.getElementById('team-name-red-3').innerHTML = red3Name
+//     document.getElementById('team-name-blue-1').innerHTML = blue1Name
+//     document.getElementById('team-name-blue-2').innerHTML = blue2Name
+//     document.getElementById('team-name-blue-3').innerHTML = blue3Name
+//   }).then(function () {
+//     if (currentMatchName.startsWith('Qualification')) friendlyMatchName = currentMatchName + ' of ' + totalMatchNumber
+//     else friendlyMatchName = currentMatchName
+//     document.getElementsByClassName('info-match')[0].innerHTML = friendlyMatchName
+//   })
 }
 
 function publishScores () {
