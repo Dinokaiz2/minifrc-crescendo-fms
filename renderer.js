@@ -5,6 +5,7 @@
 
 let timerContainer
 let timer = 150
+let color = 0
 
 let leftShiftPressed = false
 let rightShiftPressed = false
@@ -114,7 +115,7 @@ let teleopSound;
 		})
 		
     document.addEventListener('keydown', function (e) {
-      if (e.code === 'F1' && !inMatch) startMatch()
+      if (e.code === 'Digit1' && !inMatch) startMatch()
       else if (e.code === 'F2' && !inMatch) publishAndDisplayScores()
       else if (e.code === 'F3' && !inMatch) nextMatchAndRemoveDisplay()
       else if (e.code === 'Digit6') incrementMatch(true)
@@ -130,7 +131,8 @@ let teleopSound;
 			else if (e.code === 'KeyS') blueTeam.updateScore(Team.PointType.ROTATION_CONTROL, false, false)
 			else if (e.code === 'KeyD') blueTeam.updateScore(Team.PointType.POSITION_CONTROL, false, false)
 			else if (e.code === 'Semicolon') redTeam.updateScore(Team.PointType.ROTATION_CONTROL, false, false)
-			else if (e.code === 'KeyL') redTeam.updateScore(Team.PointType.POSITION_CONTROL, false, false)
+      else if (e.code === 'KeyL') redTeam.updateScore(Team.PointType.POSITION_CONTROL, false, false)
+      
 
 		 
 		 updateScore()
@@ -143,24 +145,33 @@ let teleopSound;
 function runTimer () {
   let secondsToDisplay = 0
   if (timer > 135) {
-    secondsToDisplay = timer - 135
-    document.getElementsByClassName('timer-bar')[0].style.backgroundColor = 'green'
-  } else if (timer > 30) {
-    secondsToDisplay = timer
-    document.getElementsByClassName('timer-bar')[0].style.backgroundColor = 'green'
+    secondsToDisplay = Math.ceil(timer - 135)
+    document.getElementById('timer').style.width = (15 - (timer - 135)) / 15 * 100 + '%'
+    document.getElementById('timer').style.backgroundColor = 'green'
+  } else {
+    if (timer > 30) {
+    secondsToDisplay = Math.ceil(timer)
+    document.getElementById('timer').style.backgroundColor = 'green'
   } else if (timer > 0) {
-    secondsToDisplay = timer
-    document.getElementsByClassName('timer-bar')[0].style.backgroundColor = 'yellow'
+    secondsToDisplay = Math.ceil(timer)
+    document.getElementById('timer').style.backgroundColor = 'yellow'
   } else {
     secondsToDisplay = 0
-    document.getElementsByClassName('timer-bar')[0].style.backgroundColor = 'red'
+    document.getElementById('timer').style.backgroundColor = 'red'
   }
-  if (timer === 150) autoSound.play()
-  else if (timer === 135) teleopSound.play()
-  else if (timer === 30) endgameSound.play()
-  document.getElementsByClassName('timer-bar')[0].style.width = (150 - timer) / 150 * 100 + '%'
-  document.getElementsByClassName('time')[0].textContent = secondsToDisplay
-  if (--timer < 0) {
+  // secondsToDisplay = Math.ceil(timer)
+  // document.getElementById('timer').style.backgroundColor = rgb(color, 255 - color, 0)
+  // color++
+  }
+  // if (timer === 150) autoSound.play()
+  // else if (timer === 135) teleopSound.play()
+  // else if (timer === 30) endgameSound.play()
+  // document.getElementsByClassName('timer-bar')[0].style.width = (150 - timer) / 150 * 100 + '%'
+  // document.getElementsByClassName('time')[0].textContent = secondsToDisplay
+  if (!postMatch && timer < 135) document.getElementById('timer').style.width = (135 - timer) / 135 * 100 + '%'
+  document.getElementById('time').innerHTML = secondsToDisplay
+  timer = timer - 0.005
+  if (timer <= 0) {
     inMatch = false
     postMatch = true
     endSound.play()
@@ -170,7 +181,7 @@ function runTimer () {
 
 function updateScore () {
 	document.getElementById('blue_team').innerHTML = blueTeam.getScore()
-	document.getElementById('red_team').innerHTML = redTeam.getScore()
+  document.getElementById('red_team').innerHTML = redTeam.getScore()
 }
 
 function updateDisplay () {
@@ -465,7 +476,7 @@ function startMatch () {
   inMatch = true
   preMatch = false
   postMatch = false
-  timerContainer = setInterval(runTimer, 1000)
+  timerContainer = setInterval(runTimer, 5)
 }
 
 function fieldFault () {
@@ -553,8 +564,14 @@ function updateRocketHatch (id, left, del) {
 }
 
 function incrementMatch (backward) {
-	document.getElementById('match-number-container').innerHTML = 'Match Number: ' + totalMatchNumber++
-	if (backward) document.getElementById('match-number-container').innerHTML = 'Match Number: ' + totalMatchNumber--
+  if (backward) {
+    document.getElementById('match-number-container').innerHTML = 'Match Number: ' + (totalMatchNumber - 1)
+    totalMatchNumber--
+  }
+  else if (!backward) {
+    document.getElementById('match-number-container').innerHTML = 'Match Number: ' + (totalMatchNumber + 1)
+    totalMatchNumber++
+  }
 
 //   const workbook = new excel.Workbook()
 //   workbook.xlsx.readFile('EventInfo.xlsx').then(function () {
