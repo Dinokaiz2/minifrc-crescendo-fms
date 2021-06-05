@@ -1,69 +1,61 @@
-const electron = require('electron')
-const url = require('url')
-const path = require('path')
+const { app, BrowserWindow, Menu } = require("electron");
+const path = require('path');
 
-const { app, BrowserWindow, Menu } = electron
-
-let mainWindow
-
-app.on('ready', function () {
-  mainWindow = new BrowserWindow({ backgroundColor: '#FFF', webPreferences: { nodeIntegration: true } })
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'mainWindow.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
-  mainWindow.on('closed', function () {
-    app.quit()
-  })
-  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate)
-  Menu.setApplicationMenu(mainMenu)
-})
-
-const mainMenuTemplate = [
-  {
-    label: 'File',
-    submenu: [
-      {
-        label: 'Fullscreen',
-        accelerator: 'F11',
-        click () {
-          if (mainWindow.isFullScreen()) {
-            mainWindow.setFullScreen(false)
-            mainWindow.setMenuBarVisibility(true)
-          } else {
-            mainWindow.setFullScreen(true)
-            mainWindow.setMenuBarVisibility(false)
-          }
+function createWindow() {
+    const mainWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        title: "MiniFRC Infinite Recharge FMS",
+        webPreferences: {
+            preload: path.join(__dirname, "preload.js")
         }
-      },
-      {
-        label: 'Quit',
-        // accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
-        click () {
-          app.quit()
-        }
-      }
+    });
+    mainWindow.loadFile("index.html");
 
-    ]
-  }
-]
-
-if (process.platform === 'darwin') {
-  mainMenuTemplate.unshift({})
+    const menu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(menu);
 }
 
-if (process.eventNames.NODE_ENV !== 'production') {
-  mainMenuTemplate.push({
-    label: 'Developer Tools',
-    submenu: [
-      {
-        label: 'Toggle DevTools',
-        // accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
-        click (item, focusedWindow) {
-          focusedWindow.toggleDevTools()
-        }
-      }
-    ]
-  })
-}
+app.whenReady().then(createWindow);
+
+app.on("window-all-closed", app.quit);
+
+const menuTemplate = [
+    {
+        label: "Menu",
+        submenu: [
+            {
+                label: "Fullscreen",
+                accelerator: "F11",
+                click(item, focusedWindow) {
+                    if (focusedWindow.isFullScreen()) {
+                        focusedWindow.setFullScreen(false)
+                        focusedWindow.setMenuBarVisibility(true)
+                    } else {
+                        focusedWindow.setFullScreen(true)
+                        focusedWindow.setMenuBarVisibility(false)
+                    }
+                }
+            },
+            {
+                label: "Toggle DevTools",
+                accelerator: "Ctrl+Shift+I",
+                click(item, focusedWindow) {
+                    focusedWindow.toggleDevTools()
+                }
+            },
+            {
+                label: "Reload",
+                role: "reload",
+                accelerator: "Ctrl+R",
+
+            },
+            {
+                label: "Quit",
+                click() {
+                    app.quit()
+                }
+            }
+        ]
+    }
+];

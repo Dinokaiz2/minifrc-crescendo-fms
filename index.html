@@ -1,70 +1,17 @@
 <!DOCTYPE html>
 <html>
-<script src="./Team.js"></script>
-<script src="./renderer.js"></script>
-<style>
 
-#match-number-container {
-    border: 1px outset black;
-    text-align: center;
-    font-size: 10em;
-    height: 30vh;
-}
+<head>
+    <title>MiniFRC Infinite Recharge FMS</title>
+    <!-- TODO: Content Security Policy -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <script type="text/javascript" src="node_modules\jquery\dist\jquery.js"></script>
+</head>
 
-#container {
-  width: 100%;
-  height: 70vh;
-  color: white;
-  text-align: center;
-  font-size: 30em;
-}
-
-#timer {
-  width: 100%;
-  height: 5vh;
-  background: green;
-  text-align: 500;
-  font-size: 5vh;
-}
-
-#time {
-  width: 100%;
-  height: 0vh;
-  text-align: center;
-  font-size: 5vh;
-  position: relative;
-  bottom: 50px;
-}
-
-#red_team {
-  width: 50%;
-  height: 100%;
-  background: red;
-  float: left;
-}
-
-#blue_team {
-  margin-left: 50%;
-  height: 100%;
-  background: blue;
-}
-</style>
 <body>
-
-<section id="timer">
-</section>
-<section id="time">
-  0
-</section>
-<section id="match-number-container">
-    Match Number: 0
-</section>
-<section id="container">
-    <div id="red_team">0</div>
-    <div id="blue_team">0</div>
-</section>
-
-</div>
-
+    <div class="timer-bar"></div>
+    <script src="./renderer.js" type="module"></script>
 </body>
 </html>

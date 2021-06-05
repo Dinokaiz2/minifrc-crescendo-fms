@@ -1,94 +1,63 @@
-class Team {
-  constructor (color) {
-    this.color = color
-    this.totalScore = 0
-    this.highGoalScore = 0
-    this.lowGoalScore = 0
-    this.ballNum = 0
-    this.climb = 0
-    this.endgame = 0
-    this.rankingPoint = 0
-  }
+import * as teamRepository from "./team-repository.js"
+import * as matchRepository from "./match-repository.js"
 
-  /* eslint-disable */
-  static PointType = {
-    INITIATION_LINE: 'INITIATION_LINE',
-    HIGH_GOAL: 'HIGH_GOAL',
-    LOW_GOAL: 'LOW_GOAL',
-    ROTATION_CONTROL: 'ROTATION_CONTROL',
-    POSITION_CONTROL: 'POSITION_CONTROL',
-    CLIMB: 'CLIMB',
-    PARK: 'PARK',
-    BALANCE: 'BALANCE'
-  }
+/**
+ * Holds team data. Uses `number` as a unique identifier.
+ * Roughly keeps track of the same fields as The Blue Alliance's Rankings page.
+ */
+export class Team {
 
-  static PointValues = {
-    'INITIATION_LINE': 5,
-    'HIGH_GOAL': 2,
-    'LOW_GOAL': 1,
-    'ROTATION_CONTROL': 10,
-    'POSITION_CONTROL': 20,
-    'CLIMB': 15,
-    'PARK': 5,
-    'BALANCE': 15
-  }
-  /* eslint-disable */
+    #number;
 
-  static Foul = {
-    'REGULAR': 3,
-    'TECH': 6
-  }
-
-  updateScore(pointType, isAuto, del) {
-    const num = (del) ? -1 : 1
-    const auto = (isAuto) ? 2 : 1
-
-    switch (pointType) {
-      case Team.PointType.HIGH_GOAL:
-        this.highGoalScore += (Team.PointValues[pointType] * num * auto)
-        this.totalScore += (Team.PointValues[pointType] * num * auto)
-        this.ballNum += num
-        break
-      case Team.PointType.LOW_GOAL:
-        this.lowGoalScore += (Team.PointValues[pointType] * num * auto)
-        this.totalScore += (Team.PointValues[pointType] * num * auto)
-        this.ballNum += num
-        break
-      case Team.PointType.ROTATION_CONTROL:
-        this.totalScore += (Team.PointValues[pointType] * num)
-        break
-      case Team.PointType.POSITION_CONTROL:
-        this.totalScore += (Team.PointValues[pointType] * num)
-        this.rankingPoint += num
-        break
-      case Team.PointType.PARK:
-        this.totalScore += (Team.PointValues[pointType] * num)
-        this.endgame += (Team.PointValues[pointType] * num)
-        break
-      case Team.PointType.CLIMB:
-        this.totalScore += (Team.PointValues[pointType] * num)
-        this.endgame += (Team.PointValues[pointType] * num)
-        break
-      case Team.PointType.BALANCE:
-        this.totalScore += (Team.PointValues[pointType] * num)
-        this.endgame += (Team.PointValues[pointType] * num)
-        break
-      case Team.PointType.INITIATION_LINE:
-        if (isAuto) this.totalScore += (Team.PointValues[pointType] * num)
-        break
+    constructor(number) {
+        this.#number = number;
     }
 
-    // No negatives
-    if (this.totalScore < 0) this.totalScore = 0
-    if (this.highGoalScore < 0) this.highGoalScore = 0
-    if (this.lowGoalScore < 0) this.lowGoalScore = 0
-    if (this.rankingPoint < 0) this.rankingPoint = 0
-    if (this.endgame < 0) this.endgame = 0
+    get number() {
+        return this.#number;
+    }
 
+    get name() {
+        return teamRepository.getName(number);
+    }
 
-  }
+    get rankingScore() {
+        // Calculate:
+        // Get all matches from matchRepository.getAllMatchNames
+        // Keep only qualification matches with determined outcomes
+        // Keep only matches with this team where this team isn't a surrogate
+        // Add up ranking points, with 0s for DQs
+    }
 
-  getScore() {
-    return this.totalScore
-  }
+    get rankingPoints() {
+        // Calculate from matches
+    }
+
+    get foulPoints() {
+        // Calculate from matches
+    }
+
+    get autoPoints() {
+        // Calculate from matches
+    }
+
+    get endgamePoints() {
+        // Calculate from matches
+    }
+
+    get teleopPowerCellPoints() {
+        // Calculate from matches
+    }
+
+    get controlPanelPoints() {
+        // Calculate from matches
+    }
+
+    get disqualifications() {
+        // Calculate from matches
+    }
+
+    get matchesPlayed() {
+        // Calculate from matches
+    }
 }
