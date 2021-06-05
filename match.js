@@ -7,7 +7,7 @@ import * as repository from "./match-repository.js"
  */
 export class Match {
 
-    #match;
+    #number;
     #set;
     #type;
     #red;
@@ -21,7 +21,7 @@ export class Match {
      *                     (e.g. 3 for Quarterfinal 3 Match 2), 0 for qualifications
      */
     constructor(match, type = Match.Type.QUALIFICATION, set = 0) {
-        this.#match = match;
+        this.#number = match;
         this.#type = type;
         this.#set = type == Match.Type.QUALIFICATION ? 0 : set;
         this.#red = new this.#Alliance(redTeams, Match.AllianceColor.RED, this);
@@ -91,8 +91,8 @@ export class Match {
      * Match 2)
      * @type {number}
      */
-    get match() {
-        return this.#match;
+    get number() {
+        return this.#number;
     }
 
     /**
@@ -124,9 +124,9 @@ export class Match {
      */
     get friendlyName() {
         if (this.type == Match.Type.QUALIFICATION || this.type == Match.Type.FINAL) {
-            return this.type + " " + this.match;
+            return this.type + " " + this.number;
         } else {
-            return this.type + " " + this.set + " Match " + this.match;
+            return this.type + " " + this.set + " Match " + this.number;
         }
     }
 
@@ -239,7 +239,7 @@ export class Match {
 
         /**
          * @param {number[]} teams 
-         * @param {Match.Color} color 
+         * @param {Match.AllianceColor} color 
          * @param {Match} match instance of Match enclossing this Alliance
          */
         constructor(teams, color, match) {
@@ -256,7 +256,7 @@ export class Match {
         }
 
         /**
-         * @type {Match.Color}
+         * @type {Match.AllianceColor}
          */
         get color() {
             return this.#color;

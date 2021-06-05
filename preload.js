@@ -16,5 +16,5 @@ contextBridge.exposeInMainWorld(
 );
 
 window.onload = () => {
-    contextBridge.exposeInMainWorld( "jquery", { $: require("jquery") });
+    contextBridge.exposeInMainWorld("jquery", { $: require("jquery") });
 };
