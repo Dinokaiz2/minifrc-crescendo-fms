@@ -104,26 +104,26 @@ export function setMatchPoints(points, number, set, type, color) {
 }
 
 /**
- * Gets the number of initiation line points scored by the specified alliance in the match.
+ * Gets the number of initiation line crossings by the specified alliance in the match.
  * @param {number} number the match number
  * @param {number} set the set the match is apart of
  * @param {Match.Type} type the match type
  * @param {Match.AllianceColor} color the alliance to get the value for
- * @param {number} the number of initiation line points for this match
+ * @param {number} the number of initiation line crossings for this match
  */
 export function getInitiationLine(number, set, type, color) {
     
 }
 
 /**
- * Sets the number of initiation line points scored by the specified alliance in the match.
- * @param {number} points the number of initiation line points to set
+ * Sets the number of initiation line crossings by the specified alliance in the match.
+ * @param {number} crossings the number of initiation line crossings to set
  * @param {number} number the match number
  * @param {number} set the set the match is apart of
  * @param {Match.Type} type the match type
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
-export function setInitiationLine(points, number, set, type, color) {
+export function setInitiationLine(crossings, number, set, type, color) {
     
 }
 
@@ -139,7 +139,7 @@ export function getAutoUpperPort(number, set, type, color) {
 
 }
 
-export function setAutoUpperPort(points, number, set, type, color) {
+export function setAutoUpperPort(cells, number, set, type, color) {
     
 }
 
@@ -147,7 +147,7 @@ export function getTeleopBottomPort(number, set, type, color) {
 
 }
 
-export function setTeleopBottomPort(points, number, set, type, color) {
+export function setTeleopBottomPort(cells, number, set, type, color) {
     
 }
 
@@ -155,83 +155,146 @@ export function getTeleopUpperPort(number, set, type, color) {
 
 }
 
-export function setTeleopUpperPort(points, number, set, type, color) {
+export function setTeleopUpperPort(cells, number, set, type, color) {
     
 }
 
-export function getControlPanel(number, set, type, color) {
+export function getParks(number, set, type, color) {
 
 }
 
-export function setControlPanel(points, number, set, type, color) {
+export function setParks(parks, number, set, type, color) {
     
 }
 
-export function getEndgame(number, set, type, color) {
+export function getHangs(number, set, type, color) {
 
 }
 
-export function setEndgame(points, number, set, type, color) {
+export function setHangs(hangs, number, set, type, color) {
     
 }
 
 /**
- * Gets the number of regular foul points awarded to the specified alliance as a result
+ * Checks if the alliance's rung was level.
+ * @param {number} number the match number
+ * @param {number} set the set the match is apart of
+ * @param {Match.Type} type the match type
+ * @param {Match.AllianceColor} color the alliance to get the value for
+ * @return {boolean} `true` if the rung was level
+ */
+export function getLevel(number, set, type, color) {
+
+}
+
+/**
+ * Sets if the alliance's rung was level.
+ * @param {boolean} level whether the rung was level
+ * @param {number} number the match number
+ * @param {number} set the set the match is apart of
+ * @param {Match.Type} type the match type
+ * @param {Match.AllianceColor} color the alliance to get the value for
+ */
+export function setLevel(level, number, set, type, color) {
+}
+
+/**
+ * Gets the highest Infinite Recharge phase the alliance has activated.
+ * @param {number} number the match number
+ * @param {number} set the set the match is apart of
+ * @param {Match.Type} type the match type
+ * @param {Match.AllianceColor} color the alliance to get the value for
+ * @return {Match.Phase} the highest phase the alliance has activated
+ */
+export function getPhase(number, set, type, color) {
+
+}
+
+/**
+ * Sets the highest Infinite Recharge phase the alliance has activated.
+ * @param {Match.Phase} phase the phase to set
+ * @param {number} number the match number
+ * @param {number} set the set the match is apart of
+ * @param {Match.Type} type the match type
+ * @param {Match.AllianceColor} color the alliance to get the value for
+ */
+export function setPhase(phase, number, set, type, color) {
+
+}
+
+/**
+ * Gets the number of power cells scored by the alliance in the current phase.
+ * @param {number} number the match number
+ * @param {number} set the set the match is apart of
+ * @param {Match.Type} type the match type
+ * @param {Match.AllianceColor} color the alliance to get the value for
+ * @return {number} the number of power cells scored by the alliance in the current phase
+ */
+export function getPowerCellsInPhase(number, set, type, color) {
+
+}
+
+/**
+ * Sets the number of power cells scored by the alliance in the current phase.
+ * @param {number} cells number of power cells to set
+ * @param {number} number the match number
+ * @param {number} set the set the match is apart of
+ * @param {Match.Type} type the match type
+ * @param {Match.AllianceColor} color the alliance to get the value for
+ */
+ export function setPowerCellsInPhase(cells, number, set, type, color) {
+
+}
+
+/**
+ * Gets the number of regular fouls awarded to the specified alliance as a result
  * of fouls committed by the opponent alliance in the match.
  * @param {number} number the match number
  * @param {number} set the set the match is apart of
  * @param {Match.Type} type the match type
  * @param {Match.AllianceColor} color the alliance to get the value for
- * @return {number} the number of regular foul points awarded in this match
+ * @return {number} the number of regular fouls awarded in this match
  */
 export function getRegularFouls(number, set, type, color) {
     
 }
 
 /**
- * Sets the number of regular foul points awarded to the specified alliance as a result
+ * Sets the number of regular fouls awarded to the specified alliance as a result
  * of fouls committed by the opponent alliance in the match.
- * @param {number} points the number of regular foul points to set
+ * @param {number} fouls the number of regular fouls to set
  * @param {number} number the match number
  * @param {number} set the set the match is apart of
  * @param {Match.Type} type the match type
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
-export function setRegularFouls(points, number, set, type, color) {
+export function setRegularFouls(fouls, number, set, type, color) {
     
 }
 
 /**
- * Gets the number of tech foul points awarded to the specified alliance as a result of
+ * Gets the number of tech fouls awarded to the specified alliance as a result of
  * fouls committed by the opponent alliance in the match.
  * @param {number} number the match number
  * @param {number} set the set the match is apart of
  * @param {Match.Type} type the match type
  * @param {Match.AllianceColor} color the alliance to get the value for
- * @return {number} the number of tech foul points awarded in this match
+ * @return {number} the number of tech fouls awarded in this match
  */
  export function getTechFouls(number, set, type, color) {
     
 }
 
 /**
- * Sets the number of tech foul points awarded to the specified alliance as a result of
+ * Sets the number of tech fouls awarded to the specified alliance as a result of
  * fouls committed by the opponent alliance in the match.
- * @param {number} points the number of tech foul points to set
+ * @param {number} fouls the number of tech fouls to set
  * @param {number} number the match number
  * @param {number} set the set the match is apart of
  * @param {Match.Type} type the match type
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
-export function setTechFouls(points, number, set, type, color) {
-    
-}
-
-export function getEndgame(number, set, type, color) {
-
-}
-
-export function setEndgame(points, number, set, type, color) {
+export function setTechFouls(fouls, number, set, type, color) {
     
 }
 

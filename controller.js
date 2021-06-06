@@ -14,6 +14,11 @@ const ENDGAME_START = 120;
 const TELEOP_GRACE_PERIOD_START = 150;
 const MATCH_END = 155;
 
+const AUTO_LENGTH = 15;
+const TELEOP_LENGTH = 135;
+
+// TODO: add a postMatch variable, true if we finished a match but haven't announced it?
+
 export class Competition {
     static #inMatch = false;
     static #fieldPhase = Competition.FieldPhase.NO_ENTRY;
@@ -72,7 +77,8 @@ export class Competition {
         // TODO: Play endgame start sound
     }
 
-    static startTeleopGracePeriod() {
+    static #startTeleopGracePeriod() {
+        Competition.#inMatch = false;
         Competition.#fieldPhase = Competition.FieldPhase.TELEOP_GRACE_PERIOD;
     }
 
@@ -84,12 +90,13 @@ export class Competition {
 
     static startMatch() {
         Competition.#inMatch = true;
+        Competition.#fieldPhase = Competition.FieldPhase.AUTO;
         Competition.#matchStartDate = new Date();
 
         Competition.#startAutoGracePeriodHandle = setTimeout(Competition.#startAutoGracePeriod, AUTO_GRACE_PERIOD_START * 1000);
         Competition.#startTeleopHandle = setTimeout(Competition.#startTeleop, TELEOP_START * 1000);
         Competition.#startEndgameHandle = setTimeout(Competition.#startEndgame, ENDGAME_START * 1000);
-        Competition.#startTeleopGracePeriodHandle = setTimeout(Competition.startTeleopGracePeriod, TELEOP_GRACE_PERIOD_START);
+        Competition.#startTeleopGracePeriodHandle = setTimeout(Competition.#startTeleopGracePeriod, TELEOP_GRACE_PERIOD_START * 1000);
         Competition.#endMatchHandle = setTimeout(Competition.#endMatch, MATCH_END * 1000);
         // TODO: Play match start sound
     }
@@ -107,11 +114,16 @@ export class Competition {
     /**
      * Friendly display for the match time. Counts down from 15 during autonomous
      * and then back down from 135 once teleop starts. -1 if not in a match.
-     * @type {number}
+     * @type {string}
      */
     static get friendlyMatchTime() {
-        if (!Competition.#inMatch) return -1;
-        return new Date().getSeconds() - Competition.#matchStartDate.getSeconds();
+        if (Competition.inMatch && Competition.inAuto) {
+            let time = AUTO_LENGTH - ((new Date().getTime() - Competition.#matchStartDate.getTime()) / 1000);
+            return Math.max(0, Math.ceil(time));
+        } else if (Competition.inMatch && Competition.inTeleop) {
+            let time = TELEOP_LENGTH - (((new Date().getTime() - Competition.#matchStartDate.getTime()) / 1000) - AUTO_LENGTH);
+            return time < 9.95 ? Math.abs(time).toFixed(1) : Math.ceil(time);
+        }
     }
 
     /**
@@ -120,7 +132,7 @@ export class Competition {
      */
     static get matchMillisElapsed() {
         if (!Competition.#inMatch) return -1;
-        return new Date().getMilliseconds() - Competition.#matchStartDate.getMilliseconds();
+        return new Date().getTime() - Competition.#matchStartDate.getTime();
     }
 
     static get inMatch() {
@@ -128,23 +140,24 @@ export class Competition {
     }
 
     static get inAuto() {
-        return Competition.#fieldPhase == Competition.FieldPhase.AUTO;
+        return Competition.fieldPhase == Competition.FieldPhase.AUTO;
     }
 
     static get inTeleop() {
-        return Competition.#fieldPhase == Competition.FieldPhase.AUTO_GRACE_PERIOD
-            || Competition.#fieldPhase == Competition.FieldPhase.TELEOP;
+        return Competition.fieldPhase == Competition.FieldPhase.AUTO_GRACE_PERIOD
+            || Competition.fieldPhase == Competition.FieldPhase.TELEOP
+            || Competition.fieldPhase == Competition.FieldPhase.ENDGAME;
     }
 
     static get inEndgame() {
-        return Competition.#fieldPhase == Competition.FieldPhase.ENDGAME;
+        return Competition.fieldPhase == Competition.FieldPhase.ENDGAME;
     }
 
     /**
      * @type {Competition.FieldPhase}
      */
     static get fieldPhase() {
-        return fieldPhase
+        return Competition.#fieldPhase
     }
 }
 

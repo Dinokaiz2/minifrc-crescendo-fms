@@ -3,7 +3,30 @@
     --info-bar-height: 40px;
 }
 
-.timer-bg {
+@font-face {
+    font-family: "Roboto";
+    src: url("./fonts/roboto/Roboto-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Roboto Slab";
+    src: url("./fonts/roboto-slab/RobotoSlab-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Roboto Mono";
+    src: url("./fonts/roboto-mono/RobotoMono-VariableFont_wght.ttf") format("truetype");
+}
+
+body {
+    width: 1920px;
+    height: 1080px;
+    transform-origin: 0 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+#timer-container {
     box-sizing: content-box;
     width: 100%;
     height: var(--timer-height);
@@ -12,7 +35,7 @@
     border-bottom: solid rgb(88, 88, 88) 5px;
 }
 
-.timer-bar {
+#timer-bar {
     position: fixed;
     top: 0;
     left: 0;
@@ -21,7 +44,7 @@
     background-color: green;
 }
 
-.time {
+#timer-time {
     position: fixed;
     top: 0;
     left: 0;
@@ -33,9 +56,61 @@
     background: rgba(210, 210, 210, 0.8);
     line-height: var(--timer-height);
     text-align: center;
-    padding-top: 3px;
+    padding-top: 1px;
     font-size: 40px;
-    font-family: 'Electrolize';
+    font-family: "Roboto";
+    font-weight: bold;
+}
+
+#overlay-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-sizing: content-box;
+    width: 100%;
+    height: 300px;
+    margin: 0px;
+    background-color: white;
+    border-top: solid rgb(88, 88, 88) 5px;
+}
+
+#overlay-info-bg {
+    width: 100%;
+    height: 50px;
+    border-bottom: solid rgb(88, 88, 88) 5px;
+}
+
+#overlay-score-box {
+    position: fixed;
+    bottom: 5px;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    width: 400px;
+    height: 150px;
+    border: 5px solid rgb(88, 88, 88);
+}
+
+#result-bg {
+    background-color: rgb(53, 53, 53);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    opacity: 0;
+    transition: opacity 2s;
+    pointer-events: none;
+}
+
+#result-bg.fade-in {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .info-bar {
@@ -511,29 +586,6 @@ img {
     background-color: rgb(0, 119, 255);
 }
 
-.display-bg {
-    background-color: rgb(53, 53, 53);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 2s;
-}
-
-.display-bg.fade {
-    opacity: 0;
-}
-
-.display-bg.unfade {
-    opacity: 1;
-}
-
 .display-panel {
     background-color: rgb(201, 201, 201);
     border: 10px solid white;
@@ -839,12 +891,4 @@ img {
 .display-stat-number-blue {
     right: 370px;
     text-align: right;
-}
-
-body {
-    width: 1920px;
-    height: 1080px;
-    transform-origin: 0 0;
-    overflow-x: hidden;
-    overflow-y: hidden;
 }
