@@ -1,0 +1,30 @@
+{
+  "Matches": [
+    {
+      "Number": "1",
+      "Set": "0",
+      "Type": "Qual",
+      "Color": "Blue",
+      "id": 1623122168978
+    },
+    {
+      "Number": 2,
+      "Set": 0,
+      "Type": "Qualification",
+      "RedTeams": [
+        0,
+        1,
+        2
+      ],
+      "BlueTeams": [
+        3,
+        4,
+        5
+      ],
+      "RedAllianceName": "red team",
+      "BlueAllianceName": "blue team",
+      "id": 1623189045872,
+      "MatchPointsRed": 16
+    }
+  ]
+}

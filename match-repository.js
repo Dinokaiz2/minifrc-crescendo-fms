@@ -8,6 +8,16 @@
 
 import { Match } from "./match.js"
 
+const db = window.db.db
+const location = window.db.createLocation();
+
+window.onload = () => {
+    generateMatch(2, 0, Match.Type.QUALIFICATION, [0, 1, 2], [3, 4, 5], "red team", "blue team");
+    setMatchPoints(16, 2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED);
+    console.log("get match", getMatchPoints(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+};
+
+
 /**
  * Builds and returns an array of all matches.
  * @return {Match[]}
@@ -48,7 +58,7 @@ export function setResult(result, number, set, type) {
  * @return {boolean} whether the team was disqualified from this match
  */
 export function isDisqualified(teamNumber, matchNumber, type, set) {
-    
+
 }
 
 /**
@@ -60,7 +70,7 @@ export function isDisqualified(teamNumber, matchNumber, type, set) {
  * @param {Match.Type} type the match type
  */
 export function isSurrogate(teamNumber, matchNumber, type, set) {
-    
+
 }
 
 /**
@@ -76,7 +86,36 @@ export function isSurrogate(teamNumber, matchNumber, type, set) {
  */
 export function generateMatch(number, set, type, redTeams, blueTeams,
     redAllianceName = "", blueAllianceName = "") {
-    
+    console.log("Generate Match ")
+    let obj = new Object();
+
+    db.getRows('Matches', location,
+        {
+            Number: number,
+            Set: set,
+            Type: type
+        }, (succ, result) => {
+            if (result.length != 0) return;
+            // succ - boolean, tells if the call is successful
+            console.log("Success: " + succ);
+            console.log(result);
+            obj.Number = number;
+            obj.Set = set;
+            obj.Type = type;
+            obj.RedTeams = redTeams;
+            obj.BlueTeams = blueTeams;
+            obj.RedAllianceName = redAllianceName;
+            obj.BlueAllianceName = blueAllianceName;
+
+
+            if (db.valid('Matches', location)) {
+                db.insertTableContent('Matches', location, obj, (succ, msg) => {
+                    // succ - boolean, tells if the call is successful
+                    console.log("Success: " + succ);
+                    console.log("Message: " + msg);
+                })
+            }
+        })
 }
 
 /**
@@ -88,8 +127,28 @@ export function generateMatch(number, set, type, redTeams, blueTeams,
  * @return {number} the number of match points for this match
  */
 export function getMatchPoints(number, set, type, color) {
-    
+
+    let points = 0;
+
+    db.getRows('Matches', location,
+        {
+            Number: number,
+            Set: set,
+            Type: type
+        }, (succ, result) => {
+            // succ - boolean, tells if the call is successful
+            console.log("Success: " + succ);
+            console.log(result);
+
+            if (color == Match.AllianceColor.BLUE)
+                points = result[0].MatchPointsBlue;
+            else if (color == Match.AllianceColor.RED)
+                points = result[0].MatchPointsRed;
+        })
+    return points;
+
 }
+
 
 /**
  * Sets the number of match points scored by the specified alliance in the match.
@@ -100,7 +159,24 @@ export function getMatchPoints(number, set, type, color) {
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
 export function setMatchPoints(points, number, set, type, color) {
-    
+    let where = {
+        Number: number,
+        Set: set,
+        Type: type
+    };
+
+    let change;
+
+    if (color == Match.AllianceColor.BLUE)
+        change = { MatchPointsBlue: points }
+    else if (color == Match.AllianceColor.RED)
+        change = { MatchPointsRed: points }
+
+    db.updateRow('Matches', location, where, change, (succ, msg) => {
+        // succ - boolean, tells if the call is successful
+        console.log("Success: " + succ);
+        console.log("Message: " + msg);
+    });
 }
 
 /**
@@ -112,7 +188,7 @@ export function setMatchPoints(points, number, set, type, color) {
  * @param {number} the number of initiation line crossings for this match
  */
 export function getInitiationLine(number, set, type, color) {
-    
+
 }
 
 /**
@@ -124,7 +200,7 @@ export function getInitiationLine(number, set, type, color) {
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
 export function setInitiationLine(crossings, number, set, type, color) {
-    
+
 }
 
 export function getAutoBottomPort(number, set, type, color) {
@@ -132,7 +208,7 @@ export function getAutoBottomPort(number, set, type, color) {
 }
 
 export function setAutoBottomPort(points, number, set, type, color) {
-    
+
 }
 
 export function getAutoUpperPort(number, set, type, color) {
@@ -140,7 +216,7 @@ export function getAutoUpperPort(number, set, type, color) {
 }
 
 export function setAutoUpperPort(cells, number, set, type, color) {
-    
+
 }
 
 export function getTeleopBottomPort(number, set, type, color) {
@@ -148,7 +224,7 @@ export function getTeleopBottomPort(number, set, type, color) {
 }
 
 export function setTeleopBottomPort(cells, number, set, type, color) {
-    
+
 }
 
 export function getTeleopUpperPort(number, set, type, color) {
@@ -156,7 +232,7 @@ export function getTeleopUpperPort(number, set, type, color) {
 }
 
 export function setTeleopUpperPort(cells, number, set, type, color) {
-    
+
 }
 
 export function getParks(number, set, type, color) {
@@ -164,7 +240,7 @@ export function getParks(number, set, type, color) {
 }
 
 export function setParks(parks, number, set, type, color) {
-    
+
 }
 
 export function getHangs(number, set, type, color) {
@@ -172,7 +248,7 @@ export function getHangs(number, set, type, color) {
 }
 
 export function setHangs(hangs, number, set, type, color) {
-    
+
 }
 
 /**
@@ -242,7 +318,7 @@ export function getPowerCellsInPhase(number, set, type, color) {
  * @param {Match.Type} type the match type
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
- export function setPowerCellsInPhase(cells, number, set, type, color) {
+export function setPowerCellsInPhase(cells, number, set, type, color) {
 
 }
 
@@ -256,7 +332,7 @@ export function getPowerCellsInPhase(number, set, type, color) {
  * @return {number} the number of regular fouls awarded in this match
  */
 export function getRegularFouls(number, set, type, color) {
-    
+
 }
 
 /**
@@ -269,7 +345,7 @@ export function getRegularFouls(number, set, type, color) {
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
 export function setRegularFouls(fouls, number, set, type, color) {
-    
+
 }
 
 /**
@@ -281,8 +357,8 @@ export function setRegularFouls(fouls, number, set, type, color) {
  * @param {Match.AllianceColor} color the alliance to get the value for
  * @return {number} the number of tech fouls awarded in this match
  */
- export function getTechFouls(number, set, type, color) {
-    
+export function getTechFouls(number, set, type, color) {
+
 }
 
 /**
@@ -295,7 +371,7 @@ export function setRegularFouls(fouls, number, set, type, color) {
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
 export function setTechFouls(fouls, number, set, type, color) {
-    
+
 }
 
 /**
@@ -322,7 +398,7 @@ export function getShieldGeneratorOperational(number, set, type, color) {
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
 export function setShieldGeneratorOperational(operational, number, set, type, color) {
-    
+
 }
 
 /**
@@ -334,7 +410,7 @@ export function setShieldGeneratorOperational(operational, number, set, type, co
  * @param {Match.AllianceColor} color the alliance to get the value for
  * @return {boolean} whether the ranking point was awarded
  */
- export function getShieldGeneratorEnergized(number, set, type, color) {
+export function getShieldGeneratorEnergized(number, set, type, color) {
 
 }
 
@@ -349,5 +425,5 @@ export function setShieldGeneratorOperational(operational, number, set, type, co
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
 export function setShieldGeneratorEnergized(energized, number, set, type, color) {
-    
+
 }
