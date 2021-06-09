@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld(
         database: (data) => new database(data),
         save: (match) => db.save('matches', match),
         findOne: (match) => db.findOne('matches', match),
+        findAll: () => db.find('matches'),
         update: (id, change) => db.update('matches', id, change)
 
     }
