@@ -1,0 +1,99 @@
+{
+    "matches": [
+        {
+            "Number": 2,
+            "Set": 0,
+            "Type": "Qualification",
+            "RedTeams": [
+                0,
+                1,
+                2
+            ],
+            "BlueTeams": [
+                3,
+                4,
+                5
+            ],
+            "RedAllianceName": "red team",
+            "BlueAllianceName": "blue team",
+            "id": "35c646ff-b487-4a5d-fae1-b9535e257bcc",
+            "MatchPointsRed": 33
+        },
+        {
+            "Number": 3,
+            "Set": 0,
+            "Type": "Qualification",
+            "RedTeams": [
+                4,
+                1,
+                2
+            ],
+            "BlueTeams": [
+                6,
+                4,
+                5
+            ],
+            "RedAllianceName": "red team",
+            "BlueAllianceName": "blue team",
+            "id": "f18c08aa-611f-4413-edfe-4a1a98959a37",
+            "MatchPointsBlue": 12
+        },
+        {
+            "Number": 6,
+            "Set": 0,
+            "Type": "Qualification",
+            "RedTeams": [
+                0,
+                1,
+                2
+            ],
+            "BlueTeams": [
+                3,
+                4,
+                5
+            ],
+            "RedAllianceName": "red team",
+            "BlueAllianceName": "blue team",
+            "id": "5016844e-1a5e-4aee-ca9c-72b9303337b7",
+            "MatchPointsRed": 166
+        },
+        {
+            "Number": 2,
+            "Set": 1,
+            "Type": "Semifinal",
+            "RedTeams": [
+                0,
+                1,
+                2
+            ],
+            "BlueTeams": [
+                3,
+                4,
+                5
+            ],
+            "RedAllianceName": "red team",
+            "BlueAllianceName": "blue team",
+            "id": "9c7a2b5f-9f86-4be5-8677-2bb9b4bfc620",
+            "MatchPointsBlue": 143
+        },
+        {
+            "Number": 1,
+            "Set": 1,
+            "Type": "Final",
+            "RedTeams": [
+                0,
+                1,
+                2
+            ],
+            "BlueTeams": [
+                3,
+                4,
+                5
+            ],
+            "RedAllianceName": "red team",
+            "BlueAllianceName": "blue team",
+            "id": "a331e4d2-b490-4a51-8ece-38308ae47c63",
+            "MatchPointsRed": 67
+        }
+    ]
+}

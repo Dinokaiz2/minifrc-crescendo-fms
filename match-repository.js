@@ -8,13 +8,14 @@
 
 import { Match } from "./match.js"
 
-const db = window.db.db
-const location = window.db.createLocation();
+// const location = window.db.createLocation();
+// var db = window.db.database(location);
 
 window.onload = () => {
-    generateMatch(2, 0, Match.Type.QUALIFICATION, [0, 1, 2], [3, 4, 5], "red team", "blue team");
-    setMatchPoints(16, 2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED);
-    console.log("get match", getMatchPoints(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // generateMatch(2, 0, Match.Type.QUALIFICATION, [0, 1, 2], [3, 4, 5], "red team", "blue team");
+    // setMatchPoints(33, 2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED);
+    // console.log("get match 1", getMatchPoints(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    
 };
 
 
@@ -87,35 +88,19 @@ export function isSurrogate(teamNumber, matchNumber, type, set) {
 export function generateMatch(number, set, type, redTeams, blueTeams,
     redAllianceName = "", blueAllianceName = "") {
     console.log("Generate Match ")
-    let obj = new Object();
 
-    db.getRows('Matches', location,
-        {
-            Number: number,
-            Set: set,
-            Type: type
-        }, (succ, result) => {
-            if (result.length != 0) return;
-            // succ - boolean, tells if the call is successful
-            console.log("Success: " + succ);
-            console.log(result);
-            obj.Number = number;
-            obj.Set = set;
-            obj.Type = type;
-            obj.RedTeams = redTeams;
-            obj.BlueTeams = blueTeams;
-            obj.RedAllianceName = redAllianceName;
-            obj.BlueAllianceName = blueAllianceName;
-
-
-            if (db.valid('Matches', location)) {
-                db.insertTableContent('Matches', location, obj, (succ, msg) => {
-                    // succ - boolean, tells if the call is successful
-                    console.log("Success: " + succ);
-                    console.log("Message: " + msg);
-                })
+    if (Object.keys(window.db.findOne({ Number: number, Set: set, Type: type })) == 0)
+        window.db.save(
+            {
+                Number: number,
+                Set: set,
+                Type: type,
+                RedTeams: redTeams,
+                BlueTeams: blueTeams,
+                RedAllianceName: redAllianceName,
+                BlueAllianceName: blueAllianceName
             }
-        })
+        );
 }
 
 /**
@@ -130,21 +115,10 @@ export function getMatchPoints(number, set, type, color) {
 
     let points = 0;
 
-    db.getRows('Matches', location,
-        {
-            Number: number,
-            Set: set,
-            Type: type
-        }, (succ, result) => {
-            // succ - boolean, tells if the call is successful
-            console.log("Success: " + succ);
-            console.log(result);
-
-            if (color == Match.AllianceColor.BLUE)
-                points = result[0].MatchPointsBlue;
-            else if (color == Match.AllianceColor.RED)
-                points = result[0].MatchPointsRed;
-        })
+    if (color == Match.AllianceColor.BLUE)
+        points = window.db.findOne({ Number: number, Set: set, Type: type }).MatchPointsBlue;
+    else if (color == Match.AllianceColor.RED)
+        points = window.db.findOne({ Number: number, Set: set, Type: type }).MatchPointsRed;
     return points;
 
 }
@@ -172,11 +146,7 @@ export function setMatchPoints(points, number, set, type, color) {
     else if (color == Match.AllianceColor.RED)
         change = { MatchPointsRed: points }
 
-    db.updateRow('Matches', location, where, change, (succ, msg) => {
-        // succ - boolean, tells if the call is successful
-        console.log("Success: " + succ);
-        console.log("Message: " + msg);
-    });
+    window.db.update(window.db.findOne(where).id, change);
 }
 
 /**
@@ -204,14 +174,6 @@ export function setInitiationLine(crossings, number, set, type, color) {
 }
 
 export function getAutoBottomPort(number, set, type, color) {
-
-}
-
-export function setAutoBottomPort(points, number, set, type, color) {
-
-}
-
-export function getAutoUpperPort(number, set, type, color) {
 
 }
 
