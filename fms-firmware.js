@@ -5,25 +5,27 @@
 // TODO: what happens while we're not connected to the electronics?
 
 import { Competition } from "./controller.js"
+import { Match } from "./match.js"
+
+let port = window.serialport;
 
 /**
  * Static class to read and hold the state being sent by the FMS firmware.
  */
 export class FmsFirmware {
 
-    #red;
-    #blue;
+    
 
     constructor() {
-        this.#red = new this.#Alliance();
-        this.#blue = new this.#Alliance();
+        this.#red = new this.Alliance(Match.AllianceColor.Red, this);
+        this.#blue = new this.Alliance(Match.AllianceColor.Blue, this);
     }
 
-    get red() {
+    static get red() {
         return this.#red;
     }
 
-    get blue() {
+    static get blue() {
         return this.#blue;
     }
 
@@ -33,55 +35,118 @@ export class FmsFirmware {
      * @param {Competition.FieldPhase} fieldPhase 
      */
     static update(fieldPhase) {
-        // check for incoming packets
-        // parse them out
-        // update Alliances with state
-        // send FieldPhase
+        if (port.isOpen()) {
+            port.write(fieldPhase.toString());
+            let byteArray = port.read()
+            if (byteArray != null) {
+                let str = new TextDecoder().decode(byteArray);
+                let regex = /#([1-6]),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-3]),([1-6]),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-3])\$/
+                let data = regex.exec(str)
+                if (data != null && data.length == 15) {
+                    this.#red.update(data.slice(1, 8));
+                    this.#blue.update(data.slice(8, 15));
+                }
+            }
+        } else {
+            port.open();
+        }
     }
     
+    static get connected() {
+        return port.isOpen()
+    }
 
     /**
      * Private class to hold data per alliance for Field.
      */
-    #Alliance = class Alliance {
+    static Alliance = class Alliance {
 
-        static getAutoUpperPort() {
+        #data;
 
+        #DataMap = {
+            STAGE: 0,
+            CAPACITY: 1,
+            UPPER_AUTO: 2,
+            BOTTOM_AUTO: 3,
+            UPPER_TELEOP: 4,
+            BOTTOM_TELEOP: 5,
+            POSITIONAL_CONTROL_COLOR: 6
+        };
+
+        #Stage = {
+            PHASE_1_CAPACITY: 1,
+            PHASE_2_CAPACITY: 2,
+            PHASE_2_ROTATIONAL_CONTROL: 3,
+            PHASE_3_CAPACITY: 4,
+            PHASE_3_POSITIONAL_CONTROL: 5,
+            PHASE_3_ACTIVATED: 6
+        };
+
+        #Color = {
+            NO_COLOR: 0,
+            RED: 1,
+            GREEN: 2,
+            BLUE: 3
+        };
+
+        constructor() {
+            this.#data = [0, 0, 0, 0, 0, 0, 0];
+        }
+
+        get autoUpperPort() {
+            return this.#data[this.#DataMap.UPPER_AUTO];
         }
         
-        static getAutoBottomPort() {
-            
+        get autoBottomPort() {
+            return this.#data[this.#DataMap.BOTTOM_AUTO];
         }
         
-        static getTeleopUpperPort() {
-        
+        get teleopUpperPort() {
+            return this.#data[this.#DataMap.UPPER_TELEOP];
         }
         
-        static getTeleopBottomPort() {
-        
+        get teleopBottomPort() {
+            return this.#data[this.#DataMap.BOTTOM_TELEOP]
         }
         
         /**
-         * Gets the current activated phase.
-         * @return {number}
+         * The current activated phase.
+         * @type {Match.Phase}
          */
-        static getActivatedPhase() {
-        
+        get activatedPhase() {
+            if (this.#data[this.#DataMap.STAGE] == this.#Stage.PHASE_1_CAPACITY) return Match.Phase.NONE;
+            if (this.#data[this.#DataMap.STAGE] == this.#Stage.PHASE_2_CAPACITY
+                || this.#data[this.#DataMap.STAGE] == this.#Stage.PHASE_2_ROTATIONAL_CONTROL) return Match.Phase.PHASE_1;
+            if (this.#data[this.#DataMap.STAGE] == this.#Stage.PHASE_3_CAPACITY
+                || this.#data[this.#DataMap.STAGE] == this.#Stage.PHASE_3_POSITIONAL_CONTROL) return Match.Phase.PHASE_2;
+            if (this.#data[this.#DataMap.STAGE] == this.#Stage.PHASE_3_ACTIVATED) return Match.Phase.PHASE_3;
         }
         
         /**
-         * Gets the number of power cells that have been scored during this phase.
-         * @return {number}
+         * The number of power cells that have been scored during this phase.
+         * @type {number}
          */
-        static getPowerCellsInPhase() {
-        
+        get powerCellsInPhase() {
+            return this.#data[this.#DataMap.CAPACITY]
         }
         
         /**
-         * Gets the color target for positional control, if available
+         * The color target for positional control.
+         * @type {Match.ControlPanel}
          */
-        static getControlPanelTarget() {
-        
+        get controlPanelTarget() {
+            if (this.#data[this.#DataMap.POSITIONAL_CONTROL_COLOR] == this.#Color.NO_COLOR) return Match.ControlPanel.NO_COLOR;
+            if (this.#data[this.#DataMap.POSITIONAL_CONTROL_COLOR] == this.#Color.RED) return Match.ControlPanel.RED;
+            if (this.#data[this.#DataMap.POSITIONAL_CONTROL_COLOR] == this.#Color.GREEN) return Match.ControlPanel.GREEN;
+            if (this.#data[this.#DataMap.POSITIONAL_CONTROL_COLOR] == this.#Color.BLUE) return Match.ControlPanel.BLUE;
+        }
+
+        update(data) {
+            this.#data = data;
+            this.#data.forEach((e, i, a) => a[i] = parseInt(a[i]));
         }
     }
+
+    static #red = new FmsFirmware.Alliance();
+    static #blue = new FmsFirmware.Alliance();
 }

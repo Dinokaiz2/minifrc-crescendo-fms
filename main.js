@@ -1,6 +1,8 @@
 const { app, BrowserWindow, Menu } = require("electron");
 const path = require('path');
 
+app.allowRendererProcessReuse = false; // Deprecated, but required by Node Serialport
+
 function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 800,

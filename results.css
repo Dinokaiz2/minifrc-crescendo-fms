@@ -1,0 +1,213 @@
+@font-face {
+    font-family: "Roboto";
+    src: url("./fonts/roboto/Roboto-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Roboto Slab";
+    src: url("./fonts/roboto-slab/RobotoSlab-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Roboto Mono";
+    src: url("./fonts/roboto-mono/RobotoMono-VariableFont_wght.ttf") format("truetype");
+}
+
+#results-view {
+    background-color: rgb(53, 53, 53);
+    position: absolute;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 2s;
+    pointer-events: none;
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    font-size: 30px;
+    color: white;
+
+    --border-color: black;
+    --avatar-height: 50px;
+}
+
+#results-view.fade-in {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+#results-view #frame {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-evenly;
+    align-items: stretch;
+    margin: 70px;
+    background-color: lightgrey;
+    border: 5px solid var(--border-color);
+    border-radius: 50px;
+    padding: 50px;
+}
+
+#results-view #frame #match-label {
+    margin: 0 0 20px 80px;
+    color: black;
+    font-size: 50px;
+}
+
+#results-view #frame #panels {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    justify-content: space-evenly;
+    align-items: flex-start;
+}
+
+#results-view #frame .alliance-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    border: 5px solid var(--border-color);
+    border-radius: 50px;
+    padding: 50px;
+}
+
+#results-view #frame .red.alliance-panel {
+    background-color: red;
+}
+
+#results-view #frame .blue.alliance-panel {
+    background-color: blue;
+}
+
+#results-view #frame .alliance-panel .overview {
+    height: 300px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.alliance-panel .overview .teams {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    font-size: 40px;
+}
+
+.alliance-panel .overview .labels {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.alliance-panel .overview .teams .team {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    padding: 5px 0;
+}
+
+.alliance-panel .overview .teams .team .avatar {
+    height: 50px; width: 50px;
+    margin-left: 10px;
+    background-color: limegreen;
+}
+
+.alliance-panel .overview .teams .team .number {
+    margin-left: 20px;
+    margin-right: 60px;
+    vertical-align: text-bottom;
+}
+
+.alliance-panel .overview .teams .team .rank {
+    align-self: flex-end;
+    margin-left: 20px;
+    vertical-align: text-bottom;
+}
+
+.alliance-panel .overview .score-panel {
+    display: flex;
+    flex-direction: column;
+    justify-self: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    width: 250px; height: 250px;
+    margin-left: 100px;
+    background-color: white;
+    border: 5px solid var(--border-color);
+    border-radius: 10px;
+    color: black;
+}
+
+.alliance-panel .overview .score-panel .high-score {
+    padding-top: 10px;
+    text-transform: uppercase;
+}
+
+.alliance-panel .overview .score-panel .score {
+    font-family: "Roboto";
+    font-size: 120px;
+}
+
+.alliance-panel .overview .score-panel .result {
+    padding-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.alliance-panel .details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.alliance-panel .details .rp-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: dimgrey;
+    border: 5px solid var(--border-color);
+    border-radius: 30px;
+}
+
+.alliance-panel .details .rp-panel .count {
+    justify-self: flex-start;
+}
+
+.alliance-panel .details .rp-panel .indicator {
+    margin: 5px 0;
+    width: 150px; height: 60px;
+    background-color: lightgrey;
+    border: 5px solid var(--border-color);
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+
+.alliance-panel .details .category-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex-grow: 1;
+    width: 200px;
+    margin-top: 20px;
+    margin-left: 20px;
+    background-color: dimgrey;
+    border: 5px solid var(--border-color);
+    border-radius: 30px;
+}
+
+.alliance-panel .details .category-panel .category {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.alliance-panel .details .category-panel .category .label {
+    align-self: flex-start;
+    text-transform: uppercase;
+}

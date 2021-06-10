@@ -4,14 +4,18 @@
   "description": "Field Management System for MiniFRC: Infinite Recharge",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "install": ".\\node_modules\\.bin\\electron-rebuild.cmd"
   },
   "license": "GPLv3",
   "dependencies": {
     "electron": "^12.0.1",
     "electron-db": "^0.15.7",
     "jquery": "^3.6.0",
+    "serialport": "^9.1.0",
     "somewhere": "^1.0.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "electron-rebuild": "^2.3.5"
+  }
 }

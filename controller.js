@@ -3,7 +3,7 @@
  */
 
 import { FmsFirmware } from "./fms-firmware.js"
-
+import * as matchRepository from "./match-repository.js"
 import { Match } from "./match.js";
 
 // Pre-match initialization: If qualifications, pull from schedule. For playoffs, generate the next match.
@@ -47,12 +47,17 @@ export class Competition {
         };
     }
 
+    static update() {
+        update();
+    }
+
     /**
      * Load the first match of the competition whose outcome is still undetermined.
      */
     static loadMatch() {
         // TODO: only allow in some field phases?
-        Competition.#match = Match.getNextMatch();
+        // Competition.#match = Match.getNextMatch();
+        
     }
     
     static nextMatch() {
@@ -166,13 +171,47 @@ export class Competition {
  * FMS electronics should happen.
  */
 function update() {
-    FmsFirmware.update();
+    FmsFirmware.update(Competition.fieldPhase);
+    matchRepository.setMatchPoints(100, 1, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED);
+    matchRepository.getMatchPoints(1, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED);
 }
 
 // Check FMS firmware stream 50 times per second, starting when this module is imported
 // TODO: make sure this doesn't get called more than once when imported multiple times?
-setInterval(update, 20);
+setInterval(update, 100);
 console.log("Started updating FMS firmware.");
+
+matchRepository.generateMatch(1, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(2, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(3, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(4, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(5, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(6, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(7, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(8, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(9, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(10, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(11, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(12, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(13, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(14, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(15, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(16, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(17, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(18, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(19, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(20, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(21, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(22, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(23, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(24, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(25, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(26, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(27, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(28, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(29, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(30, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+
 
 // Idea: separate window for control instead of cryptic hotkeys
 // Planned states:

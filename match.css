@@ -1,8 +1,3 @@
-:root {
-    --timer-height: 40px;
-    --info-bar-height: 40px;
-}
-
 @font-face {
     font-family: "Roboto";
     src: url("./fonts/roboto/Roboto-Regular.ttf") format("truetype");
@@ -19,24 +14,40 @@
 }
 
 body {
-    width: 1920px;
-    height: 1080px;
-    transform-origin: 0 0;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
     overflow-x: hidden;
     overflow-y: hidden;
+    margin: 0;
 }
 
-#timer-container {
+#match-view {
+    position: absolute;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    --timer-height: 40px;
+    --info-bar-height: 40px;
+    --border-color: black;
+}
+
+#timer {
+    display: flex;
+    top: 0;
+    left: 0;
+    right: 0;
     box-sizing: content-box;
     width: 100%;
     height: var(--timer-height);
     margin: 0px;
     background-color: white;
-    border-bottom: solid rgb(88, 88, 88) 5px;
+    border-bottom: solid var(--border-color) 5px;
 }
 
-#timer-bar {
-    position: fixed;
+#timer #bar {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -44,14 +55,14 @@ body {
     background-color: green;
 }
 
-#timer-time {
-    position: fixed;
+#timer #time {
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     margin: 0 auto;
     width: 100px;
-    height: var(--timer-height);
+    min-height: var(--timer-height);
     border-radius: 10px;
     background: rgba(210, 210, 210, 0.8);
     line-height: var(--timer-height);
@@ -62,55 +73,358 @@ body {
     font-weight: bold;
 }
 
-#overlay-container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    box-sizing: content-box;
+#stream {
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+#stream video {
+    position: absolute;
     width: 100%;
-    height: 300px;
+    height: 100%;
+    object-fit: cover;
+}
+
+#overlay {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    bottom: 0;
+    width: 100%;
+    height: 250px;
     margin: 0px;
     background-color: white;
-    border-top: solid rgb(88, 88, 88) 5px;
+    border-top: solid var(--border-color) 5px;
+    box-sizing: border-box;
+
+    --score-box-width: 500px;
 }
 
-#overlay-info-bg {
+#overlay #info {
     width: 100%;
     height: 50px;
-    border-bottom: solid rgb(88, 88, 88) 5px;
+    border-bottom: solid var(--border-color) 5px;
+    box-sizing: border-box;
 }
 
-#overlay-score-box {
-    position: fixed;
-    bottom: 5px;
+#overlay .indicator {
+    border: 5px solid var(--border-color);
+    box-sizing: border-box;
+    background-color: grey;
+    color: lightgrey;
+}
+
+#overlay .red .lit.indicator {
+    background-color: red;
+    color: white;
+}
+
+#overlay .blue .lit.indicator {
+    background-color: blue;
+    color: white;
+}
+
+#overlay #scoring-panel {
+    padding-bottom: 20px;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    background: linear-gradient(to top, lightgrey 95%, grey);
+    /* background-color: lightgrey; */
+    box-sizing: border-box;
+}
+
+#overlay #scoring-panel #match-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    width: 630px;
+}
+
+#overlay #scoring-panel #match-panel #match-name {
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    width: 500px;
+    font-size: 40px;
+    line-height: 45px;
+    text-align: center;
+    height: 50px;
+    background-color: white;
+    border: 5px solid var(--border-color);
+    border-bottom: none;
+    box-sizing: border-box;
+}
+
+#overlay #scoring-panel #match-panel #score-box {
+    width: 500px;
+    height: 160px;
+    border: 5px solid var(--border-color);
+    font-family: Roboto;
+    font-weight: bold;
+    font-size: 90px;
+    text-align: center;
+    line-height: 150px;
+    color: white;
+    text-shadow: 0 0 5px var(--border-color);
+    box-sizing: border-box;
+}
+
+#overlay #scoring-panel #match-panel #score-box #red {
+    width: calc(50% - 2px);
+    height: 100%;
+    float: left;
+    border-right: 2px solid var(--border-color);
+    background-color: red;
+}
+
+#overlay #scoring-panel #match-panel #score-box #blue {
+    width: calc(50% - 2px);
+    height: 100%;
+    float: right;
+    border-left: 2px solid var(--border-color);
+    background-color: blue;
+}
+
+#overlay #scoring-panel #match-panel #teams {
+    position: absolute;
+    height: 135px;
     margin: 0 auto;
     left: 0;
     right: 0;
-    width: 400px;
-    height: 150px;
-    border: 5px solid rgb(88, 88, 88);
-}
-
-#result-bg {
-    background-color: rgb(53, 53, 53);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
     bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    opacity: 0;
-    transition: opacity 2s;
-    pointer-events: none;
+    max-width: calc(110px + var(--score-box-width));
+    box-sizing: border-box;
 }
 
-#result-bg.fade-in {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
+#overlay #scoring-panel #match-panel #teams .red, #overlay #scoring-panel #match-panel #teams .blue {
+    position: absolute;
+    height: 120px;
+    width: 50px;
+    bottom: 0px;
+    background-color: white;
+    border-top: 5px solid var(--border-color);
+}
+
+#overlay #scoring-panel #match-panel #teams .red {
+    left: 0;
+    border-left: 5px solid var(--border-color);
+}
+
+#overlay #scoring-panel #match-panel #teams .blue {
+    right: 0;
+    border-right: 5px solid var(--border-color);
+}
+
+#overlay #scoring-panel #match-panel #teams .number {
+    position: relative;
+    height: 40px;
+    line-height: 35px;
+    border-bottom: 5px solid var(--border-color);
+    text-align: center;
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    font-size: 30px;
+    box-sizing: border-box;
+}
+
+#overlay #scoring-panel .rp-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 180px;
+    bottom: 0;
+    font-family: "Roboto Slab";
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.rp-panel .phase {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.rp-panel .phase .label {
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    width: 100%;
+    font-size: 30px;
+    height: 40px;
+}
+
+.rp-panel .phase .indicators {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 50px;
+    width: 100%;
+}
+
+.rp-panel .phase .indicators .indicator {
+    height: 50px;
+    width: 50px;
+    line-height: 40px;
+}
+
+.rp-panel .energized {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin-top: 5px;
+}
+
+.rp-panel .operational {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin-top: 5px;
+}
+
+#overlay #scoring-panel .task-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 200px;
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    text-align: center;
+}
+
+.task-panel .label {
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    width: 100%;
+    font-size: 30px;
+    height: 40px;
+    margin-top: 20px;
+}
+
+.task-panel .power-cell {
+    position: relative;
+    bottom: 0;
+    height: 175px;
+}
+
+.task-panel .power-cell svg {
+    height: 175px; width: 175px;
+    transform: rotate(-90deg);
+    border-radius: 50%;
+}
+
+.task-panel .power-cell svg circle {
+    fill: rgb(170, 170, 170);
+    stroke: yellow;
+    stroke-width: 32;
+    stroke-dasharray: 101;
+    stroke-dashoffset: 101;
+    /* animation: power-cell-0 0.5s ease-in-out forwards; */
+}
+
+.task-panel .power-cell .border {
+    position: absolute;
+    border: 10px solid var(--border-color);
+    border-radius: 50%;
+    height: 175px;
+    width: 175px;
+    margin: auto;
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+    box-sizing: border-box;
+}
+
+.task-panel .power-cell .capacity {
+    position: absolute;
+    height: 150px;
+    line-height: 150px;
+    top: 0; bottom: 10px;
+    left: 0; right: 0;
+    margin: auto;
+    font-size: 120px;
+}
+
+#overlay #scoring-panel .indicator-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 180px;
+    font-family: "Roboto Slab";
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.indicator-panel .auto {
+    position: relative;
+    width: 100%;
+}
+
+.indicator-panel .auto .label {
+    display: flex;
+    justify-content: center;
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    width: 100%;
+    font-size: 30px;
+    height: 40px;
+    margin-top: 20px;
+}
+
+.indicator-panel .auto .indicators {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 50px;
+    width: 100%;
+}
+
+.indicator-panel .auto .indicators .indicator {
+    height: 50px;
+    width: 50px;
+    line-height: 40px;
+}
+
+.indicator-panel .endgame {
+    position: relative;
+    width: 100%;
+}
+
+.indicator-panel .endgame .label {
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    width: 100%;
+    font-size: 30px;
+    height: 40px;
+    margin-top: 10px;
+}
+
+.indicator-panel .level {
+    height: 20px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.indicator-panel .endgame .indicators {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 50px;
+    width: 100%;
+}
+
+.indicator-panel .endgame .indicators .indicator {
+    height: 50px;
+    width: 50px;
+    line-height: 40px;
 }
 
 .info-bar {

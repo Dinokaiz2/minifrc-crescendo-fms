@@ -24,8 +24,8 @@ export class Match {
         this.#number = match;
         this.#type = type;
         this.#set = type == Match.Type.QUALIFICATION ? 0 : set;
-        this.#red = new this.#Alliance(redTeams, Match.AllianceColor.RED, this);
-        this.#blue = new this.#Alliance(blueTeams, Match.AllianceColor.BLUE, this);
+        this.#red = new Match.#Alliance(redTeams, Match.AllianceColor.RED, this);
+        this.#blue = new Match.#Alliance(blueTeams, Match.AllianceColor.BLUE, this);
     }
 
     /**
@@ -231,7 +231,7 @@ export class Match {
      * Emulates something like a private inner class by passing in `match` for access to
      * the enclosing Match instance.
      */
-    #Alliance = class Alliance {
+    static #Alliance = class Alliance {
 
         #teams;
         #color;
