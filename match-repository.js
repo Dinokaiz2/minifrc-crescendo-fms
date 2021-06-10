@@ -45,7 +45,42 @@ window.onload = () => {
     // setShieldGeneratorOperational(true, 2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE);
     // setResult(Match.Result.RED_WIN, 2, 0, Match.Type.QUALIFICATION);
 
-    // console.log("get match 1", getMatchPoints(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red match points", getMatchPoints(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red reg fouls", getRegularFouls(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red tech fouls", getTechFouls(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red auto bottom", getAutoBottomPort(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red auto top", getAutoUpperPort(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red teleop bottom", getTeleopBottomPort(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red teleop top", getTeleopUpperPort(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red initiation", getInitiationLine(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red parks", getParks(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red hangs", getHangs(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red level", getLevel(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red phase", getPhase(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red power cells in phase", getPowerCellsInPhase(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red shield gen operational", getShieldGeneratorOperational(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+    // console.log("get red shield gen energized", getShieldGeneratorEnergized(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED));
+
+    // console.log("get blue match points", getMatchPoints(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE reg fouls", getRegularFouls(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE tech fouls", getTechFouls(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE auto bottom", getAutoBottomPort(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE auto top", getAutoUpperPort(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE teleop bottom", getTeleopBottomPort(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE teleop top", getTeleopUpperPort(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE initiation", getInitiationLine(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE parks", getParks(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE hangs", getHangs(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE level", getLevel(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE phase", getPhase(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE power cells in phase", getPowerCellsInPhase(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE shield gen operational", getShieldGeneratorOperational(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+    // console.log("get BLUE shield gen energized", getShieldGeneratorEnergized(2, 0, Match.Type.QUALIFICATION, Match.AllianceColor.BLUE));
+
+    // console.log("get results", getResult(2, 0, Match.Type.QUALIFICATION));
+    // console.log("get Surrogate", isSurrogate(0, 2, 0, Match.Type.QUALIFICATION));
+    // console.log("get Disqualified", isDisqualified(0, 2, 0, Match.Type.QUALIFICATION));
+    // console.log("get all matches", getAllMatches());
 
 };
 
@@ -69,13 +104,7 @@ export function getAllMatches() {
  */
 export function getResult(number, set, type) {
 
-    let result = Match.Result.UNDETERMINED;
-
-    if (color == Match.AllianceColor.BLUE)
-        result = window.db.findOne({ Number: number, Set: set, Type: type }).ResultsBlue;
-    else if (color == Match.AllianceColor.RED)
-        result = window.db.findOne({ Number: number, Set: set, Type: type }).ResultsRed;
-    return result;
+    return window.db.findOne({ Number: number, Set: set, Type: type }).Results;
 
 }
 
@@ -107,9 +136,9 @@ export function setResult(result, number, set, type) {
  * @param {Match.Type} type the match type
  * @return {boolean} whether the team was disqualified from this match
  */
-export function isDisqualified(teamNumber, matchNumber, type, set) {
+export function isDisqualified(teamNumber, matchNumber, set, type) {
  
-    return window.db.findOne({ Number: mathchNumber, Set: set, Type: type }).Disqualifications.includes(teamNumber);
+    return window.db.findOne({ Number: matchNumber, Set: set, Type: type }).Disqualifications.includes(teamNumber);
 
 }
 
@@ -121,9 +150,9 @@ export function isDisqualified(teamNumber, matchNumber, type, set) {
  * @param {number} set the set the match is apart of
  * @param {Match.Type} type the match type
  */
-export function isSurrogate(teamNumber, matchNumber, type, set) {
+export function isSurrogate(teamNumber, matchNumber, set, type) {
 
-    return window.db.findOne({ Number: mathchNumber, Set: set, Type: type }).Surrogates.includes(teamNumber);
+    return window.db.findOne({ Number: matchNumber, Set: set, Type: type }).Surrogates.includes(teamNumber);
 
 }
 
