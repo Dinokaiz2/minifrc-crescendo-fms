@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="./match.css">
     <link rel="stylesheet" type="text/css" href="./results.css">
+    <link rel="stylesheet" type="text/css" href="./rankings.css">
     <script type="text/javascript" src="./node_modules/jquery/dist/jquery.js"></script>
 </head>
 
@@ -26,8 +27,8 @@
                     <div class="auto">
                         <div class="label">Autonomous</div>
                         <div class="indicators">
-                            <div class="lit indicator"></div>
-                            <div class="lit indicator"></div>
+                            <div class="indicator"></div>
+                            <div class="indicator"></div>
                             <div class="indicator"></div>
                         </div>
                     </div>
@@ -35,8 +36,8 @@
                         <div class="label">Endgame</div>
                         <div class="level indicator"></div>
                         <div class="indicators">
-                            <div class="lit indicator">H</div>
-                            <div class="lit indicator">P</div>
+                            <div class="indicator"></div>
+                            <div class="indicator"></div>
                             <div class="indicator"></div>
                         </div>
                     </div>
@@ -50,39 +51,66 @@
                         <div class="border"></div>
                         <div class="capacity">9</div>
                     </div>
+                    <div class="rotation-control" hidden>
+                        <svg viewBox="0 0 32 32">
+                            <circle class="red" r="16" cx="16" cy="16"/>
+                            <circle class="green" r="16" cx="16" cy="16"/>
+                            <circle class="blue" r="16" cx="16" cy="16"/>
+                            <circle class="center" r="2" cx="16" cy="16"/>
+                            <circle class="border" r="15" cx="16" cy="16"/>
+                        </svg>
+                        <div class="border"></div>
+                    </div>
+                    <div class="position-control" hidden>
+                        <svg viewBox="0 0 32 32">
+                            <circle class="red" r="16" cx="16" cy="16"/>
+                            <circle class="green" r="16" cx="16" cy="16"/>
+                            <circle class="blue" r="16" cx="16" cy="16"/>
+                            <circle class="center" r="2" cx="16" cy="16"/>
+                            <circle class="border" r="15" cx="16" cy="16"/>
+                        </svg>
+                        <div class="border"></div>
+                    </div>
+                    <div class="done" hidden>
+                        <svg viewBox="0 0 32 32">
+                            <circle r="16" cx="16" cy="16"/>
+                            <circle class="border" r="15" cx="16" cy="16"/>
+                        </svg>
+                        <div class="label">Complete</div>
+                    </div>
                 </div>
                 <div class="red rp-panel">
                     <div class="phase">
                         <div class="label">Phase</div>
                         <div class="indicators">
-                            <div class="lit indicator">1</div>
-                            <div class="lit indicator">2</div>
+                            <div class="indicator">1</div>
+                            <div class="indicator">2</div>
                             <div class="indicator">3</div>
                         </div>
                     </div>
-                    <div class="lit energized indicator">Energized</div>
+                    <div class="energized indicator">Energized</div>
                     <div class="operational indicator">Operational</div>
                 </div>
                 <div id="match-panel">
-                    <div id="match-name">Quarterfinal 1 Match 2</div>
+                    <div id="match-name"></div>
                     <div id="score-box">
-                        <div id="red">
+                        <div class="red">
                             21
                         </div>
-                        <div id="blue">
+                        <div class="blue">
                             134
                         </div>
                     </div>
                     <div id="teams">
                         <div class="red">
-                            <div class="number">12</div>
-                            <div class="number">99</div>
-                            <div class="number">55</div>
+                            <div class="number"></div>
+                            <div class="number"></div>
+                            <div class="number"></div>
                         </div>
                         <div class="blue">
-                            <div class="number">1</div>
-                            <div class="number">2</div>
-                            <div class="number">15</div>
+                            <div class="number"></div>
+                            <div class="number"></div>
+                            <div class="number"></div>
                         </div>
                     </div>
                 </div>
@@ -90,13 +118,13 @@
                     <div class="phase">
                         <div class="label">Phase</div>
                         <div class="indicators">
-                            <div class="lit indicator">1</div>
+                            <div class="indicator">1</div>
                             <div class="indicator">2</div>
                             <div class="indicator">3</div>
                         </div>
                     </div>
                     <div class="energized indicator">Energized</div>
-                    <div class="lit operational indicator">Operational</div>
+                    <div class="operational indicator">Operational</div>
                 </div>
                 <div class="blue task-panel">
                     <div class="label">Task</div>
@@ -105,14 +133,41 @@
                             <circle r="16" cx="16" cy="16"/>
                         </svg>
                         <div class="border"></div>
-                        <div class="capacity">2</div>
+                        <div class="capacity">9</div>
+                    </div>
+                    <div class="rotation-control" hidden>
+                        <svg viewBox="0 0 32 32">
+                            <circle class="red" r="16" cx="16" cy="16"/>
+                            <circle class="green" r="16" cx="16" cy="16"/>
+                            <circle class="blue" r="16" cx="16" cy="16"/>
+                            <circle class="center" r="2" cx="16" cy="16"/>
+                            <circle class="border" r="15" cx="16" cy="16"/>
+                        </svg>
+                        <div class="border"></div>
+                    </div>
+                    <div class="position-control" hidden>
+                        <svg viewBox="0 0 32 32">
+                            <circle class="red" r="16" cx="16" cy="16"/>
+                            <circle class="green" r="16" cx="16" cy="16"/>
+                            <circle class="blue" r="16" cx="16" cy="16"/>
+                            <circle class="center" r="2" cx="16" cy="16"/>
+                            <circle class="border" r="15" cx="16" cy="16"/>
+                        </svg>
+                        <div class="border"></div>
+                    </div>
+                    <div class="done" hidden>
+                        <svg viewBox="0 0 32 32">
+                            <circle r="16" cx="16" cy="16"/>
+                            <circle class="border" r="15" cx="16" cy="16"/>
+                        </svg>
+                        <div class="label">Complete</div>
                     </div>
                 </div>
                 <div class="blue indicator-panel">
                     <div class="auto">
                         <div class="label">Autonomous</div>
                         <div class="indicators">
-                            <div class="lit indicator"></div>
+                            <div class="indicator"></div>
                             <div class="indicator"></div>
                             <div class="indicator"></div>
                         </div>
@@ -121,8 +176,8 @@
                         <div class="label">Endgame</div>
                         <div class="level indicator"></div>
                         <div class="indicators">
-                            <div class="lit indicator">P</div>
-                            <div class="lit indicator">H</div>
+                            <div class="indicator"></div>
+                            <div class="indicator"></div>
                             <div class="indicator"></div>
                         </div>
                     </div>
@@ -144,56 +199,61 @@
                                 <div class="rank-label">Rank</div>
                             </div>
                             <div class="team">
-                                <div class="avatar"></div>
-                                <div class="number">13</div>
-                                <div class="rank">4▲</div>
+                                <!-- <div class="avatar"></div> -->
+                                <div class="number">-</div>
+                                <div class="rank">-</div>
                             </div>
                             <div class="team">
-                                <div class="avatar"></div>
-                                <div class="number">15</div>
-                                <div class="rank">1▼</div>
+                                <!-- <div class="avatar"></div> -->
+                                <div class="number">-</div>
+                                <div class="rank">-</div>
                             </div>
                             <div class="team">
-                                <div class="avatar"></div>
-                                <div class="number">3</div>
-                                <div class="rank">14▲</div>
+                                <!-- <div class="avatar"></div> -->
+                                <div class="number">-</div>
+                                <div class="rank">-</div>
                             </div>
-                        </div>
-                        <div class="ranks">
                         </div>
                         <div class="score-panel">
-                            <div class="high-score">High Score</div>
-                            <div class="score">91</div>
-                            <div class="result">Win</div>
+                            <div class="high-score"></div>
+                            <div class="score">-</div>
+                            <div class="result"></div>
                         </div>
                     </div>
                     <div class="details">
                         <div class="rp-panel">
-                            <div class="count">2 RP</div>
-                            <div class="energized indicator"></div>
-                            <div class="operational indicator"></div>
-                            <div class="win indicator"></div>
+                            <div class="count">- RP</div>
+                            <div class="energized indicator">
+                                <img src="./images/energized-icon.png">
+                            </div>
+                            <div class="operational indicator">
+                                <img src="./images/operational-icon.png">
+                            </div>
+                            <div class="win indicator">
+                                <img id="tie" src="./images/tie-icon.png" hidden>
+                                <img id="win" src="./images/win-icon.png">
+                            </div>
                         </div>
                         <div class="category-panel">
                             <div class="category">
                                 <div class="label">Initiation Line</div>
-                                <div class="points">15</div>
+                                <div class="points">0</div>
                             </div>
                             <div class="category">
                                 <div class="label">Power Cell</div>
-                                <div class="points">31</div>
+                                <div class="points">0</div>
                             </div>
                             <div class="category">
                                 <div class="label">Control Panel</div>
-                                <div class="points">16</div>
+                                <div class="points">0</div>
                             </div>
                             <div class="category">
                                 <div class="label">Endgame</div>
-                                <div class="points">1</div>
+                                <div class="points">0</div>
                             </div>
                             <div class="category">
                                 <div class="label">Blue Penalty</div>
-                                <div class="points">174</div>
+                                <div class="points">0</div>
                             </div>
                         </div>
                     </div>
@@ -206,60 +266,97 @@
                                 <div class="rank-label">Rank</div>
                             </div>
                             <div class="team">
-                                <div class="avatar"></div>
-                                <div class="number">13</div>
-                                <div class="rank">4▲</div>
+                                <!-- <div class="avatar"></div> -->
+                                <div class="number">-</div>
+                                <div class="rank">-</div>
                             </div>
                             <div class="team">
-                                <div class="avatar"></div>
-                                <div class="number">15</div>
-                                <div class="rank">1▼</div>
+                                <!-- <div class="avatar"></div> -->
+                                <div class="number">-</div>
+                                <div class="rank">-</div>
                             </div>
                             <div class="team">
-                                <div class="avatar"></div>
-                                <div class="number">3</div>
-                                <div class="rank">14▲</div>
+                                <!-- <div class="avatar"></div> -->
+                                <div class="number">-</div>
+                                <div class="rank">-</div>
                             </div>
                         </div>
                         <div class="score-panel">
-                            <div class="high-score">High Score</div>
-                            <div class="score">91</div>
-                            <div class="result">Win</div>
+                            <div class="high-score"></div>
+                            <div class="score">-</div>
+                            <div class="result"></div>
                         </div>
                     </div>
                     <div class="details">
                         <div class="rp-panel">
-                            <div class="count">2 RP</div>
-                            <div class="energized indicator"></div>
-                            <div class="operational indicator"></div>
-                            <div class="win indicator"></div>
+                            <div class="count">- RP</div>
+                            <div class="energized indicator">
+                                <img src="./images/energized-icon.png">
+                            </div>
+                            <div class="operational indicator">
+                                <img src="./images/operational-icon.png">
+                            </div>
+                            <div class="win indicator">
+                                <img id="tie" src="./images/tie-icon.png" hidden>
+                                <img id="win" src="./images/win-icon.png">
+                            </div>
                         </div>
                         <div class="category-panel">
                             <div class="category">
                                 <div class="label">Initiation Line</div>
-                                <div class="points">15</div>
+                                <div class="points">0</div>
                             </div>
                             <div class="category">
                                 <div class="label">Power Cell</div>
-                                <div class="points">31</div>
+                                <div class="points">0</div>
                             </div>
                             <div class="category">
                                 <div class="label">Control Panel</div>
-                                <div class="points">16</div>
+                                <div class="points">0</div>
                             </div>
                             <div class="category">
                                 <div class="label">Endgame</div>
-                                <div class="points">1</div>
+                                <div class="points">0</div>
                             </div>
                             <div class="category">
                                 <div class="label">Red Penalty</div>
-                                <div class="points">174</div>
+                                <div class="points">0</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+
+    <div id="rankings-view">
+        <div id="frame">
+            <div id="title">Rankings</div>
+            <table>
+                <tr>
+                    <th>Rank</th>
+                    <th>Team</th>
+                    <th>Ranking<br/>Score</th>
+                    <th>Auto</th>
+                    <th>Endgame</th>
+                    <th>Teleop Cells and<br/>Control Panel</th>
+                    <th>Record<br/>(W-L-T)</th>
+                    <th>DQs</th>
+                    <th>Played</th>
+                    <th>Ranking<br/>Points</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="sound" hidden>
+        <audio id="start-match" src="./sounds/auto.wav" type="audio/wav"></audio>
+        <audio id="start-teleop" src="./sounds/teleop.wav" type="audio/wav"></audio>
+        <audio id="start-endgame" src="./sounds/endgame.wav" type="audio/wav"></audio>
+        <audio id="end-match" src="./sounds/end.wav" type="audio/wav"></audio>
+        <audio id="field-fault" src="./sounds/fault.wav" type="audio/wav"></audio>
+        <audio id="show-results" src="./sounds/show-results.wav" type="audio/wav"></audio>
     </div>
 
     <script src="./renderer.js" type="module"></script>

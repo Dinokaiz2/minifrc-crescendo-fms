@@ -1,0 +1,98 @@
+@font-face {
+    font-family: "Roboto";
+    src: url("./fonts/roboto/Roboto-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Roboto Slab";
+    src: url("./fonts/roboto-slab/RobotoSlab-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Roboto Mono";
+    src: url("./fonts/roboto-mono/RobotoMono-VariableFont_wght.ttf") format("truetype");
+}
+
+body {
+    background-color: #666;
+    padding: 50px;
+    color: white;
+    font-family: "Roboto Slab";
+    font-size: 30px;
+}
+
+button {
+    background-color: rgb(134, 202, 134);
+    font-family: "Roboto Mono";
+    font-size: 20px;
+    width: 150px;
+}
+
+button.red {
+    background-color: pink;
+}
+
+button.blue {
+    background-color: skyblue;
+}
+
+button:disabled {
+    background-color: lightgrey;
+}
+
+button.add::before {
+    content: "Add "
+}
+
+button.remove::before {
+    content: "Remove "
+}
+
+.level button.add::before {
+    content: "Set "
+}
+
+.level button.remove::before {
+    content: "Unset "
+}
+
+.button-row {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    min-height: 100px;
+    margin-bottom: 20px;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.button-group button {
+    flex-grow: 1;
+}
+
+.initiation-line button {
+    font-size: 15px;
+}
+
+#data {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    min-height: 100px;
+    margin-bottom: 20px;
+    font-size: 15px;
+}
+
+#data .info-column {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#data .info-column .red, #data .info-column .blue {
+    width: 150px;
+}

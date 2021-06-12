@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>FMS Control Window</title>
+    <!-- TODO: Content Security Policy -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./control-window.css">
+    <script type="text/javascript" src="./node_modules/jquery/dist/jquery.js"></script>
+</head>
+
+<body>
+    <div class="label">View</div>
+    <div id="view" class="button-row">
+        <button id="match">Match</button>
+        <button id="results">Results</button>
+        <button id="rankings">Rankings</button>
+    </div>
+
+    <div class="label">Phase</div>
+    <div id="phase" class="button-row">
+        <button id="no-entry">Do not Enter</button>
+        <button id="safe-to-enter">Safe to Enter</button>
+        <button id="ready-for-match">Ready for Match</button>
+        <button id="start-match">Start Match</button>
+    </div>
+
+    <div class="label">Match</div>
+    <div id="match" class="button-row">
+        <div class="button-group">
+            <button id="next-match">Next Match</button>
+            <button id="previous-match">Prev Match</button>
+        </div>
+        <button id="field-fault">Field Fault</button>
+        <button id="replay-match">Replay Match</button>
+        <button id="save-results">Save Results</button>
+    </div>
+
+    <div class="label">Points</div>
+    <div id="points" class="button-row">
+        <div class="initiation-line button-group">
+            <button class="red add">Red Initiation Line Crossing</button>
+            <button class="blue add">Blue Initiation Line Crossing</button>
+        </div>
+        <div style="padding: 0 10px"></div>
+        <div class="park button-group">
+            <button class="red add">Red Park</button>
+            <button class="blue add">Blue Park</button>
+        </div>
+        <div class="hang button-group">
+            <button class="red add">Red Hang</button>
+            <button class="blue add">Blue Hang</button>
+        </div>
+        <div class="level button-group">
+            <button class="red add">Red Level</button>
+            <button class="blue add">Blue Level</button>
+        </div>
+        <div style="padding: 0 10px"></div>
+        <div class="foul button-group">
+            <button class="red add">Red Foul</button>
+            <button class="blue add">Blue Foul</button>
+        </div>
+        <div class="tech-foul button-group">
+            <button class="red add">Red Tech Foul</button>
+            <button class="blue add">Blue Tech Foul</button>
+        </div>
+    </div>
+
+    <div class="label">Data</div>
+    <div id="data">
+        <div id="crossings" class="info-column">
+            <div class="red">Red crossings: <span></span></div>
+            <div class="blue">Blue crossings: <span></span></div>
+        </div>
+        <div style="padding: 0 10px"></div>
+        <div id="parks" class="info-column">
+            <div class="red">Red parks: <span></span></div>
+            <div class="blue">Blue parks: <span></span></div>
+        </div>
+        <div id="hangs" class="info-column">
+            <div class="red">Red hangs: <span></span></div>
+            <div class="blue">Blue hangs: <span></span></div>
+        </div>
+        <div id="level" class="info-column">
+            <div class="red">Red level: <span></span></div>
+            <div class="blue">Blue level: <span></span></div>
+        </div>
+        <div style="padding: 0 10px"></div>
+        <div id="fouls" class="info-column">
+            <div class="red">Red fouls: <span></span></div>
+            <div class="blue">Blue fouls: <span></span></div>
+        </div>
+        <div id="tech-fouls" class="info-column">
+            <div class="red">Red tech fouls: <span></span></div>
+            <div class="blue">Blue tech fouls: <span></span></div>
+        </div>
+    </div>
+
+    <script src="./control-window-renderer.js" type="module"></script>
+</body>
+</html>

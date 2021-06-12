@@ -1,0 +1,87 @@
+@font-face {
+    font-family: "Roboto";
+    src: url("./fonts/roboto/Roboto-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Roboto Slab";
+    src: url("./fonts/roboto-slab/RobotoSlab-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Roboto Mono";
+    src: url("./fonts/roboto-mono/RobotoMono-VariableFont_wght.ttf") format("truetype");
+}
+
+#rankings-view {
+    background-color: rgb(53, 53, 53);
+    position: absolute;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 2s;
+    pointer-events: none;
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    font-size: 30px;
+    color: black;
+
+    --border-color: black;
+    --avatar-height: 50px;
+}
+
+#rankings-view.fade-in {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+#rankings-view #frame {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-around;
+    align-items: stretch;
+    margin: 70px;
+    background-color: lightgrey;
+    border: 5px solid var(--border-color);
+    border-radius: 50px;
+    padding: 50px;
+}
+
+#rankings-view #frame #title {
+    align-self: center;
+    font-size: 50px;
+    flex-grow: 1.5;
+}
+
+#rankings-view table {
+    flex-grow: 2;
+    border-collapse: collapse;
+}
+
+#rankings-view th {
+    border: 5px solid black;
+    background-color: white;
+}
+
+#rankings-view td {
+    border: 2px solid black;
+    text-align: right;
+    padding-right: 10px;
+}
+
+#rankings-view td.text {
+    border: 2px solid black;
+    text-align: center;
+    padding-right: 0;
+}
+
+#rankings-view #frame tr:nth-child(odd) {
+    background-color: white;
+}
+
+#rankings-view #frame tr:nth-child(even) {
+    background-color: lightgrey;
+}

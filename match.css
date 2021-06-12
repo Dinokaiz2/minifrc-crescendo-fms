@@ -175,7 +175,7 @@ body {
     box-sizing: border-box;
 }
 
-#overlay #scoring-panel #match-panel #score-box #red {
+#overlay #scoring-panel #match-panel #score-box .red {
     width: calc(50% - 2px);
     height: 100%;
     float: left;
@@ -183,7 +183,7 @@ body {
     background-color: red;
 }
 
-#overlay #scoring-panel #match-panel #score-box #blue {
+#overlay #scoring-panel #match-panel #score-box .blue {
     width: calc(50% - 2px);
     height: 100%;
     float: right;
@@ -293,7 +293,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    width: 200px;
+    min-width: 200px;
     font-family: "Roboto Slab";
     font-weight: bold;
     text-align: center;
@@ -326,7 +326,6 @@ body {
     stroke-width: 32;
     stroke-dasharray: 101;
     stroke-dashoffset: 101;
-    /* animation: power-cell-0 0.5s ease-in-out forwards; */
 }
 
 .task-panel .power-cell .border {
@@ -349,6 +348,180 @@ body {
     left: 0; right: 0;
     margin: auto;
     font-size: 120px;
+}
+
+.task-panel .rotation-control {
+    position: relative;
+    bottom: 0;
+    height: 175px;
+}
+
+.task-panel .rotation-control svg {
+    height: 175px; width: 175px;
+    border-radius: 50%;
+    animation: rotation 4s infinite linear;
+}
+
+.task-panel .rotation-control svg circle.border {
+    fill: transparent;
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.task-panel .rotation-control svg circle.red {
+    fill: red;
+    stroke: red;
+    stroke-width: 32;
+    stroke-dasharray: 16.6 33.3;
+}
+
+.task-panel .rotation-control svg circle.green {
+    fill: transparent;
+    stroke: green;
+    stroke-width: 32;
+    stroke-dasharray: 16.6 33.3;
+    stroke-dashoffset: 17;
+}
+
+.task-panel .rotation-control svg circle.blue {
+    fill: transparent;
+    stroke: blue;
+    stroke-width: 32;
+    stroke-dasharray: 16.6 33.3;
+    stroke-dashoffset: 33.3;
+}
+
+.task-panel .rotation-control svg circle.center {
+    fill: gold;
+}
+
+@keyframes rotation {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(359deg); }
+}
+
+.task-panel .position-control {
+    position: relative;
+    bottom: 0;
+    height: 175px;
+}
+
+.task-panel .position-control svg {
+    height: 175px; width: 175px;
+    border-radius: 50%;
+}
+
+.task-panel .position-control svg circle.border {
+    fill: transparent;
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.task-panel .position-control.red svg {
+    transform: rotate(0.17turn);
+}
+
+.task-panel .position-control svg circle.red {
+    fill: rgb(64, 0, 0);
+    stroke: rgb(64, 0, 0);
+    stroke-width: 32;
+    stroke-dasharray: 16.6 33.3;
+}
+
+.task-panel .position-control.red svg circle.red {
+    fill: red;
+    stroke: red;
+    animation: flash-red 0.5s infinite linear alternate;
+}
+
+@keyframes flash-red {
+    from {
+        fill: red;
+        stroke: red;
+    } to {
+        fill: rgb(255, 200, 200);
+        stroke: rgb(255, 200, 200);
+    }
+}
+
+.task-panel .position-control.green svg {
+    transform: rotate(0.34turn);
+}
+
+.task-panel .position-control svg circle.green {
+    fill: transparent;
+    stroke: rgb(80, 128, 80);
+    stroke-width: 32;
+    stroke-dasharray: 16.7 33.3;
+    stroke-dashoffset: 17;
+}
+
+.task-panel .position-control.green svg circle.green {
+    stroke: green;
+    animation: flash-green 0.5s infinite linear alternate;
+}
+
+@keyframes flash-green {
+    from { stroke: green; }
+    to { stroke: rgb(200, 255, 200); }
+}
+
+.task-panel .position-control svg circle.blue {
+    fill: transparent;
+    stroke: rgb(80, 80, 128);
+    stroke-width: 32;
+    stroke-dasharray: 16.6 33.3;
+    stroke-dashoffset: 33.3;
+}
+
+.task-panel .position-control.blue svg circle.blue {
+    stroke: blue;
+    animation: flash-blue 0.5s infinite linear alternate;
+}
+
+@keyframes flash-blue {
+    from { stroke: blue; }
+    to { stroke: rgb(200, 200, 255); }
+}
+
+.task-panel .position-control svg circle.center {
+    fill: gold;
+}
+
+.task-panel .done {
+    position: relative;
+    bottom: 0;
+    height: 175px;
+}
+
+.task-panel .done svg {
+    height: 175px; width: 175px;
+    border-radius: 50%;
+}
+
+.task-panel .done svg circle.border {
+    fill: transparent;
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.red.task-panel .done svg circle {
+    fill: red;
+}
+
+.blue.task-panel .done svg circle {
+    fill: blue;
+}
+
+.task-panel .done .label {
+    position: absolute;
+    height: 150px;
+    line-height: 150px;
+    top: 0; bottom: 10px;
+    left: 0; right: 0;
+    margin: auto;
+    font-size: 30px;
+    color: white;
 }
 
 #overlay #scoring-panel .indicator-panel {
@@ -425,784 +598,4 @@ body {
     height: 50px;
     width: 50px;
     line-height: 40px;
-}
-
-.info-bar {
-    box-sizing: content-box;
-    width: 100%;
-    height: var(--timer-height);
-    margin: 0px;
-    background-color: rgb(241, 241, 241);
-    border-bottom: solid rgb(88, 88, 88) 5px;
-}
-
-.info-up-next-red, .info-up-next-blue {
-    position: absolute;
-    line-height: var(--timer-height);
-    padding-top: 0px;
-    font-size: 38px;
-    font-family: 'Electrolize';
-    color: black;
-}
-
-.info-up-next-red {
-    left: 10px;
-}
-
-.info-up-next-blue {
-    right: 10px;
-}
-
-.info-match {
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    line-height: var(--timer-height);
-    font-size: 38px;
-    font-family: 'Electrolize';
-    color: black;
-    text-align: center;
-}
-
-.red-bg {
-    position: fixed;
-    height: 990px;
-    width: 50%;
-    left: 0;
-    background-color: maroon;
-}
-
-.blue-bg {
-    position: fixed;
-    height: 990px;
-    width: 50%;
-    right: 0;
-    background-color: darkblue;
-}
-
-.score-container {
-    position: fixed;
-    top: 90px;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    width: 400px;
-    height: 150px;
-    border: 5px solid rgb(88, 88, 88);
-    border-top: 0px;
-}
-
-.team-container {
-    position: fixed;
-    top: 90px;
-    right: 1160px;
-    width: 375px;
-    height: 150px;
-}
-
-.team-number, .team-name {
-    position: absolute;
-    background-color: rgb(241, 241, 241);
-    border: 2px solid rgb(88, 88, 88);
-    border-right-width: 0px;
-    border-left-width: 5px;
-    height: 50px;
-    width: 70px;
-    line-height: 50px;
-    text-align: center;
-    font-size: 40px;
-    font-family: 'Electrolize';
-}
-
-.team-name {
-    width: auto;
-    padding: 0 5px;
-}
-
-.red-score, .blue-score {
-    position: absolute;
-    width: 50%;
-    height: 100%;
-    line-height: 135px;
-    text-align: center;
-    padding-top: 3px;
-    font-size: 100px;
-    font-family: 'Electrolize';
-    color: white;
-}
-
-.red-score {
-    left: 0;
-    background-color: red;
-    border-right: 2px solid rgb(88, 88, 88);
-}
-
-.blue-score {
-    right: 0;
-    background-color: blue;
-    border-left: 2px solid rgb(88, 88, 88);
-}
-
-.red-rocket-rp, .red-climb-rp, .blue-rocket-rp, .blue-climb-rp, .red-foul-counter, .blue-foul-counter, .red-cargo-counter, .blue-cargo-counter, .red-hatch-counter, .blue-hatch-counter {
-    position: fixed;
-    height: 70px;
-    width: 70px;
-    top: 250px;
-    background-color: rgb(184, 184, 184);
-    border-radius: 10px;
-    border: 4px solid rgb(88, 88, 88);
-    line-height: 70px;
-    text-align: center;
-    font-size: 40px;
-    font-family: 'Electrolize';
-    color: white;
-}
-
-.red-hatch-counter, .blue-hatch-counter {
-    background-color: gold;
-}
-
-.red-cargo-counter, .blue-cargo-counter {
-    background-color: orange;
-}
-
-.red-cargo-counter {
-    left: 600px;
-}
-
-.blue-cargo-counter {
-    right: 600px;
-}
-
-.red-hatch-counter {
-    left: 690px;
-}
-
-.blue-hatch-counter {
-    right: 690px;
-}
-
-.red-foul-counter {
-    background-color: rgb(46, 46, 255);
-    right: 1340px;
-    width: auto;
-    padding: 0 10px;
-}
-
-.blue-foul-counter {
-    background-color: rgb(255, 46, 46);
-    left: 1340px;
-    width: auto;
-    padding: 0 10px;
-}
-
-.red-rocket-rp {
-    left: 780px;
-}
-
-.red-climb-rp {
-    left: 870px;
-}
-
-.blue-rocket-rp {
-    right: 780px;
-}
-
-.blue-climb-rp {
-    right: 870px;
-}
-
-img {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-}
-
-.rocket-container {
-    width: 400px;
-    height: 485px;
-    margin-left: 0px;
-    position: absolute;
-    padding-top:10px;
-}
-
-.rocket-body {
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    position: absolute;
-    margin-top: 100px;
-    width: 150px;
-    height: calc(475px - 100px);
-    background-color: rgb(179, 179, 179);
-}
-
-.rocket-top-red, .rocket-top-blue {
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    position: absolute;
-    border-left: 80px solid transparent;
-    border-right: 80px solid transparent;
-    border-bottom: 100px solid rgb(255, 0, 0);
-    width: 0;
-    height: 0;
-}
-
-.rocket-top-blue {
-    border-bottom: 100px solid blue;
-}
-
-.rocket-fin-left, .rocket-fin-right {
-    bottom: 5px;
-    position: absolute;
-    border-bottom: 200px solid rgb(167, 167, 167);
-    width: 0;
-    height: 0;
-}
-
-.rocket-fin-left {
-    border-left: 75px solid transparent;
-    right: 275px;
-}
-
-.rocket-fin-right {
-    border-right: 75px solid transparent;
-    left: 275px;
-}
-
-.ship-container {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    width: 1100px;
-    height: 325px;
-}
-
-.ship-body-red, .ship-body-blue {
-    position: absolute;
-    width: 50%;
-    height: 100%;
-    background-color: rgb(213, 52, 52);
-}
-
-.ship-body-red {
-    left: 0;
-}
-
-.ship-body-blue {
-    right: 0;
-    background-color: rgb(43, 115, 209);
-}
-
-.ship-red-bevel {
-    position: absolute;
-    right: 0;
-    height: 0;
-    width: 450px;
-    border-top: 162px solid rgb(236, 74, 74);
-    border-bottom: 163px solid rgb(163, 41, 41);
-    border-left: 60px solid transparent;
-}
-
-.ship-blue-bevel {
-    position: absolute;
-    left: 0;
-    height: 0;
-    width: 450px;
-    border-top: 162px solid rgb(35, 130, 255);
-    border-bottom: 163px solid rgb(35, 97, 179);
-    border-right: 60px solid transparent;
-}
-
-.ship-red-top-chamfer, .ship-red-bot-chamfer, .ship-blue-top-chamfer, .ship-blue-bot-chamfer {
-    position: absolute;
-    width: 0;
-    height: 0;
-}
-
-.ship-red-top-chamfer {
-    border-top: 60px solid maroon;
-    border-right: 100px solid transparent;
-}
-
-.ship-red-bot-chamfer {
-    border-bottom: 60px solid maroon;
-    border-right: 100px solid transparent;
-    bottom: 0;
-}
-
-.ship-blue-top-chamfer {
-    border-top: 60px solid darkblue;
-    border-left: 100px solid transparent;
-    right: 0;
-}
-
-.ship-blue-bot-chamfer {
-    border-bottom: 60px solid darkblue;
-    border-left: 100px solid transparent;
-    bottom: 0;
-    right: 0;
-}
-
-.hatch-container {
-    left: 0;
-    right: 0;
-    height: 100px;
-    width: 100px;
-    margin: 0 auto;
-    position: absolute;
-}
-
-.hatch, .left-half-hatch, .right-half-hatch, .empty-red-hatch, .empty-blue-hatch, .no-hatch, .null-hatch {
-    position: absolute;
-    height: 100px;
-    width: 100px;
-    background-color: gold;
-    border-radius: 50px;
-    border-left-style: none;
-    --cargo-position: 25px;
-}
-
-.empty-red-hatch {
-    height: 80px;
-    width: 80px;
-    left: 10px;
-    top: 10px;
-    border-radius: 40px;
-    background-color: rgb(100, 0, 0);
-}
-
-.empty-blue-hatch {
-    height: 80px;
-    width: 80px;
-    left: 10px;
-    top: 10px;
-    border-radius: 40px;
-    background-color: rgb(0, 0, 100);
-}
-
-.no-hatch {
-    visibility: hidden;
-}
-
-.null-hatch {
-    background-color: rgb(202, 202, 202);
-}
-
-.left-half-hatch {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    width: 50px;
-}
-
-.right-half-hatch {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    width: 50px;
-    left: 50px;
-    --cargo-position: -25px;
-}
-
-.cargo, .left-half-cargo, .right-half-cargo, .no-cargo, .empty-red-cargo, .empty-blue-cargo {
-    position: absolute;
-    top: 25px;
-    left: var(--cargo-position);
-    height: 50px;
-    width: 50px;
-    background-color: rgb(255, 166, 0);
-    border-radius: 25px;
-}
-
-.no-cargo {
-    visibility: hidden;
-}
-
-.empty-red-cargo {
-    background-color: rgb(100, 0, 0);
-    top: 26px;
-    left: calc(var(--cargo-position) + 1px);
-    height: 48px;
-    width: 48px;
-    border-radius: 24px;
-}
-
-.empty-blue-cargo {
-    background-color: rgb(0, 0, 100);
-    top: 26px;
-    left: calc(var(--cargo-position) + 1px);
-    height: 48px;
-    width: 48px;
-    border-radius: 24px;
-}
-
-.left-half-cargo {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    width: 25px;
-}
-
-.right-half-cargo {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    width: 25px;
-    left: calc(var(--cargo-position) + 25px);
-}
-
-.hab-container {
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    bottom: 30px;
-    height: 300px;
-    width: 450px;
-}
-
-.hab-underline {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 5px;
-    background-color: white;
-}
-
-.hab-dismount-red, .hab-dismount-blue {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: 0 auto;
-    width: 20px;
-    height: 0%;
-    background-color: rgb(255, 255, 255);
-}
-
-.hab-climb-red, .hab-climb-blue {
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    bottom: 0;
-    width: 33%;
-    height: 0%;
-    background-color: rgb(255, 0, 0);
-}
-
-.hab-climb-blue {
-    background-color: rgb(0, 119, 255);
-}
-
-.display-panel {
-    background-color: rgb(201, 201, 201);
-    border: 10px solid white;
-    border-radius: 60px;
-    width: 90%;
-    height: 90%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-}
-
-.display-match {
-    position: absolute;
-    left: 80px;
-    top: 40px;
-    line-height: 70px;
-    padding-top: 0px;
-    font-size: 70px;
-    font-family: 'Electrolize';
-    text-align: "left";
-    color: black;
-}
-
-.display-alfredo {
-    position: absolute;
-    right: 160px;
-    bottom: 35px;
-    width: 1000px;
-    line-height: 70px;
-    padding-top: 0px;
-    font-size: 40px;
-    font-family: 'Electrolize';
-    text-align: right;
-    color: black;
-}
-
-.display-alfredo-image {
-    position: absolute;
-    right: 40px;
-    bottom: 80px;
-    width: 100px;
-}
-
-.display-red-panel, .display-blue-panel {
-    position: absolute;
-    width: 43%;
-    height: 70%;
-    top: 150px;
-    border: 10px solid rgb(41, 41, 41);
-    border-radius: 20px;
-}
-
-.display-red-panel {
-    left: 80px;
-    background-color: rgb(247, 72, 59);
-}
-
-.display-blue-panel {
-    right: 80px;
-    background-color: rgb(23, 112, 189);
-}
-
-.display-team-title-red, .display-team-title-blue, .display-rank-title-red, .display-rank-title-blue {
-    position: absolute;
-    left: 30px;
-    top: 20px;
-    line-height: 30px;
-    font-size: 30px;
-    font-family: 'Electrolize';
-    text-align: "left";
-    color: white;
-}
-
-.display-rank-title-red {
-    left: 265px;
-}
-
-.display-rank-title-blue {
-    left: 620px;
-}
-
-.display-team-title-blue {
-    left: 390px;
-}
-
-.display-team-number-red, .display-team-rank-red, .display-team-number-blue, .display-team-rank-blue {
-    position: absolute;
-    line-height: 60px;
-    font-size: 60px;
-    font-family: 'Electrolize';
-    text-align: "left";
-    color: white;
-}
-
-.display-team-number-red {
-    left: 30px;
-}
-
-.display-team-number-blue {
-    left: 390px;
-}
-
-.display-team-rank-red {
-    right: 380px;
-}
-
-.display-team-rank-blue {
-    right: 20px;
-}
-
-.display-team-name-red, .display-team-name-blue {
-    z-index: 2;
-    position: absolute;
-    line-height: 20px;
-    font-size: 20px;
-    height: 50px;
-    width: 400px;
-    font-family: 'Electrolize';
-    text-align: "left";
-    color: white;
-}
-
-.display-team-name-red {
-    left: 30px;
-}
-
-.display-team-name-blue {
-    left: 390px;
-}
-
-.display-avatar-red {
-    position: absolute;
-    left: 110px;
-    width: 64px;
-    height: 64px;
-}
-
-.display-avatar-blue {
-    position: absolute;
-    left: 470px;
-    width: 64px;
-    height: 64px;
-}
-
-.display-score-panel-red, .display-score-panel-blue {
-    position: absolute;
-    width: 350px;
-    height: 300px;
-    top: 20px;
-    background-color: white;
-    border: 5px solid rgb(41, 41, 41);
-    border-radius: 20px;
-}
-
-.display-score-panel-red {
-    right: 10px;
-}
-
-.display-score-panel-blue {
-    left: 10px;
-}
-
-.display-score {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    width: 300px;
-    height: 100px;
-    line-height: 100px;
-    font-size: 150px;
-    font-family: 'Electrolize';
-    text-align: center;
-    color: black;
-}
-
-.display-win {
-    position: absolute;
-    bottom: 10px;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    width: 200px;
-    line-height: 40px;
-    font-size: 40px;
-    font-family: 'Electrolize';
-    text-align: center;
-    color: black;
-}
-
-.display-high-score {
-    position: absolute;
-    top: 10px;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    width: 300px;
-    line-height: 40px;
-    font-size: 40px;
-    font-family: 'Electrolize';
-    text-align: center;
-    color: black;
-}
-
-.display-rp-panel-red, .display-rp-panel-blue, .display-stats-panel-red, .display-stats-panel-blue {
-    position: absolute;
-    width: 200px;
-    height: 300px;
-    bottom: 10px;
-    background-color: rgb(92, 92, 92);
-    border: 5px solid rgb(41, 41, 41);
-    border-radius: 20px;
-}
-
-.display-rp-panel-red {
-    left: 10px;
-}
-
-.display-rp-panel-blue {
-    right: 10px;
-}
-
-.display-rocket-rp-red, .display-climb-rp-red, .display-win-rp-red, .display-rocket-rp-blue, .display-climb-rp-blue, .display-win-rp-blue {
-    position: absolute;
-    height: 70px;
-    width: 140px;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    background-color: rgb(184, 184, 184);
-    border-radius: 10px;
-    border: 4px solid rgb(43, 43, 43);
-}
-
-.display-rocket-rp-red, .display-rocket-rp-blue {
-    top: -170px;
-}
-
-.display-win-rp-red, .display-win-rp-blue {
-    bottom: -170px;
-}
-
-.display-wins {
-    position: absolute;
-    bottom: 100px;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    line-height: 40px;
-    font-size: 100px;
-    font-family: 'Electrolize';
-    text-align: center;
-    color: white;
-    width: 180px;
-}
-
-.display-stats-panel-red {
-    right: 10px;
-    width: 480px;
-}
-
-.display-stats-panel-blue {
-    left: 10px;
-    width: 480px;
-}
-
-.display-stat-name-red, .display-stat-name-blue {
-    position: absolute;
-    line-height: 40px;
-    font-size: 40px;
-    font-family: 'Electrolize';
-    color: white;
-}
-
-.display-stat-name-red {
-    right: 150px;
-    text-align: right;
-}
-.display-stat-name-blue {
-    left: 150px;
-    text-align: left;
-}
-
-.display-stat-number-red, .display-stat-number-blue {
-    position: absolute;
-    line-height: 40px;
-    font-size: 40px;
-    font-family: 'Electrolize';
-    color: white;
-}
-
-.display-stat-number-red {
-    left: 370px;
-    text-align: left;
-}
-.display-stat-number-blue {
-    right: 370px;
-    text-align: right;
 }

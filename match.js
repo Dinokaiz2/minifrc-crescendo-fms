@@ -10,22 +10,30 @@ export class Match {
     #number;
     #set;
     #type;
+    #id;
+
     #red;
     #blue;
 
+    /** @type {Match.Result} */
+    result;
+
     /**
-     * @param {number} match the number of the match
+     * @param {number} number the number of the match
      *                       (e.g. 9 for Qualification 9, 2 for Quarterfinal 3 Match 2)
      * @param {Match.Type} type the type for this match
      * @param {number} set if this is a playoff match, the set for the match
      *                     (e.g. 3 for Quarterfinal 3 Match 2), 0 for qualifications
      */
-    constructor(match, type = Match.Type.QUALIFICATION, set = 0) {
-        this.#number = match;
-        this.#type = type;
+    constructor(number, type = Match.Type.QUALIFICATION, set = 0) {
+        this.#number = number;
         this.#set = type == Match.Type.QUALIFICATION ? 0 : set;
-        this.#red = new Match.#Alliance(redTeams, Match.AllianceColor.RED, this);
-        this.#blue = new Match.#Alliance(blueTeams, Match.AllianceColor.BLUE, this);
+        this.#type = type;
+        this.#id = [number, set, type]; // This triple uniquely identifies a match
+        this.#red = new Match.#Alliance(repository.getRedTeams(...this.#id), Match.AllianceColor.RED, this);
+        this.#blue = new Match.#Alliance(repository.getBlueTeams(...this.#id), Match.AllianceColor.BLUE, this);
+
+        this.result = repository.getResult(...this.#id);
     }
 
     /**
@@ -86,6 +94,23 @@ export class Match {
         }
     }
 
+    static get PointValues() {
+        return {
+            INITIATION_LINE: 5,
+            AUTO_BOTTOM: 2,
+            AUTO_UPPER: 4,
+            TELEOP_BOTTOM: 1,
+            TELEOP_UPPER: 2,
+            ROTATION_CONTROL: 20,
+            POSITION_CONTROL: 25,
+            HANG: 25,
+            PARK: 5,
+            LEVEL: 15,
+            FOUL: 3,
+            TECH_FOUL: 15
+        }
+    }
+
     /**
      * Gets the number of this match (e.g. 9 for Qualification 9, 2 for Quarterfinal 3
      * Match 2)
@@ -138,15 +163,8 @@ export class Match {
         return this.#red.teams.concat(this.#blue.teams);
     }
 
-    /**
-     * @type {Match.Result}
-     */
-    get result() {
-        return repository.getResult(this.name);
-    }
-
-    set result(value) {
-        repository.setResult(value, this.name);
+    get teamNumbers() {
+        return this.teams.map(team => team.number);
     }
 
     /**
@@ -160,7 +178,7 @@ export class Match {
             team = team.number;
         }
         if (this.teams.map(team => team.number).includes(team)) {
-            return repository.isDisqualified(this.name, team);
+            return repository.isDisqualified(team, ...this.#id);
         }
         return false;
     }
@@ -175,9 +193,33 @@ export class Match {
             team = team.number;
         }
         if (this.teams.map(team => team.number).includes(team)) {
-            return repository.isSurrogate(this.name, team);
+            return repository.isSurrogate(team, ...this.#id);
         }
         return false;
+    }
+
+    determineResult() {
+        if (this.red.matchPoints > this.blue.matchPoints) this.result = Match.Result.RED_WIN;
+        else if (this.red.matchPoints < this.blue.matchPoints) this.result = Match.Result.BLUE_WIN;
+        else this.result = Match.Result.TIE;
+    }
+
+    /**
+     * Saves the state of this match to the repository.
+     */
+    save() {
+        repository.setResult(this.result, ...this.#id);
+        this.red.save();
+        this.blue.save();
+    }
+
+    /**
+     * Clears match data locally. Old match data stays in database until this match gets saved.
+     */
+    clear() {
+        this.result = Match.Result.UNDETERMINED;
+        this.red.clear();
+        this.blue.clear();
     }
 
     /**
@@ -186,7 +228,16 @@ export class Match {
      */
     static getNextMatch() {
         // TODO: Bo3 played all at once or one match at a time?
-        matches = repository.getAllMatches();
+        let matches = this.getSortedMatches();
+        let match = matches.find(match => match.result == Match.Result.UNDETERMINED);
+        return match ? match : matches[matches.length - 1] // If matches have been played, just return the last one
+    }
+
+    /**
+     * @return {Match[]}
+     */
+    static getSortedMatches() {
+        let matches = repository.getAllMatches();
         matches.sort((m1, m2) => {
             if (m1.type == m2.type == Match.Type.QUALIFICATION) return m1.match - m2.match;
             else if (m1.type == m2.type) {
@@ -202,10 +253,7 @@ export class Match {
             else if (m2.type == Match.Type.SEMIFINAL) return 1;
             return 0; // Both matches are finals with the same set and match, shouldn't ever happen
         });
-        for (match in matches) {
-            if (match.result == Match.Result.UNDETERMINED) return match;
-        }
-        return matches[matches.length - 1] // Looks like all matches have been played, just return the last one
+        return matches;
     }
 
     /**
@@ -237,22 +285,40 @@ export class Match {
         #color;
         #match;
 
-        /**
-         * @param {number[]} teams 
-         * @param {Match.AllianceColor} color 
-         * @param {Match} match instance of Match enclossing this Alliance
-         */
-        constructor(teams, color, match) {
-            this.#teams = teams.map(number => new Team(number));
-            this.#color = color;
-            this.#match = match;
-        }
+        /** @type {Match.Phase} */          phase;
+        /** @type {number} */               powerCellsInPhase;
+        /** @type {Match.ControlPanel} */   positionControlTarget;
+        /** @type {number} */               initiationLine;
+        /** @type {number} */               autoBottomPort;
+        /** @type {number} */               autoUpperPort;
+        /** @type {number} */               teleopBottomPort;
+        /** @type {number} */               teleopUpperPort;
+        /** @type {number} */               parks;
+        /** @type {number} */               hangs;
+        /** @type {boolean} */              level;
+        /** @type {number} */               fouls;
+        /** @type {number} */               techFouls;
+
+        addInitiationLine() { if (this.initiationLine < 3) this.initiationLine++; }
+        removeInitiationLine() { if (this.initiationLine > 0) this.initiationLine--; }
+        addPark() { if (this.hangs + this.parks < 3) this.parks++; }
+        removePark() { if (this.parks > 0) this.parks--; }
+        addHang() { if (this.hangs + this.parks < 3) this.hangs++; }
+        removeHang() { if (this.hangs > 0) this.hangs--; }
+        addFoul() { this.fouls++; }
+        removeFoul() { if (this.fouls > 0) this.fouls--; }
+        addTechFoul() { this.techFouls++; }
+        removeTechFoul() { if (this.techFouls > 0) this.techFouls--; }
 
         /**
          * @type {Team[]}
          */
         get teams() {
             return this.#teams;
+        }
+
+        get teamNumbers() {
+            return this.#teams.map(team => team.number);
         }
 
         /**
@@ -263,103 +329,123 @@ export class Match {
         }
 
         get matchPoints() {
-            return repository.getMatchPoints(this.#match.number, type, set, this.color);
+            return this.initiationLinePoints
+                 + this.powerCellPoints
+                 + this.controlPanelPoints
+                 + this.endgamePoints
+                 + this.penaltyPoints;
         }
 
-        set matchPoints(value) {
-            repository.setMatchPoints(value, this.#match.name, this.color);
-        }
-
-        get rankingPoints() {
-            return repository.getRankingPoints(this.#match.name, this.color);
-        }
-
-        set rankingPoints(value) {
-            repository.setRankingPoints(value, this.#match.name, this.color);
+        get autoPoints() {
+            return this.initiationLinePoints
+                 + this.autoBottomPort * Match.PointValues.AUTO_BOTTOM
+                 + this.autoUpperPort * Match.PointValues.AUTO_UPPER;
         }
 
         get initiationLinePoints() {
-            return repository.getInitiationLine(this.#match.name, this.color);
+            return this.initiationLine * Match.PointValues.INITIATION_LINE;
         }
 
-        set initiationLinePoints(value) {
-            repository.setInitiationLine(value, this.#match.name, this.color);
+        get powerCellPoints() {
+            return this.autoBottomPort * Match.PointValues.AUTO_BOTTOM
+                 + this.autoUpperPort * Match.PointValues.AUTO_UPPER
+                 + this.teleopBottomPort * Match.PointValues.TELEOP_BOTTOM
+                 + this.teleopUpperPort * Match.PointValues.TELEOP_UPPER;
         }
 
-        get autoBottomPortPoints() {
-            return repository.getAutoBottomPort(this.#match.name, this.color);
-        }
-
-        set autoBottomPortPoints(value) {
-            repository.setAutoBottomPort(value, this.#match.name, this.color);
-        }
-
-        get autoUpperPortPoints() {
-            return repository.getAutoUpperPort(this.#match.name, this.color);
-        }
-
-        set autoUpperPortPoints(value) {
-            repository.setAutoUpperPort(value, this.#match.name, this.color);
-        }
-
-        get teleopBottomPortPoints() {
-            return repository.getTeleopBottomPort(this.#match.name, this.color);
-        }
-
-        set teleopBottomPortPoints(value) {
-            repository.setTeleopBottomPort(value, this.#match.name, this.color);
-        }
-
-        get teleopUpperPortPoints() {
-            return repository.getTeleopUpperPort(this.#match.name, this.color);
-        }
-
-        set teleopUpperPortPoints(value) {
-            repository.setTeleopUpperPort(value, this.#match.name, this.color);
+        get teleopPowerCellPoints() {
+            return this.teleopBottomPort * Match.PointValues.TELEOP_BOTTOM
+                 + this.teleopUpperPort * Match.PointValues.TELEOP_UPPER;
         }
 
         get controlPanelPoints() {
-            return repository.getControlPanel(this.#match.name, this.color);
-        }
-
-        set controlPanelPoints(value) {
-            repository.setControlPanel(value, this.#match.name, this.color);
+            if (this.phase == Match.Phase.PHASE_2) return Match.PointValues.ROTATION_CONTROL;
+            if (this.phase == Match.Phase.PHASE_3) return Match.PointValues.ROTATION_CONTROL + Match.PointValues.POSITION_CONTROL;
+            return 0;
         }
 
         get endgamePoints() {
-            return repository.getEndgame(this.#match.name, this.color);
-        }
-
-        set endgamePoints(value) {
-            repository.setEndgame(value, this.#match.name, this.color);
+            return this.parks * Match.PointValues.PARK
+                 + this.hangs * Match.PointValues.HANG
+                 + (this.level && this.hangs > 0 ? Match.PointValues.LEVEL : 0);
         }
 
         /**
          * The number of foul points awarded to this alliance as a result of fouls
          * committed by the opponent alliance.
          */
-        get foulPoints() {
-            return repository.getFouls(this.#match.name, this.color);
-        }
-
-        set foulPoints(value) {
-            repository.setFouls(value, this.#match.name, this.color);
-        }
-
-        get shieldGeneratorOperational() {
-            return repository.getShieldGeneratorOperational(this.#match.name, this.color);
-        }
-
-        set shieldGeneratorOperational(value) {
-            repository.setShieldGeneratorOperational(value, this.#match.name, this.color);
+        get penaltyPoints() {
+            return this.fouls * Match.PointValues.FOUL
+                 + this.techFouls * Match.PointValues.TECH_FOUL;
         }
 
         get shieldGeneratorEnergized() {
-            return repository.getShieldGeneratorEnergized(this.#match.name, this.color);
+            return this.phase == Match.Phase.PHASE_3;
         }
 
-        set shieldGeneratorEnergized(value) {
-            repository.setShieldGeneratorEnergized(value, this.#match.name, this.color);
+        get shieldGeneratorOperational() {
+            if (this.endgamePoints >= 65) console.log(this.#match);
+            return this.endgamePoints >= 65;
+        }
+
+        /**
+         * @param {number[]} teams 
+         * @param {Match.AllianceColor} color 
+         * @param {Match} match instance of Match enclosing this Alliance
+         */
+        constructor(teams, color, match) {
+            this.#teams = teams.map(number => new Team(number));
+            this.#color = color;
+            this.#match = match;
+
+            this.phase                      = repository.getPhase(...this.#match.#id, this.color);
+            this.powerCellsInPhase          = repository.getPowerCellsInPhase(...this.#match.#id, this.color);
+            this.positionControlTarget      = repository.getPositionControlTarget(...this.#match.#id, this.color);
+            this.initiationLine             = repository.getInitiationLine(...this.#match.#id, this.color);
+            this.autoBottomPort             = repository.getAutoBottomPort(...this.#match.#id, this.color);
+            this.autoUpperPort              = repository.getAutoUpperPort(...this.#match.#id, this.color);
+            this.teleopBottomPort           = repository.getTeleopBottomPort(...this.#match.#id, this.color);
+            this.teleopUpperPort            = repository.getTeleopUpperPort(...this.#match.#id, this.color);
+            this.parks                      = repository.getParks(...this.#match.#id, this.color);
+            this.hangs                      = repository.getHangs(...this.#match.#id, this.color);
+            this.level                      = repository.getLevel(...this.#match.#id, this.color);
+            this.fouls                      = repository.getRegularFouls(...this.#match.#id, this.color);
+            this.techFouls                  = repository.getTechFouls(...this.#match.#id, this.color);
+        }
+
+        save() {
+            repository.setMatchPoints(this.matchPoints, ...this.#match.#id, this.color);
+            repository.setPhase(this.phase, ...this.#match.#id, this.color);
+            repository.setPowerCellsInPhase(this.powerCellsInPhase, ...this.#match.#id, this.color);
+            repository.setPositionControlTarget(this.positionControlTarget, ...this.#match.#id, this.color);
+            repository.setInitiationLine(this.initiationLine, ...this.#match.#id, this.color);
+            repository.setAutoBottomPort(this.autoBottomPort, ...this.#match.#id, this.color);
+            repository.setAutoUpperPort(this.autoUpperPort, ...this.#match.#id, this.color);
+            repository.setTeleopBottomPort(this.teleopBottomPort, ...this.#match.#id, this.color);
+            repository.setTeleopUpperPort(this.teleopUpperPort, ...this.#match.#id, this.color);
+            repository.setParks(this.parks, ...this.#match.#id, this.color);
+            repository.setHangs(this.hangs, ...this.#match.#id, this.color);
+            repository.setLevel(this.level, ...this.#match.#id, this.color);
+            repository.setRegularFouls(this.fouls, ...this.#match.#id, this.color);
+            repository.setTechFouls(this.techFouls, ...this.#match.#id, this.color);
+            repository.setShieldGeneratorEnergized(this.shieldGeneratorEnergized, ...this.#match.#id, this.color);
+            repository.setShieldGeneratorOperational(this.shieldGeneratorOperational, ...this.#match.#id, this.color);
+        }
+        
+        clear() {
+            this.phase = Match.Phase.NONE;
+            this.powerCellsInPhase = 0;
+            this.positionControlTarget = Match.ControlPanel.NO_COLOR;
+            this.initiationLine = 0;
+            this.autoBottomPort = 0;
+            this.autoUpperPort = 0;
+            this.teleopBottomPort = 0;
+            this.teleopUpperPort = 0;
+            this.parks = 0;
+            this.hangs = 0;
+            this.level = false;
+            this.fouls = 0;
+            this.techFouls = 0;
         }
     }
 

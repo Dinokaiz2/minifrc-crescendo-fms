@@ -14,19 +14,10 @@ let port = window.serialport;
  */
 export class FmsFirmware {
 
-    
+    static acceptingInput = true;
 
-    constructor() {
-        this.#red = new this.Alliance(Match.AllianceColor.Red, this);
-        this.#blue = new this.Alliance(Match.AllianceColor.Blue, this);
-    }
-
-    static get red() {
-        return this.#red;
-    }
-
-    static get blue() {
-        return this.#blue;
+    static get connected() {
+        return port.isOpen()
     }
 
     /**
@@ -37,116 +28,67 @@ export class FmsFirmware {
     static update(fieldPhase) {
         if (port.isOpen()) {
             port.write(fieldPhase.toString());
-            let byteArray = port.read()
-            if (byteArray != null) {
-                let str = new TextDecoder().decode(byteArray);
-                let regex = /#([1-6]),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-3]),([1-6]),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-3])\$/
-                let data = regex.exec(str)
-                if (data != null && data.length == 15) {
-                    this.#red.update(data.slice(1, 8));
-                    this.#blue.update(data.slice(8, 15));
+            if (acceptingInput) {
+                let byteArray = port.read()
+                if (byteArray != null) {
+                    let str = new TextDecoder().decode(byteArray);
+                    let regex = /#([1-6]),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-3]),([1-6]),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-3])\$/
+                    let data = regex.exec(str)
+                    if (data != null && data.length == 15) this.#updateMatch(data);
                 }
             }
         } else {
             port.open();
         }
     }
-    
-    static get connected() {
-        return port.isOpen()
-    }
 
-    /**
-     * Private class to hold data per alliance for Field.
-     */
-    static Alliance = class Alliance {
-
-        #data;
-
-        #DataMap = {
+    static #updateMatch(data) {
+        
+        let DataMap = {
             STAGE: 0,
             CAPACITY: 1,
             UPPER_AUTO: 2,
             BOTTOM_AUTO: 3,
             UPPER_TELEOP: 4,
             BOTTOM_TELEOP: 5,
-            POSITIONAL_CONTROL_COLOR: 6
+            POSITION_CONTROL_COLOR: 6
         };
-
-        #Stage = {
+    
+        let Stage = {
             PHASE_1_CAPACITY: 1,
             PHASE_2_CAPACITY: 2,
-            PHASE_2_ROTATIONAL_CONTROL: 3,
+            PHASE_2_ROTATION_CONTROL: 3,
             PHASE_3_CAPACITY: 4,
-            PHASE_3_POSITIONAL_CONTROL: 5,
+            PHASE_3_POSITION_CONTROL: 5,
             PHASE_3_ACTIVATED: 6
         };
-
-        #Color = {
+    
+        let Color = {
             NO_COLOR: 0,
             RED: 1,
             GREEN: 2,
             BLUE: 3
         };
 
-        constructor() {
-            this.#data = [0, 0, 0, 0, 0, 0, 0];
-        }
-
-        get autoUpperPort() {
-            return this.#data[this.#DataMap.UPPER_AUTO];
-        }
-        
-        get autoBottomPort() {
-            return this.#data[this.#DataMap.BOTTOM_AUTO];
-        }
-        
-        get teleopUpperPort() {
-            return this.#data[this.#DataMap.UPPER_TELEOP];
-        }
-        
-        get teleopBottomPort() {
-            return this.#data[this.#DataMap.BOTTOM_TELEOP]
+        function updateAlliance(alliance, data) {
+            if (data[DataMap.STAGE] == Stage.PHASE_1_CAPACITY) alliance.phase = Match.Phase.NONE;
+            else if (data[DataMap.STAGE] == Stage.PHASE_2_CAPACITY
+                || data[DataMap.STAGE] == Stage.PHASE_2_ROTATION_CONTROL) alliance.phase = Match.Phase.PHASE_1;
+            else if (data[DataMap.STAGE] == Stage.PHASE_3_CAPACITY
+                || data[DataMap.STAGE] == Stage.PHASE_3_POSITION_CONTROL) alliance.phase = Match.Phase.PHASE_2;
+            else if (data[DataMap.STAGE] == Stage.PHASE_3_ACTIVATED) alliance.phase = Match.Phase.PHASE_3;
+            alliance.powerCellsInPhase = parseInt(data[DataMap.CAPACITY]);
+            alliance.autoBottomPort = parseInt(data[DataMap.BOTTOM_AUTO]);
+            alliance.autoUpperPort = parseInt(data[DataMap.UPPER_AUTO]);
+            alliance.teleopBottomPort = parseInt(data[DataMap.BOTTOM_TELEOP]);
+            alliance.teleopUpperPort = parseInt(data[DataMap.UPPER_TELEOP]);
+            if (data[DataMap.POSITION_CONTROL_COLOR] == Color.NO_COLOR) alliance.positionControlTarget = Match.ControlPanel.NO_COLOR;
+            if (data[DataMap.POSITION_CONTROL_COLOR] == Color.RED) alliance.positionControlTarget = Match.ControlPanel.RED;
+            if (data[DataMap.POSITION_CONTROL_COLOR] == Color.GREEN) alliance.positionControlTarget = Match.ControlPanel.GREEN;
+            if (data[DataMap.POSITION_CONTROL_COLOR] == Color.BLUE) alliance.positionControlTarget = Match.ControlPanel.BLUE;
         }
         
-        /**
-         * The current activated phase.
-         * @type {Match.Phase}
-         */
-        get activatedPhase() {
-            if (this.#data[this.#DataMap.STAGE] == this.#Stage.PHASE_1_CAPACITY) return Match.Phase.NONE;
-            if (this.#data[this.#DataMap.STAGE] == this.#Stage.PHASE_2_CAPACITY
-                || this.#data[this.#DataMap.STAGE] == this.#Stage.PHASE_2_ROTATIONAL_CONTROL) return Match.Phase.PHASE_1;
-            if (this.#data[this.#DataMap.STAGE] == this.#Stage.PHASE_3_CAPACITY
-                || this.#data[this.#DataMap.STAGE] == this.#Stage.PHASE_3_POSITIONAL_CONTROL) return Match.Phase.PHASE_2;
-            if (this.#data[this.#DataMap.STAGE] == this.#Stage.PHASE_3_ACTIVATED) return Match.Phase.PHASE_3;
-        }
-        
-        /**
-         * The number of power cells that have been scored during this phase.
-         * @type {number}
-         */
-        get powerCellsInPhase() {
-            return this.#data[this.#DataMap.CAPACITY]
-        }
-        
-        /**
-         * The color target for positional control.
-         * @type {Match.ControlPanel}
-         */
-        get controlPanelTarget() {
-            if (this.#data[this.#DataMap.POSITIONAL_CONTROL_COLOR] == this.#Color.NO_COLOR) return Match.ControlPanel.NO_COLOR;
-            if (this.#data[this.#DataMap.POSITIONAL_CONTROL_COLOR] == this.#Color.RED) return Match.ControlPanel.RED;
-            if (this.#data[this.#DataMap.POSITIONAL_CONTROL_COLOR] == this.#Color.GREEN) return Match.ControlPanel.GREEN;
-            if (this.#data[this.#DataMap.POSITIONAL_CONTROL_COLOR] == this.#Color.BLUE) return Match.ControlPanel.BLUE;
-        }
-
-        update(data) {
-            this.#data = data;
-            this.#data.forEach((e, i, a) => a[i] = parseInt(a[i]));
-        }
+        updateAlliance(Competition.match.red, data.slice(1, 8));
+        updateAlliance(Competition.match.blue, data.slice(8, 15));
     }
-
-    static #red = new FmsFirmware.Alliance();
-    static #blue = new FmsFirmware.Alliance();
 }

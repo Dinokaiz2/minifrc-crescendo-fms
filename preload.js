@@ -1,7 +1,7 @@
-const { contextBridge } = require("electron");
+const { ipcRenderer, contextBridge } = require("electron");
 const Database = require('somewhere');
 const path = require('path');
-const SerialPort = require("serialport")
+const SerialPort = require("serialport");
 let db;
 try {
     db = new Database(path.join(__dirname, './database.json'))
@@ -16,14 +16,22 @@ let port = new SerialPort("COM4", { autoOpen: false, baudRate: 115200 }, (err) =
 contextBridge.exposeInMainWorld(
     "db",
     {
-        createLocation: () => path.join(__dirname, './database.json'),
-        database: (data) => new database(data),
         save: (match) => db.save('matches', match),
         findOne: (match) => db.findOne('matches', match),
         findAll: () => db.find('matches'),
         update: (id, change) => db.update('matches', id, change)
     }
 );
+
+contextBridge.exposeInMainWorld(
+    "teamDb",
+    {
+        save: (team) => db.save('teams', team),
+        findOne: (team) => db.findOne('teams', team),
+        findAll: () => db.find('teams'),
+        update: (id, change) => db.update('teams', id, change)
+    }
+)
 
 contextBridge.exposeInMainWorld(
     "serialport",
@@ -34,6 +42,11 @@ contextBridge.exposeInMainWorld(
         write: data => port.write(data)
     }
 );
+
+contextBridge.exposeInMainWorld("ipc", {
+    on: (channel, listener) => ipcRenderer.on(channel, listener),
+    send: (channel, ...args) => ipcRenderer.send(channel, ...args)
+});
 
 port.on("error", () => {}); // We check port.isOpen, only need an error stream for debugging
 

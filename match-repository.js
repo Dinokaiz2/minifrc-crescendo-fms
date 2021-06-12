@@ -90,9 +90,31 @@ window.onload = () => {
  * @return {Match[]}
  */
 export function getAllMatches() {
+    let matches = window.db.findAll();
+    matches.forEach((e, i, a) => a[i] = new Match(e.Number, e.Type, e.Set));
+    return matches;
+}
 
-    return window.db.findAll();
+/**
+ * Gets the red team numbers in the match with the specified number, type, and set.
+ * @param {number} number the match number
+ * @param {number} set the set the match is apart of
+ * @param {Match.Type} type the match type
+ * @return {number[]} an array of three red team numbers
+ */
+export function getRedTeams(number, set, type) {
+    return window.db.findOne({ Number: number, Set: set, Type: type }).RedTeams;
+}
 
+/**
+ * Gets the blue team numbers in the match with the specified number, type, and set.
+ * @param {number} number the match number
+ * @param {number} set the set the match is apart of
+ * @param {Match.Type} type the match type
+ * @return {number[]} an array of three blue team numbers
+ */
+export function getBlueTeams(number, set, type) {
+    return window.db.findOne({ Number: number, Set: set, Type: type }).BlueTeams;
 }
 
 /**
@@ -137,9 +159,7 @@ export function setResult(result, number, set, type) {
  * @return {boolean} whether the team was disqualified from this match
  */
 export function isDisqualified(teamNumber, matchNumber, set, type) {
- 
     return window.db.findOne({ Number: matchNumber, Set: set, Type: type }).Disqualifications.includes(teamNumber);
-
 }
 
 /**
@@ -151,9 +171,7 @@ export function isDisqualified(teamNumber, matchNumber, set, type) {
  * @param {Match.Type} type the match type
  */
 export function isSurrogate(teamNumber, matchNumber, set, type) {
-
     return window.db.findOne({ Number: matchNumber, Set: set, Type: type }).Surrogates.includes(teamNumber);
-
 }
 
 /**
@@ -169,7 +187,7 @@ export function isSurrogate(teamNumber, matchNumber, set, type) {
  */
 export function generateMatch(number, set, type, redTeams, blueTeams,
     redAllianceName = "", blueAllianceName = "") {
-    console.log("Generate Match ")
+    console.log("Generate Match")
 
     if (Object.keys(window.db.findOne({ Number: number, Set: set, Type: type })) == 0)
         window.db.save(
@@ -198,6 +216,7 @@ export function generateMatch(number, set, type, redTeams, blueTeams,
                 HangsBlue: 0,
                 LevelBlue: false,
                 PhaseBlue: Match.Phase.NONE,
+                PositionControlTargetBlue: Match.ControlPanel.NO_COLOR,
                 PowerCellsInPhaseBlue: 0,
                 ShieldGenOperationalBlue: false,
                 ShieldGenEnergizedBlue: false,
@@ -213,6 +232,7 @@ export function generateMatch(number, set, type, redTeams, blueTeams,
                 HangsRed: 0,
                 LevelRed: false,
                 PhaseRed: Match.Phase.NONE,
+                PositionControlTargetRed: Match.ControlPanel.NO_COLOR,
                 PowerCellsInPhaseRed: 0,
                 ShieldGenOperationalRed: false,
                 ShieldGenEnergizedRed: false
@@ -594,6 +614,33 @@ export function setPhase(phase, number, set, type, color) {
 
 }
 
+export function getPositionControlTarget(number, set, type, color) {
+    let target = Match.ControlPanel.NO_COLOR;
+
+    if (color == Match.AllianceColor.BLUE)
+        target = window.db.findOne({ Number: number, Set: set, Type: type }).PositionControlTargetBlue;
+    else if (color == Match.AllianceColor.RED)
+        target = window.db.findOne({ Number: number, Set: set, Type: type }).PositionControlTargetRed;
+    return target;
+}
+
+export function setPositionControlTarget(value, number, set, type, color) {
+    let where = {
+        Number: number,
+        Set: set,
+        Type: type
+    };
+
+    let change;
+
+    if (color == Match.AllianceColor.BLUE)
+        change = { BluePositionControlTarget: value }
+    else if (color == Match.AllianceColor.RED)
+        change = { RedPositionControlTarget: value }
+
+    window.db.update(window.db.findOne(where).id, change);
+}
+
 /**
  * Gets the number of power cells scored by the alliance in the current phase.
  * @param {number} number the match number
@@ -756,6 +803,7 @@ export function getShieldGeneratorOperational(number, set, type, color) {
         shieldGenOperational = window.db.findOne({ Number: number, Set: set, Type: type }).ShieldGenOperationalBlue;
     else if (color == Match.AllianceColor.RED)
         shieldGenOperational = window.db.findOne({ Number: number, Set: set, Type: type }).ShieldGenOperationalRed;
+    if (number == 1) console.log(shieldGenOperational);
     return shieldGenOperational;
 
 }

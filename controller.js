@@ -4,7 +4,10 @@
 
 import { FmsFirmware } from "./fms-firmware.js"
 import * as matchRepository from "./match-repository.js"
+import * as teamRepository from "./team-repository.js"
 import { Match } from "./match.js";
+import * as userInput from "./user-input.js";
+import * as sound from "./sound.js";
 
 // Pre-match initialization: If qualifications, pull from schedule. For playoffs, generate the next match.
 
@@ -20,9 +23,14 @@ const TELEOP_LENGTH = 135;
 // TODO: add a postMatch variable, true if we finished a match but haven't announced it?
 
 export class Competition {
-    static #inMatch = false;
+    static #view = Competition.View.MATCH;
     static #fieldPhase = Competition.FieldPhase.NO_ENTRY;
+    static #inMatch = false;
+    static #matchOver = false;
     static #match;
+    static #results;
+    static #previousRankings;
+    static #rankings;
 
     static #matchStartDate;
     static #startAutoGracePeriodHandle;
@@ -47,50 +55,91 @@ export class Competition {
         };
     }
 
+    static get View() {
+        return {
+            MATCH: 1,
+            RESULTS: 2,
+            RANKINGS: 3,
+            PREVIEW: 4
+        }
+    }
+
+    /**
+     * @type {Match}
+     */
+    static get match() {
+        return this.#match;
+    }
+
+    /** @type {Match} */
+    static get results() {
+        return this.#results;
+    }
+
+    /**
+     * Refreshes the state of the field. Should be called as often as communication with the
+     * FMS electronics should happen.
+     */
     static update() {
-        update();
+        FmsFirmware.update(Competition.fieldPhase);
+        if (this.match) userInput.sendMatchData();
+    }
+
+    static #loadMatch(match) {
+        this.#match = match;
+        if (this.#match.result == Match.Result.UNDETERMINED) {
+            userInput.loadedUndeterminedMatch();
+            this.#matchOver = false;
+        } else {
+            userInput.loadedDeterminedMatch();
+            this.#matchOver = true;
+        }
     }
 
     /**
      * Load the first match of the competition whose outcome is still undetermined.
      */
-    static loadMatch() {
-        // TODO: only allow in some field phases?
-        // Competition.#match = Match.getNextMatch();
-        
-    }
-    
-    static nextMatch() {
-
+    static loadNextMatch() {
+        this.#loadMatch(Match.getNextMatch());
     }
 
     static previousMatch() {
+        let matches = Match.getSortedMatches();
+        let index = matches.findIndex(m => m.number == this.match.number && m.set == this.match.set && m.type == this.match.type);
+        this.#loadMatch(matches[Math.max(index - 1, 0)]);
+    }
 
+    static nextMatch() {
+        let matches = Match.getSortedMatches();
+        let index = matches.findIndex(m => m.number == this.match.number && m.set == this.match.set && m.type == this.match.type);
+        this.#loadMatch(matches[Math.min(index + 1, matches.length - 1)]);
     }
 
     static #startAutoGracePeriod() {
         Competition.#fieldPhase = Competition.FieldPhase.AUTO_GRACE_PERIOD;
+        sound.startTeleop();
     }
 
     static #startTeleop() {
         Competition.#fieldPhase = Competition.FieldPhase.TELEOP;
-        // TODO: Play teleop start sound
     }
 
     static #startEndgame() {
         Competition.#fieldPhase = Competition.FieldPhase.ENDGAME;
-        // TODO: Play endgame start sound
+        sound.startEndgame()
     }
 
     static #startTeleopGracePeriod() {
         Competition.#inMatch = false;
+        Competition.#matchOver = true;
         Competition.#fieldPhase = Competition.FieldPhase.TELEOP_GRACE_PERIOD;
+        sound.endMatch();
     }
 
     static #endMatch() {
         Competition.#inMatch = false;
         Competition.#endMatchHandle = null;
-        // TODO: Play match end sound
+        userInput.matchEnded();
     }
 
     static startMatch() {
@@ -98,22 +147,87 @@ export class Competition {
         Competition.#fieldPhase = Competition.FieldPhase.AUTO;
         Competition.#matchStartDate = new Date();
 
-        Competition.#startAutoGracePeriodHandle = setTimeout(Competition.#startAutoGracePeriod, AUTO_GRACE_PERIOD_START * 1000);
-        Competition.#startTeleopHandle = setTimeout(Competition.#startTeleop, TELEOP_START * 1000);
-        Competition.#startEndgameHandle = setTimeout(Competition.#startEndgame, ENDGAME_START * 1000);
-        Competition.#startTeleopGracePeriodHandle = setTimeout(Competition.#startTeleopGracePeriod, TELEOP_GRACE_PERIOD_START * 1000);
-        Competition.#endMatchHandle = setTimeout(Competition.#endMatch, MATCH_END * 1000);
-        // TODO: Play match start sound
+        Competition.#startAutoGracePeriodHandle = setTimeout(() => Competition.#startAutoGracePeriod(), AUTO_GRACE_PERIOD_START * 1000);
+        Competition.#startTeleopHandle = setTimeout(() => Competition.#startTeleop(), TELEOP_START * 1000);
+        Competition.#startEndgameHandle = setTimeout(() => Competition.#startEndgame(), ENDGAME_START * 1000);
+        Competition.#startTeleopGracePeriodHandle = setTimeout(() => Competition.#startTeleopGracePeriod(), TELEOP_GRACE_PERIOD_START * 1000);
+        Competition.#endMatchHandle = setTimeout(() => Competition.#endMatch(), MATCH_END * 1000);
+
+        sound.startMatch();
     }
 
     static fieldFault() {
-        Competition.#inMatch = false;
+        FmsFirmware.acceptingInput = false;
+        this.#inMatch = false;
+        this.#matchOver = true;
         clearTimeout(Competition.#startAutoGracePeriodHandle);
         clearTimeout(Competition.#startTeleopHandle);
         clearTimeout(Competition.#startEndgameHandle);
         clearTimeout(Competition.#startTeleopGracePeriodHandle);
         clearTimeout(Competition.#endMatchHandle);
-        // TODO: Play field fault sound
+        sound.fieldFault();
+    }
+
+    static replayMatch() {
+        this.#matchOver = false;
+        this.match.clear();
+        this.readyForMatch();
+    }
+
+    static saveResults() {
+        this.#match.determineResult();
+        this.#match.save();
+        this.#previousRankings = this.#rankings;
+        this.#rankings = this.calculateRankings();
+        this.#results = this.#match;
+    }
+
+    static showMatch() {
+        this.#view = Competition.View.MATCH;
+    }
+
+    static showResults() {
+        this.#view = Competition.View.RESULTS;
+        this.loadNextMatch();
+        sound.showResults();
+    }
+
+    static showRankings() {
+        if (!this.#rankings) this.#rankings = this.calculateRankings();
+        this.#view = Competition.View.RANKINGS;
+    }
+
+    static calculateRankings() {
+        let teams = teamRepository.getAllTeams();
+        teams.forEach(team => team.calculateFields())
+        teams.sort((t1, t2) => {
+            if (t1.rankingScore != t2.rankingScore) return t2.rankingScore - t1.rankingScore;
+            else if (t1.autoPoints != t2.autoPoints) return t2.autoPoints - t1.autoPoints;
+            else if (t1.endgamePoints != t2.endgamePoints) return t2.endgamePoints - t1.endgamePoints;
+            return (t2.teleopPowerCellPoints + t2.controlPanelPoints) - (t2.teleopPowerCellPoints + t1.controlPanelPoints);
+        });
+        return teams;
+    }
+
+    static noEntry() {
+        this.#fieldPhase = Competition.FieldPhase.NO_ENTRY;
+    }
+
+    static safeToEnter() {
+        this.#fieldPhase = Competition.FieldPhase.SAFE_TO_ENTER;
+    }
+
+    static readyForMatch() {
+        this.#fieldPhase = Competition.FieldPhase.READY_FOR_MATCH;
+        FmsFirmware.acceptingInput = true;
+    }
+
+    static get rankings() {
+        return this.#rankings;
+    }
+
+    static get previousRankings() {
+        return this.#previousRankings;
     }
 
     /**
@@ -144,6 +258,10 @@ export class Competition {
         return Competition.#inMatch;
     }
 
+    static get matchOver() {
+        return this.#matchOver;
+    }
+
     static get inAuto() {
         return Competition.fieldPhase == Competition.FieldPhase.AUTO;
     }
@@ -162,76 +280,30 @@ export class Competition {
      * @type {Competition.FieldPhase}
      */
     static get fieldPhase() {
-        return Competition.#fieldPhase
+        return Competition.#fieldPhase;
     }
-}
 
-/**
- * Refreshes the state of the field. Should be called as often as communication with the
- * FMS electronics should happen.
- */
-function update() {
-    FmsFirmware.update(Competition.fieldPhase);
-    matchRepository.setMatchPoints(100, 1, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED);
-    matchRepository.getMatchPoints(1, 0, Match.Type.QUALIFICATION, Match.AllianceColor.RED);
+    /**
+     * @type {Competition.View}
+     */
+    static get view() {
+        return Competition.#view;
+    }
 }
 
 // Check FMS firmware stream 50 times per second, starting when this module is imported
 // TODO: make sure this doesn't get called more than once when imported multiple times?
-setInterval(update, 100);
-console.log("Started updating FMS firmware.");
+setInterval(() => Competition.update(), 100);
+// Wait before loading match so control window is ready
+setTimeout(() => Competition.loadNextMatch(), 1000);
+console.log("Controller started.");
 
-matchRepository.generateMatch(1, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(2, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(3, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(4, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(5, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(6, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(7, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(8, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(9, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(10, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(11, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(12, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(13, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(14, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(15, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(16, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(17, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(18, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(19, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(20, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(21, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(22, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(23, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(24, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(25, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(26, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(27, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(28, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(29, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
-matchRepository.generateMatch(30, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
+matchRepository.generateMatch(1, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6]);
+matchRepository.generateMatch(1, 1, Match.Type.SEMIFINAL, [1, 2, 3], [4, 5, 6]);
 
-
-// Idea: separate window for control instead of cryptic hotkeys
-// Planned states:
-// NO_ENTRY: Fouls, Endgame, Announce score, Replay match, Safe to enter field
-// SAFE_TO_ENTER: Announce score, Replay match, Not safe to enter field, Ready for next match (must announce/replay first)
-// READY_FOR_MATCH: Start match, Safe to enter field
-// AUTO: Fouls, Field fault
-// TELEOP: Fouls, Endgame, Field fault
-// ENDGAME: Fouls, Endgame, Field fault
-
-// Expose functions to get UI info
-
-// field.js - Keeps track of FMS electronics state and sends relevant data
-// user-input.js - Gets user input OR control-window.js receives user input from separate control window
-// sound.js - sound effects
-
-
-// get game state from electronics
-// get game state from control window
-// get field state transitions from control window
-// keep the Match updated with that info
-
-// ui in renderer.js just needs to know current match and field state, rest of the state it can pull straight from the match
+teamRepository.generateTeam(1, "team 1");
+teamRepository.generateTeam(2, "team 2");
+teamRepository.generateTeam(3, "team 3");
+teamRepository.generateTeam(4, "team 4");
+teamRepository.generateTeam(5, "team 5");
+teamRepository.generateTeam(6, "team 6");
