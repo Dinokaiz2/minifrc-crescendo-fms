@@ -1,14 +1,14 @@
 const { ipcRenderer, contextBridge } = require("electron");
 const Database = require('somewhere');
 const path = require('path');
-const SerialPort = require("serialport");
+const { SerialPort } = require("serialport");
 let db;
 try {
     db = new Database(path.join(__dirname, './database.json'))
 } catch (err) {
     console.log("Failed to load database.", err)
 }
-let port = new SerialPort("COM4", { autoOpen: false, baudRate: 115200 }, (err) => { if (err) console.log("Open failed: ", err) });
+let port = new SerialPort({ path: "COM4", autoOpen: false, baudRate: 115200 }, (err) => { if (err) console.log("Open failed: ", err) });
 
 
 // Expose API for persisting match and team data

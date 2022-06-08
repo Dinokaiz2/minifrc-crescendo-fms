@@ -5,14 +5,14 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "install": ".\\node_modules\\.bin\\electron-rebuild.cmd"
+    "rebuild": "./node_modules/.bin/electron-rebuild"
   },
   "license": "GPLv3",
   "dependencies": {
     "electron": "^12.0.1",
     "electron-db": "^0.15.7",
     "jquery": "^3.6.0",
-    "serialport": "^9.1.0",
+    "serialport": "^10.3.0",
     "somewhere": "^1.0.1"
   },
   "devDependencies": {

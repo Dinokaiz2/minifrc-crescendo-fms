@@ -47,7 +47,6 @@ function updateTimer() {
         else $("#timer #bar").width("0%");
         $("#timer #time").text("0");
     }
-    // TODO: Color
 }
 
 function updateMatchName(name) {
