@@ -125,9 +125,7 @@ export function getBlueTeams(number, set, type) {
  * @return {Match.Result} the match result (Match.Result.UNDETERMINED if not yet played)
  */
 export function getResult(number, set, type) {
-
     return window.db.findOne({ Number: number, Set: set, Type: type }).Results;
-
 }
 
 /**
@@ -138,15 +136,7 @@ export function getResult(number, set, type) {
  * @param {Match.Type} type 
  */
 export function setResult(result, number, set, type) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
-    window.db.update(window.db.findOne(where).id, { Results: result });
-
+    window.db.update(window.db.findOne({ Number: number, Set: set, Type: type }).id, { Results: result });
 }
 
 /**
@@ -185,61 +175,37 @@ export function isSurrogate(teamNumber, matchNumber, set, type) {
  * @param {string} redAllianceName name to use for the red alliance in a playoff match
  * @param {string} blueAllianceName name to use for the blue alliance in a playoff match
  */
-export function generateMatch(number, set, type, redTeams, blueTeams,
-    redAllianceName = "", blueAllianceName = "") {
-    console.log("Generate Match")
+export function generateMatch(number, set, type, redTeams, blueTeams, redAllianceName = "", blueAllianceName = "") {
+    if (Object.keys(window.db.findOne({ Number: number, Set: set, Type: type })) == 0) {
+        window.db.save({
+            Number: number,
+            Set: set,
+            Type: type,
+            RedTeams: redTeams,
+            BlueTeams: blueTeams,
+            RedAllianceName: redAllianceName,
+            BlueAllianceName: blueAllianceName,
+            Disqualifications: [],
+            Surrogates: [],
+            MatchPointsBlue: 0,
+            MatchPointsRed: 0,
+            Results: Match.Result.UNDETERMINED,
 
-    if (Object.keys(window.db.findOne({ Number: number, Set: set, Type: type })) == 0)
-        window.db.save(
-            {
-                Number: number,
-                Set: set,
-                Type: type,
-                RedTeams: redTeams,
-                BlueTeams: blueTeams,
-                RedAllianceName: redAllianceName,
-                BlueAllianceName: blueAllianceName,
-                Disqualifications: [],
-                Surrogates: [],
-                MatchPointsBlue: 0,
-                MatchPointsRed: 0,
-                Results: Match.Result.UNDETERMINED,
+            RegularFoulsBlue: 0,
+            TechFoulsBlue: 0,
+            HabCrossBlue: [0, 0, 0],
+            HatchBlue: Array(20).fill(0),
+            CargoBlue: Array(20).fill(0),
+            HabClimbBlue: [0, 0, 0],
 
-                RegularFoulsBlue: 0,
-                TechFoulsBlue: 0,
-                InitiationLineBlue: 0,
-                AutoUpperPortBlue: 0,
-                AutoBottomPortBlue: 0,
-                TeleopBottomPortBlue: 0,
-                TeleopUpperPortBlue: 0,
-                ParksBlue: 0,
-                HangsBlue: 0,
-                LevelBlue: false,
-                PhaseBlue: Match.Phase.NONE,
-                PositionControlTargetBlue: Match.ControlPanel.NO_COLOR,
-                PowerCellsInPhaseBlue: 0,
-                ShieldGenOperationalBlue: false,
-                ShieldGenEnergizedBlue: false,
-                
-                RegularFoulsRed: 0,
-                TechFoulsRed: 0,
-                InitiationLineRed: 0,
-                AutoUpperPortRed: 0,
-                AutoBottomPortRed: 0,
-                TeleopBottomPortRed: 0,
-                TeleopUpperPortRed: 0,
-                ParksRed: 0,
-                HangsRed: 0,
-                LevelRed: false,
-                PhaseRed: Match.Phase.NONE,
-                PositionControlTargetRed: Match.ControlPanel.NO_COLOR,
-                PowerCellsInPhaseRed: 0,
-                ShieldGenOperationalRed: false,
-                ShieldGenEnergizedRed: false
-
-
-            }
-        );
+            RegularFoulsRed: 0,
+            TechFoulsRed: 0,
+            HabCrossRed: [0, 0, 0],
+            HatchRed: Array(20).fill(0),
+            CargoRed: Array(20).fill(0),
+            HabClimbRed: [0, 0, 0],
+        });
+    }
 }
 
 /**
@@ -251,15 +217,12 @@ export function generateMatch(number, set, type, redTeams, blueTeams,
  * @return {number} the number of match points for this match
  */
 export function getMatchPoints(number, set, type, color) {
-
     let points = 0;
-
     if (color == Match.AllianceColor.BLUE)
         points = window.db.findOne({ Number: number, Set: set, Type: type }).MatchPointsBlue;
     else if (color == Match.AllianceColor.RED)
         points = window.db.findOne({ Number: number, Set: set, Type: type }).MatchPointsRed;
     return points;
-
 }
 
 
@@ -272,420 +235,74 @@ export function getMatchPoints(number, set, type, color) {
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
 export function setMatchPoints(points, number, set, type, color) {
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
     let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { MatchPointsBlue: points }
-    else if (color == Match.AllianceColor.RED)
-        change = { MatchPointsRed: points }
-
-    window.db.update(window.db.findOne(where).id, change);
+    if (color == Match.AllianceColor.BLUE) change = { MatchPointsBlue: points }
+    else if (color == Match.AllianceColor.RED) change = { MatchPointsRed: points }
+    window.db.update(window.db.findOne({ Number: number, Set: set, Type: type }).id, change);
 }
 
-/**
- * Gets the number of initiation line crossings by the specified alliance in the match.
- * @param {number} number the match number
- * @param {number} set the set the match is apart of
- * @param {Match.Type} type the match type
- * @param {Match.AllianceColor} color the alliance to get the value for
- * @param {number} the number of initiation line crossings for this match
- */
-export function getInitiationLine(number, set, type, color) {
-
+export function getHabCrossings(number, set, type, color) {
     let crossed = 0;
-
     if (color == Match.AllianceColor.BLUE)
-        crossed = window.db.findOne({ Number: number, Set: set, Type: type }).InitiationLineBlue;
+        crossed = window.db.findOne({ Number: number, Set: set, Type: type }).HabCrossBlue;
     else if (color == Match.AllianceColor.RED)
-        crossed = window.db.findOne({ Number: number, Set: set, Type: type }).InitiationLineRed;
+        crossed = window.db.findOne({ Number: number, Set: set, Type: type }).HabCrossRed;
     return crossed;
-
 }
 
-/**
- * Sets the number of initiation line crossings by the specified alliance in the match.
- * @param {number} crossings the number of initiation line crossings to set
- * @param {number} number the match number
- * @param {number} set the set the match is apart of
- * @param {Match.Type} type the match type
- * @param {Match.AllianceColor} color the alliance to get the value for
- */
-export function setInitiationLine(crossings, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
+export function setHabCrossings(crossings, number, set, type, color) {
     let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { InitiationLineBlue: crossings }
-    else if (color == Match.AllianceColor.RED)
-        change = { InitiationLineRed: crossings }
-
-    window.db.update(window.db.findOne(where).id, change);
-
+    if (color == Match.AllianceColor.BLUE) change = { HabCrossBlue: crossings }
+    else if (color == Match.AllianceColor.RED) change = { HabCrossRed: crossings }
+    window.db.update(window.db.findOne({ Number: number, Set: set, Type: type }).id, change);
 }
 
-export function getAutoBottomPort(number, set, type, color) {
-
-    let powerCells = 0;
-
+export function getHatches(number, set, type, color) {
+    let crossed = 0;
     if (color == Match.AllianceColor.BLUE)
-        powerCells = window.db.findOne({ Number: number, Set: set, Type: type }).AutoBottomPortBlue;
+        crossed = window.db.findOne({ Number: number, Set: set, Type: type }).HatchBlue;
     else if (color == Match.AllianceColor.RED)
-        powerCells = window.db.findOne({ Number: number, Set: set, Type: type }).AutoBottomPortRed;
-    return powerCells;
-
+        crossed = window.db.findOne({ Number: number, Set: set, Type: type }).HatchRed;
+    return crossed;
 }
 
-export function setAutoBottomPort(cells, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
+export function setHatches(crossings, number, set, type, color) {
     let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { AutoBottomPortBlue: cells }
-    else if (color == Match.AllianceColor.RED)
-        change = { AutoBottomPortRed: cells }
-
-    window.db.update(window.db.findOne(where).id, change);
-
+    if (color == Match.AllianceColor.BLUE) change = { HatchBlue: crossings }
+    else if (color == Match.AllianceColor.RED) change = { HatchRed: crossings }
+    window.db.update(window.db.findOne({ Number: number, Set: set, Type: type }).id, change);
 }
 
-export function getAutoUpperPort(number, set, type, color) {
-
-    let powerCells = 0;
-
+export function getCargo(number, set, type, color) {
+    let crossed = 0;
     if (color == Match.AllianceColor.BLUE)
-        powerCells = window.db.findOne({ Number: number, Set: set, Type: type }).AutoUpperPortBlue;
+        crossed = window.db.findOne({ Number: number, Set: set, Type: type }).CargoBlue;
     else if (color == Match.AllianceColor.RED)
-        powerCells = window.db.findOne({ Number: number, Set: set, Type: type }).AutoUpperPortRed;
-    return powerCells;
-
+        crossed = window.db.findOne({ Number: number, Set: set, Type: type }).CargoRed;
+    return crossed;
 }
 
-export function setAutoUpperPort(cells, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
+export function setCargo(crossings, number, set, type, color) {
     let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { AutoUpperPortBlue: cells }
-    else if (color == Match.AllianceColor.RED)
-        change = { AutoUpperPortRed: cells }
-
-    window.db.update(window.db.findOne(where).id, change);
-
+    if (color == Match.AllianceColor.BLUE) change = { CargoBlue: crossings }
+    else if (color == Match.AllianceColor.RED) change = { CargoRed: crossings }
+    window.db.update(window.db.findOne({ Number: number, Set: set, Type: type }).id, change);
 }
 
-export function getTeleopBottomPort(number, set, type, color) {
-
-    let powerCells = 0;
-
+export function getHabClimbs(number, set, type, color) {
+    let crossed = 0;
     if (color == Match.AllianceColor.BLUE)
-        powerCells = window.db.findOne({ Number: number, Set: set, Type: type }).TeleopBottomPortBlue;
+        crossed = window.db.findOne({ Number: number, Set: set, Type: type }).HabClimbBlue;
     else if (color == Match.AllianceColor.RED)
-        powerCells = window.db.findOne({ Number: number, Set: set, Type: type }).TeleopBottomPortRed;
-    return powerCells;
-
+        crossed = window.db.findOne({ Number: number, Set: set, Type: type }).HabClimbRed;
+    return crossed;
 }
 
-export function setTeleopBottomPort(cells, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
+export function setHabClimbs(crossings, number, set, type, color) {
     let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { TeleopBottomPortBlue: cells }
-    else if (color == Match.AllianceColor.RED)
-        change = { TeleopBottomPortRed: cells }
-
-    window.db.update(window.db.findOne(where).id, change);
-
-}
-
-export function getTeleopUpperPort(number, set, type, color) {
-
-    let powerCells = 0;
-
-    if (color == Match.AllianceColor.BLUE)
-        powerCells = window.db.findOne({ Number: number, Set: set, Type: type }).TeleopUpperPortBlue;
-    else if (color == Match.AllianceColor.RED)
-        powerCells = window.db.findOne({ Number: number, Set: set, Type: type }).TeleopUpperPortRed;
-    return powerCells;
-
-}
-
-export function setTeleopUpperPort(cells, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
-    let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { TeleopUpperPortBlue: cells }
-    else if (color == Match.AllianceColor.RED)
-        change = { TeleopUpperPortRed: cells }
-
-    window.db.update(window.db.findOne(where).id, change);
-
-}
-
-export function getParks(number, set, type, color) {
-
-    let parks = 0;
-
-    if (color == Match.AllianceColor.BLUE)
-        parks = window.db.findOne({ Number: number, Set: set, Type: type }).ParksBlue;
-    else if (color == Match.AllianceColor.RED)
-        parks = window.db.findOne({ Number: number, Set: set, Type: type }).ParksRed;
-    return parks;
-
-}
-
-export function setParks(parks, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
-    let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { ParksBlue: parks }
-    else if (color == Match.AllianceColor.RED)
-        change = { ParksRed: parks }
-
-    window.db.update(window.db.findOne(where).id, change);
-
-}
-
-export function getHangs(number, set, type, color) {
-
-    let hangs = 0;
-
-    if (color == Match.AllianceColor.BLUE)
-        hangs = window.db.findOne({ Number: number, Set: set, Type: type }).HangsBlue;
-    else if (color == Match.AllianceColor.RED)
-        hangs = window.db.findOne({ Number: number, Set: set, Type: type }).HangsRed;
-    return hangs;
-
-}
-
-export function setHangs(hangs, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
-    let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { HangsBlue: hangs }
-    else if (color == Match.AllianceColor.RED)
-        change = { HangsRed: hangs }
-
-    window.db.update(window.db.findOne(where).id, change);
-
-}
-
-/**
- * Checks if the alliance's rung was level.
- * @param {number} number the match number
- * @param {number} set the set the match is apart of
- * @param {Match.Type} type the match type
- * @param {Match.AllianceColor} color the alliance to get the value for
- * @return {boolean} `true` if the rung was level
- */
-export function getLevel(number, set, type, color) {
-
-    let level = false;
-
-    if (color == Match.AllianceColor.BLUE)
-        level = window.db.findOne({ Number: number, Set: set, Type: type }).LevelBlue;
-    else if (color == Match.AllianceColor.RED)
-        level = window.db.findOne({ Number: number, Set: set, Type: type }).LevelRed;
-    return level;
-
-}
-
-/**
- * Sets if the alliance's rung was level.
- * @param {boolean} level whether the rung was level
- * @param {number} number the match number
- * @param {number} set the set the match is apart of
- * @param {Match.Type} type the match type
- * @param {Match.AllianceColor} color the alliance to get the value for
- */
-export function setLevel(level, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
-    let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { LevelBlue: level }
-    else if (color == Match.AllianceColor.RED)
-        change = { LevelRed: level }
-
-    window.db.update(window.db.findOne(where).id, change);
-}
-
-/**
- * Gets the highest Infinite Recharge phase the alliance has activated.
- * @param {number} number the match number
- * @param {number} set the set the match is apart of
- * @param {Match.Type} type the match type
- * @param {Match.AllianceColor} color the alliance to get the value for
- * @return {Match.Phase} the highest phase the alliance has activated
- */
-export function getPhase(number, set, type, color) {
-
-    let phase = Match.Phase.NONE;
-
-    if (color == Match.AllianceColor.BLUE)
-        phase = window.db.findOne({ Number: number, Set: set, Type: type }).PhaseBlue;
-    else if (color == Match.AllianceColor.RED)
-        phase = window.db.findOne({ Number: number, Set: set, Type: type }).PhaseRed;
-    return phase;
-
-}
-
-/**
- * Sets the highest Infinite Recharge phase the alliance has activated.
- * @param {Match.Phase} phase the phase to set
- * @param {number} number the match number
- * @param {number} set the set the match is apart of
- * @param {Match.Type} type the match type
- * @param {Match.AllianceColor} color the alliance to get the value for
- */
-export function setPhase(phase, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
-    let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { PhaseBlue: phase }
-    else if (color == Match.AllianceColor.RED)
-        change = { PhaseRed: phase }
-
-    window.db.update(window.db.findOne(where).id, change);
-
-}
-
-export function getPositionControlTarget(number, set, type, color) {
-    let target = Match.ControlPanel.NO_COLOR;
-
-    if (color == Match.AllianceColor.BLUE)
-        target = window.db.findOne({ Number: number, Set: set, Type: type }).PositionControlTargetBlue;
-    else if (color == Match.AllianceColor.RED)
-        target = window.db.findOne({ Number: number, Set: set, Type: type }).PositionControlTargetRed;
-    return target;
-}
-
-export function setPositionControlTarget(value, number, set, type, color) {
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
-    let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { BluePositionControlTarget: value }
-    else if (color == Match.AllianceColor.RED)
-        change = { RedPositionControlTarget: value }
-
-    window.db.update(window.db.findOne(where).id, change);
-}
-
-/**
- * Gets the number of power cells scored by the alliance in the current phase.
- * @param {number} number the match number
- * @param {number} set the set the match is apart of
- * @param {Match.Type} type the match type
- * @param {Match.AllianceColor} color the alliance to get the value for
- * @return {number} the number of power cells scored by the alliance in the current phase
- */
-export function getPowerCellsInPhase(number, set, type, color) {
-
-    let powerCellsInPhase = 0;
-
-    if (color == Match.AllianceColor.BLUE)
-        powerCellsInPhase = window.db.findOne({ Number: number, Set: set, Type: type }).PowerCellsInPhaseBlue;
-    else if (color == Match.AllianceColor.RED)
-        powerCellsInPhase = window.db.findOne({ Number: number, Set: set, Type: type }).PowerCellsInPhaseRed;
-    return powerCellsInPhase;
-
-}
-
-/**
- * Sets the number of power cells scored by the alliance in the current phase.
- * @param {number} cells number of power cells to set
- * @param {number} number the match number
- * @param {number} set the set the match is apart of
- * @param {Match.Type} type the match type
- * @param {Match.AllianceColor} color the alliance to get the value for
- */
-export function setPowerCellsInPhase(cells, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
-    let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { PowerCellsInPhaseBlue: cells }
-    else if (color == Match.AllianceColor.RED)
-        change = { PowerCellsInPhaseRed: cells }
-
-    window.db.update(window.db.findOne(where).id, change);
-
+    if (color == Match.AllianceColor.BLUE) change = { HabClimbBlue: crossings }
+    else if (color == Match.AllianceColor.RED) change = { HabClimbRed: crossings }
+    window.db.update(window.db.findOne({ Number: number, Set: set, Type: type }).id, change);
 }
 
 /**
@@ -698,9 +315,7 @@ export function setPowerCellsInPhase(cells, number, set, type, color) {
  * @return {number} the number of regular fouls awarded in this match
  */
 export function getRegularFouls(number, set, type, color) {
-
     let regularFouls = 0;
-
     if (color == Match.AllianceColor.BLUE)
         regularFouls = window.db.findOne({ Number: number, Set: set, Type: type }).RegularFoulsBlue;
     else if (color == Match.AllianceColor.RED)
@@ -719,22 +334,10 @@ export function getRegularFouls(number, set, type, color) {
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
 export function setRegularFouls(fouls, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
     let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { RegularFoulsBlue: fouls }
-    else if (color == Match.AllianceColor.RED)
-        change = { RegularFoulsRed: fouls }
-
-    window.db.update(window.db.findOne(where).id, change);
-
+    if (color == Match.AllianceColor.BLUE) change = { RegularFoulsBlue: fouls }
+    else if (color == Match.AllianceColor.RED) change = { RegularFoulsRed: fouls }
+    window.db.update(window.db.findOne({ Number: number, Set: set, Type: type }).id, change);
 }
 
 /**
@@ -747,9 +350,7 @@ export function setRegularFouls(fouls, number, set, type, color) {
  * @return {number} the number of tech fouls awarded in this match
  */
 export function getTechFouls(number, set, type, color) {
-
     let techFouls = 0;
-
     if (color == Match.AllianceColor.BLUE)
         techFouls = window.db.findOne({ Number: number, Set: set, Type: type }).TechFoulsBlue;
     else if (color == Match.AllianceColor.RED)
@@ -768,122 +369,40 @@ export function getTechFouls(number, set, type, color) {
  * @param {Match.AllianceColor} color the alliance to get the value for
  */
 export function setTechFouls(fouls, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
     let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { TechFoulsBlue: fouls }
-    else if (color == Match.AllianceColor.RED)
-        change = { TechFoulsRed: fouls }
-
-    window.db.update(window.db.findOne(where).id, change);
-
+    if (color == Match.AllianceColor.BLUE) change = { TechFoulsBlue: fouls }
+    else if (color == Match.AllianceColor.RED) change = { TechFoulsRed: fouls }
+    window.db.update(window.db.findOne({ Number: number, Set: set, Type: type }).id, change);
 }
 
-/**
- * Checks if the Shield Generator Operational ranking point was awarded to the specified
- * alliance in the match.
- * @param {number} number the match number
- * @param {number} set the set the match is apart of
- * @param {Match.Type} type the match type
- * @param {Match.AllianceColor} color the alliance to get the value for
- * @return {boolean} whether the ranking point was awarded
- */
-export function getShieldGeneratorOperational(number, set, type, color) {
-
-    let shieldGenOperational = false;
-
+export function isRocketComplete(number, set, type, color) {
+    let rocketComplete = false;
     if (color == Match.AllianceColor.BLUE)
-        shieldGenOperational = window.db.findOne({ Number: number, Set: set, Type: type }).ShieldGenOperationalBlue;
+        rocketComplete = window.db.findOne({ Number: number, Set: set, Type: type }).RocketCompleteBlue;
     else if (color == Match.AllianceColor.RED)
-        shieldGenOperational = window.db.findOne({ Number: number, Set: set, Type: type }).ShieldGenOperationalRed;
-    if (number == 1) console.log(shieldGenOperational);
-    return shieldGenOperational;
-
+        rocketComplete = window.db.findOne({ Number: number, Set: set, Type: type }).RocketCompleteRed;
+    return rocketComplete;
 }
 
-
-/**
- * Sets if the Shield Generator Operational ranking point was awarded to the specified
- * alliance in the match.
- * @param {boolean} operational whether the ranking point was awarded
- * @param {number} number the match number
- * @param {number} set the set the match is apart of
- * @param {Match.Type} type the match type
- * @param {Match.AllianceColor} color the alliance to get the value for
- */
-export function setShieldGeneratorOperational(operational, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
+export function setRocketComplete(operational, number, set, type, color) {
     let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { ShieldGenOperationalBlue: operational }
-    else if (color == Match.AllianceColor.RED)
-        change = { ShieldGenOperationalRed: operational }
-
-    window.db.update(window.db.findOne(where).id, change);
-
+    if (color == Match.AllianceColor.BLUE) change = { RocketCompleteBlue: operational }
+    else if (color == Match.AllianceColor.RED) change = { RocketCompleteRed: operational }
+    window.db.update(window.db.findOne({ Number: number, Set: set, Type: type }).id, change);
 }
 
-/**
- * Checks if the Shield Generator Energized ranking point was awarded to the specified
- * alliance in the match.
- * @param {number} number the match number
- * @param {number} set the set the match is apart of
- * @param {Match.Type} type the match type
- * @param {Match.AllianceColor} color the alliance to get the value for
- * @return {boolean} whether the ranking point was awarded
- */
-export function getShieldGeneratorEnergized(number, set, type, color) {
-
-    let shieldGenEnergized = false;
-
+export function isDocked(number, set, type, color) {
+    let docked = false;
     if (color == Match.AllianceColor.BLUE)
-        shieldGenEnergized = window.db.findOne({ Number: number, Set: set, Type: type }).ShieldGenEnergizedBlue;
+        docked = window.db.findOne({ Number: number, Set: set, Type: type }).DockedBlue;
     else if (color == Match.AllianceColor.RED)
-        shieldGenEnergized = window.db.findOne({ Number: number, Set: set, Type: type }).ShieldGenEnergizedRed;
-    return shieldGenEnergized;
-
-
+        docked = window.db.findOne({ Number: number, Set: set, Type: type }).DockedRed;
+    return docked;
 }
 
-
-/**
- * Sets if the Shield Generator Energized ranking point was awarded to the specified
- * alliance in the match.
- * @param {boolean} energized whether the ranking point was awarded
- * @param {number} number the match number
- * @param {number} set the set the match is apart of
- * @param {Match.Type} type the match type
- * @param {Match.AllianceColor} color the alliance to get the value for
- */
-export function setShieldGeneratorEnergized(energized, number, set, type, color) {
-
-    let where = {
-        Number: number,
-        Set: set,
-        Type: type
-    };
-
+export function setDocked(operational, number, set, type, color) {
     let change;
-
-    if (color == Match.AllianceColor.BLUE)
-        change = { ShieldGenEnergizedBlue: energized }
-    else if (color == Match.AllianceColor.RED)
-        change = { ShieldGenEnergizedRed: energized }
-
-    window.db.update(window.db.findOne(where).id, change);
-
+    if (color == Match.AllianceColor.BLUE) change = { DockedBlue: operational }
+    else if (color == Match.AllianceColor.RED) change = { DockedRed: operational }
+    window.db.update(window.db.findOne({ Number: number, Set: set, Type: type }).id, change);
 }

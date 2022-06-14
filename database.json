@@ -1,1 +1,306 @@
-{"matches":[{"Number":1,"Set":0,"Type":"Qualification","RedTeams":[1,2,3],"BlueTeams":[4,5,6],"RedAllianceName":"","BlueAllianceName":"","Disqualifications":[],"Surrogates":[],"MatchPointsBlue":0,"MatchPointsRed":0,"Results":"Tie","RegularFoulsBlue":0,"TechFoulsBlue":0,"InitiationLineBlue":0,"AutoUpperPortBlue":0,"AutoBottomPortBlue":0,"TeleopBottomPortBlue":0,"TeleopUpperPortBlue":0,"ParksBlue":0,"HangsBlue":0,"LevelBlue":false,"PhaseBlue":1,"PositionControlTargetBlue":0,"PowerCellsInPhaseBlue":0,"ShieldGenOperationalBlue":false,"ShieldGenEnergizedBlue":false,"RegularFoulsRed":0,"TechFoulsRed":0,"InitiationLineRed":0,"AutoUpperPortRed":0,"AutoBottomPortRed":0,"TeleopBottomPortRed":0,"TeleopUpperPortRed":0,"ParksRed":0,"HangsRed":0,"LevelRed":false,"PhaseRed":1,"PositionControlTargetRed":0,"PowerCellsInPhaseRed":0,"ShieldGenOperationalRed":false,"ShieldGenEnergizedRed":false,"id":"b1802ca0-7303-4402-cb25-bddc0ca34aa8","RedPositionControlTarget":0,"BluePositionControlTarget":0},{"Number":1,"Set":1,"Type":"Semifinal","RedTeams":[1,2,3],"BlueTeams":[4,5,6],"RedAllianceName":"","BlueAllianceName":"","Disqualifications":[],"Surrogates":[],"MatchPointsBlue":10,"MatchPointsRed":10,"Results":"Tie","RegularFoulsBlue":0,"TechFoulsBlue":0,"InitiationLineBlue":1,"AutoUpperPortBlue":0,"AutoBottomPortBlue":0,"TeleopBottomPortBlue":0,"TeleopUpperPortBlue":0,"ParksBlue":1,"HangsBlue":0,"LevelBlue":false,"PhaseBlue":1,"PositionControlTargetBlue":0,"PowerCellsInPhaseBlue":0,"ShieldGenOperationalBlue":false,"ShieldGenEnergizedBlue":false,"RegularFoulsRed":0,"TechFoulsRed":0,"InitiationLineRed":1,"AutoUpperPortRed":0,"AutoBottomPortRed":0,"TeleopBottomPortRed":0,"TeleopUpperPortRed":0,"ParksRed":1,"HangsRed":0,"LevelRed":false,"PhaseRed":1,"PositionControlTargetRed":0,"PowerCellsInPhaseRed":0,"ShieldGenOperationalRed":false,"ShieldGenEnergizedRed":false,"id":"1b304601-e754-486e-f3f7-5fa793effc97","RedPositionControlTarget":0,"BluePositionControlTarget":0}],"teams":[{"Number":1,"Name":"team 1","id":"13be0c79-0894-443f-b8ea-2b4567e937cb"},{"Number":2,"Name":"team 2","id":"c961ed8b-6200-4aad-a2ca-cf3559e9182f"},{"Number":3,"Name":"team 3","id":"897f610e-fe48-4034-f4cb-2ad6eec9cf55"},{"Number":4,"Name":"team 4","id":"ef7c768b-d953-4126-c378-d553ff3ae802"},{"Number":5,"Name":"team 5","id":"cc2c8afc-3a4e-4d26-e58c-7dec41a18a09"},{"Number":6,"Name":"team 6","id":"c7a10ac4-9c62-4150-f936-73acb9bc3141"}]}
+{
+    "matches": [
+        {
+            "Number": 1,
+            "Set": 0,
+            "Type": "Qualification",
+            "RedTeams": [
+                1,
+                2,
+                3
+            ],
+            "BlueTeams": [
+                4,
+                5,
+                6
+            ],
+            "RedAllianceName": "",
+            "BlueAllianceName": "",
+            "Disqualifications": [],
+            "Surrogates": [],
+            "MatchPointsBlue": 0,
+            "MatchPointsRed": 0,
+            "Results": "Undetermined",
+            "RegularFoulsBlue": 0,
+            "TechFoulsBlue": 0,
+            "HabCrossBlue": [
+                0,
+                0,
+                0
+            ],
+            "HatchBlue": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "CargoBlue": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "HabClimbBlue": [
+                3,
+                6,
+                12 
+            ],
+            "RegularFoulsRed": 0,
+            "TechFoulsRed": 0,
+            "HabCrossRed": [
+                3,
+                6,
+                9 
+            ],
+            "HatchRed": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "CargoRed": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "HabClimbRed": [
+                3,
+                6,
+                12
+            ],
+            "id": "b8b76242-9f7f-42bd-9ac5-526d8f37abb5"
+        },
+        {
+            "Number": 1,
+            "Set": 1,
+            "Type": "Semifinal",
+            "RedTeams": [
+                1,
+                2,
+                3
+            ],
+            "BlueTeams": [
+                4,
+                5,
+                6
+            ],
+            "RedAllianceName": "",
+            "BlueAllianceName": "",
+            "Disqualifications": [],
+            "Surrogates": [],
+            "MatchPointsBlue": 0,
+            "MatchPointsRed": 0,
+            "Results": "Undetermined",
+            "RegularFoulsBlue": 0,
+            "TechFoulsBlue": 0,
+            "HabCrossBlue": [
+                0,
+                0,
+                0
+            ],
+            "HatchBlue": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "CargoBlue": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "HabClimbBlue": [
+                0,
+                0,
+                0
+            ],
+            "RegularFoulsRed": 0,
+            "TechFoulsRed": 0,
+            "HabCrossRed": [
+                0,
+                0,
+                0
+            ],
+            "HatchRed": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "CargoRed": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "HabClimbRed": [
+                0,
+                0,
+                0
+            ],
+            "id": "bdc186e1-5041-4ea7-fde5-e6b5e773d8af"
+        }
+    ],
+    "teams": [
+        {
+            "Number": 1,
+            "Name": "team 1",
+            "id": "452e2374-6f60-4225-ca12-ade75cb8934d"
+        },
+        {
+            "Number": 2,
+            "Name": "team 2",
+            "id": "a8cfce44-0ee5-412b-e0d5-edc1feacdbcd"
+        },
+        {
+            "Number": 3,
+            "Name": "team 3",
+            "id": "88268a51-a6bd-4b58-be5e-a63f630e26ca"
+        },
+        {
+            "Number": 4,
+            "Name": "team 4",
+            "id": "95e811ee-7ab1-48f9-c7d3-484063837259"
+        },
+        {
+            "Number": 5,
+            "Name": "team 5",
+            "id": "b66ab67a-a161-48fa-b995-936e9f97add6"
+        },
+        {
+            "Number": 6,
+            "Name": "team 6",
+            "id": "175bda73-7aca-466e-df5e-c08dc8400e39"
+        }
+    ]
+}

@@ -70,44 +70,27 @@ export class Match {
         }
     }
 
-    /**
-     * Enum-like getter for control panel colors.
-     */
-    static get ControlPanel() {
-        return {
-            NO_COLOR: 0,
-            BLUE: 1,
-            GREEN: 2,
-            RED: 3
-        }
-    }
-
-    /**
-     * Enum-like getter for Infinite Recharge phases.
-     */
-    static get Phase() {
-        return {
-            NONE: 1,
-            PHASE_1: 2,
-            PHASE_2: 3,
-            PHASE_3: 4
-        }
-    }
-
     static get PointValues() {
         return {
-            INITIATION_LINE: 5,
-            AUTO_BOTTOM: 2,
-            AUTO_UPPER: 4,
-            TELEOP_BOTTOM: 1,
-            TELEOP_UPPER: 2,
-            ROTATION_CONTROL: 20,
-            POSITION_CONTROL: 25,
-            HANG: 25,
-            PARK: 5,
-            LEVEL: 15,
+            HAB_CROSS_1: 3,
+            HAB_CROSS_2: 6,
+            HAB_CROSS_3: 9,
+            HATCH: 3,
+            CARGO: 3,
+            ROCKET: 10,
+            HAB_CLIMB_1: 3,
+            HAB_CLIMB_2: 6,
+            HAB_CLIMB_3: 12,
             FOUL: 3,
-            TECH_FOUL: 15
+            TECH_FOUL: 5
+        }
+    }
+    
+    static get HatchType() {
+        return {
+            NULL_HATCH: -1,
+            NO_HATCH: 0,
+            HATCH: 1
         }
     }
 
@@ -285,26 +268,17 @@ export class Match {
         #color;
         #match;
 
-        /** @type {Match.Phase} */          phase;
-        /** @type {number} */               powerCellsInPhase;
-        /** @type {Match.ControlPanel} */   positionControlTarget;
-        /** @type {number} */               initiationLine;
-        /** @type {number} */               autoBottomPort;
-        /** @type {number} */               autoUpperPort;
-        /** @type {number} */               teleopBottomPort;
-        /** @type {number} */               teleopUpperPort;
-        /** @type {number} */               parks;
-        /** @type {number} */               hangs;
-        /** @type {boolean} */              level;
-        /** @type {number} */               fouls;
-        /** @type {number} */               techFouls;
+        /** @type {number[]} */    habCrossings = [0, 0, 0];
+        /** @type {HatchType[]} */ hatches = Array(20).fill(0);
+        /** @type {boolean[]} */   cargo = Array(20).fill(0);
+        /** @type {number[]} */    habClimbs = [0, 0, 0];
+        /** @type {number} */      fouls;
+        /** @type {number} */      techFouls;
 
-        addInitiationLine() { if (this.initiationLine < 3) this.initiationLine++; }
-        removeInitiationLine() { if (this.initiationLine > 0) this.initiationLine--; }
-        addPark() { if (this.hangs + this.parks < 3) this.parks++; }
-        removePark() { if (this.parks > 0) this.parks--; }
-        addHang() { if (this.hangs + this.parks < 3) this.hangs++; }
-        removeHang() { if (this.hangs > 0) this.hangs--; }
+        setHabCross(pos, pts) { this.habCrossings[pos] = pts; }
+        setHabClimb(pos, pts) {this.habClimbs[pos] = pts; }
+        setHatch(pos, type) {this.hatches[pos] = type; }
+        setCargo(pos, bool) {this.cargo[pos] = bool; }
         addFoul() { this.fouls++; }
         removeFoul() { if (this.fouls > 0) this.fouls--; }
         addTechFoul() { this.techFouls++; }
@@ -329,45 +303,27 @@ export class Match {
         }
 
         get matchPoints() {
-            return this.initiationLinePoints
-                 + this.powerCellPoints
-                 + this.controlPanelPoints
+            return this.autoPoints
+                 + this.cargoPoints
+                 + this.hatchPoints
                  + this.endgamePoints
                  + this.penaltyPoints;
         }
 
         get autoPoints() {
-            return this.initiationLinePoints
-                 + this.autoBottomPort * Match.PointValues.AUTO_BOTTOM
-                 + this.autoUpperPort * Match.PointValues.AUTO_UPPER;
+            return this.habCrossings.reduce((sum, pts) => sum + pts, 0);
         }
 
-        get initiationLinePoints() {
-            return this.initiationLine * Match.PointValues.INITIATION_LINE;
+        get cargoPoints() {
+            return this.cargo.filter(Boolean).length * Match.PointValues.CARGO;
         }
 
-        get powerCellPoints() {
-            return this.autoBottomPort * Match.PointValues.AUTO_BOTTOM
-                 + this.autoUpperPort * Match.PointValues.AUTO_UPPER
-                 + this.teleopBottomPort * Match.PointValues.TELEOP_BOTTOM
-                 + this.teleopUpperPort * Match.PointValues.TELEOP_UPPER;
-        }
-
-        get teleopPowerCellPoints() {
-            return this.teleopBottomPort * Match.PointValues.TELEOP_BOTTOM
-                 + this.teleopUpperPort * Match.PointValues.TELEOP_UPPER;
-        }
-
-        get controlPanelPoints() {
-            if (this.phase == Match.Phase.PHASE_2) return Match.PointValues.ROTATION_CONTROL;
-            if (this.phase == Match.Phase.PHASE_3) return Match.PointValues.ROTATION_CONTROL + Match.PointValues.POSITION_CONTROL;
-            return 0;
+        get hatchPoints() {
+            return this.hatches.filter(e => e === Match.HatchType.HATCH).length * Match.PointValues.HATCH;
         }
 
         get endgamePoints() {
-            return this.parks * Match.PointValues.PARK
-                 + this.hangs * Match.PointValues.HANG
-                 + (this.level && this.hangs > 0 ? Match.PointValues.LEVEL : 0);
+            return this.habClimbs.reduce((sum, pts) => sum + pts, 0);
         }
 
         /**
@@ -379,13 +335,17 @@ export class Match {
                  + this.techFouls * Match.PointValues.TECH_FOUL;
         }
 
-        get shieldGeneratorEnergized() {
-            return this.phase == Match.Phase.PHASE_3;
+        get rocketComplete() {
+            let rockets = [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11]];
+            for (const rocket of rockets) {
+                let completedSpots = rocket.map(pos => this.hatches[pos] == Match.HatchType.HATCH && this.cargo[pos]);
+                if (completedSpots.every(Boolean)) return true;
+            }
+            return false;
         }
 
-        get shieldGeneratorOperational() {
-            if (this.endgamePoints >= 65) console.log(this.#match);
-            return this.endgamePoints >= 65;
+        get docked() {
+            return this.endgamePoints >= 15;
         }
 
         /**
@@ -398,55 +358,33 @@ export class Match {
             this.#color = color;
             this.#match = match;
 
-            this.phase                      = repository.getPhase(...this.#match.#id, this.color);
-            this.powerCellsInPhase          = repository.getPowerCellsInPhase(...this.#match.#id, this.color);
-            this.positionControlTarget      = repository.getPositionControlTarget(...this.#match.#id, this.color);
-            this.initiationLine             = repository.getInitiationLine(...this.#match.#id, this.color);
-            this.autoBottomPort             = repository.getAutoBottomPort(...this.#match.#id, this.color);
-            this.autoUpperPort              = repository.getAutoUpperPort(...this.#match.#id, this.color);
-            this.teleopBottomPort           = repository.getTeleopBottomPort(...this.#match.#id, this.color);
-            this.teleopUpperPort            = repository.getTeleopUpperPort(...this.#match.#id, this.color);
-            this.parks                      = repository.getParks(...this.#match.#id, this.color);
-            this.hangs                      = repository.getHangs(...this.#match.#id, this.color);
-            this.level                      = repository.getLevel(...this.#match.#id, this.color);
-            this.fouls                      = repository.getRegularFouls(...this.#match.#id, this.color);
-            this.techFouls                  = repository.getTechFouls(...this.#match.#id, this.color);
+            this.habCrossings = repository.getHabCrossings(...this.#match.#id, this.color);
+            this.hatches      = repository.getHatches(...this.#match.#id, this.color);
+            this.cargo        = repository.getCargo(...this.#match.#id, this.color);
+            this.habClimbs    = repository.getHabClimbs(...this.#match.#id, this.color);
+            this.fouls        = repository.getRegularFouls(...this.#match.#id, this.color);
+            this.techFouls    = repository.getTechFouls(...this.#match.#id, this.color);
         }
 
         save() {
             repository.setMatchPoints(this.matchPoints, ...this.#match.#id, this.color);
-            repository.setPhase(this.phase, ...this.#match.#id, this.color);
-            repository.setPowerCellsInPhase(this.powerCellsInPhase, ...this.#match.#id, this.color);
-            repository.setPositionControlTarget(this.positionControlTarget, ...this.#match.#id, this.color);
-            repository.setInitiationLine(this.initiationLine, ...this.#match.#id, this.color);
-            repository.setAutoBottomPort(this.autoBottomPort, ...this.#match.#id, this.color);
-            repository.setAutoUpperPort(this.autoUpperPort, ...this.#match.#id, this.color);
-            repository.setTeleopBottomPort(this.teleopBottomPort, ...this.#match.#id, this.color);
-            repository.setTeleopUpperPort(this.teleopUpperPort, ...this.#match.#id, this.color);
-            repository.setParks(this.parks, ...this.#match.#id, this.color);
-            repository.setHangs(this.hangs, ...this.#match.#id, this.color);
-            repository.setLevel(this.level, ...this.#match.#id, this.color);
+            repository.setHabCrossings(this.habClimbs, ...this.#match.#id, this.color);
+            repository.setHatches(this.hatches, ...this.#match.#id, this.color);
+            repository.setCargo(this.cargo, ...this.#match.#id, this.color);
+            repository.setHabClimbs(this.habClimbs, ...this.#match.#id, this.color);
             repository.setRegularFouls(this.fouls, ...this.#match.#id, this.color);
             repository.setTechFouls(this.techFouls, ...this.#match.#id, this.color);
-            repository.setShieldGeneratorEnergized(this.shieldGeneratorEnergized, ...this.#match.#id, this.color);
-            repository.setShieldGeneratorOperational(this.shieldGeneratorOperational, ...this.#match.#id, this.color);
+            repository.setRocketComplete(this.rocketComplete, ...this.#match.#id, this.color);
+            repository.setDocked(this.docked, ...this.#match.#id, this.color);
         }
         
         clear() {
-            this.phase = Match.Phase.NONE;
-            this.powerCellsInPhase = 0;
-            this.positionControlTarget = Match.ControlPanel.NO_COLOR;
-            this.initiationLine = 0;
-            this.autoBottomPort = 0;
-            this.autoUpperPort = 0;
-            this.teleopBottomPort = 0;
-            this.teleopUpperPort = 0;
-            this.parks = 0;
-            this.hangs = 0;
-            this.level = false;
+            this.habCrossings = [0, 0, 0];
+            this.hatches = Array(20).fill(0);
+            this.cargo = Array(20).fill(0);
+            this.habClimbs = [0, 0, 0];
             this.fouls = 0;
             this.techFouls = 0;
         }
     }
-
 }

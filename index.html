@@ -13,16 +13,314 @@
 
 <body>
     <div id="match-view">
+        <div id="red-bg"></div>
+        <div id="blue-bg"></div>
         <div id="timer">
             <div id="bar"></div>
             <div id="time"></div>
         </div>
-        <div id="stream">
-            <video autoplay="true"></video>
+        <div id="info-bar">
+            <div id="info-up-next-red">a</div>
+            <div id="match-name">b</div>
+            <div id="info-up-next-blue">c</div>
         </div>
-        <div id="overlay">
-            <!-- <div id="info"></div> -->
-            <div id="scoring-panel">
+
+        <div id="main-panel">
+            <div class="red rocket-panel">
+                <div class="rocket-container">
+                    <div class="rocket-top-red"></div>
+                    <div class="rocket-fin-left"></div>
+                    <div class="rocket-fin-right"></div>
+                    <div class="rocket-body"></div>
+                    <div class="hatch-container" style="margin-top: 110px">
+                        <div class="empty-red-hatch"></div>
+                        <div class="no-hatch hatch-0">
+                            <div class="empty-red-cargo"></div>
+                            <div class="no-cargo cargo-0"></div>
+                        </div>
+                    </div>
+                    <div class="hatch-container" style="margin-top: 235px">
+                        <div class="empty-red-hatch"></div>
+                        <div class="no-hatch hatch-1">
+                            <div class="empty-red-cargo"></div>
+                            <div class="no-cargo cargo-1"></div>
+                        </div>
+                    </div>
+                    <div class="hatch-container" style="margin-top: 360px">
+                        <div class="empty-red-hatch"></div>
+                        <div class="no-hatch hatch-2">
+                            <div class="empty-red-cargo"></div>
+                            <div class="no-cargo cargo-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rocket-container">
+                    <div class="rocket-top-red"></div>
+                    <div class="rocket-fin-left"></div>
+                    <div class="rocket-fin-right"></div>
+                    <div class="rocket-body"></div>
+                    <div class="hatch-container" style="margin-top: 110px">
+                        <div class="empty-red-hatch"></div>
+                        <div class="no-hatch hatch-3">
+                            <div class="empty-red-cargo"></div>
+                            <div class="no-cargo cargo-3"></div>
+                        </div>
+                    </div>
+                    <div class="hatch-container" style="margin-top: 235px">
+                        <div class="empty-red-hatch"></div>
+                        <div class="no-hatch hatch-4">
+                            <div class="empty-red-cargo"></div>
+                            <div class="no-cargo cargo-4"></div>
+                        </div>
+                    </div>
+                    <div class="hatch-container" style="margin-top: 360px">
+                        <div class="empty-red-hatch"></div>
+                        <div class="no-hatch hatch-5">
+                            <div class="empty-red-cargo"></div>
+                            <div class="no-cargo cargo-5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="center-panel">
+                <div id="match-panel">
+                    <div id="score-box">
+                        <div class="red">
+                            21
+                        </div>
+                        <div class="blue">
+                            134
+                        </div>
+                    </div>
+                    <div id="teams">
+                        <div class="red">
+                            <div class="number"></div>
+                            <div class="number"></div>
+                            <div class="number"></div>
+                        </div>
+                        <div class="blue">
+                            <div class="number"></div>
+                            <div class="number"></div>
+                            <div class="number"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="rp-panel">
+                    <div class="red rocket-rp"><img></div>
+                    <div class="red docked-rp"><img></div>
+                    <div class="blue rocket-rp"><img></div>
+                    <div class="blue docked-rp"><img></div>
+                </div>
+                <div id="ship-panel">
+                    <div class="ship-container">
+                        <div class="red ship-body-red">
+                            <div class="ship-red-bevel"></div>
+                            <div class="ship-red-top-chamfer"></div>
+                            <div class="ship-red-bot-chamfer"></div>
+                            <div class="hatch-container" style="margin-top: 50px; margin-left: 10px">
+                                <div class="empty-red-hatch"></div>
+                                <div class="no-hatch hatch-12">
+                                    <div class="empty-red-cargo"></div>
+                                    <div class="no-cargo cargo-12"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-bottom: 50px; margin-left: 10px; bottom: 0">
+                                <div class="empty-red-hatch"></div>
+                                <div class="no-hatch hatch-13">
+                                    <div class="empty-red-cargo"></div>
+                                    <div class="no-cargo cargo-13"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-top: 20px; margin-left: 160px">
+                                <div class="empty-red-hatch"></div>
+                                <div class="no-hatch hatch-14">
+                                    <div class="empty-red-cargo"></div>
+                                    <div class="no-cargo cargo-14"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-top: 20px; margin-left: 290px">
+                                <div class="empty-red-hatch"></div>
+                                <div class="no-hatch hatch-15">
+                                    <div class="empty-red-cargo"></div>
+                                    <div class="no-cargo cargo-15"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-top: 20px; margin-left: 420px">
+                                <div class="empty-red-hatch"></div>
+                                <div class="no-hatch hatch-16">
+                                    <div class="empty-red-cargo"></div>
+                                    <div class="no-cargo cargo-16"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-bottom: 20px; margin-left: 160px; bottom: 0">
+                                <div class="empty-red-hatch"></div>
+                                <div class="no-hatch hatch-17">
+                                    <div class="empty-red-cargo"></div>
+                                    <div class="no-cargo cargo-17"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-bottom: 20px; margin-left: 290px; bottom: 0">
+                                <div class="empty-red-hatch"></div>
+                                <div class="no-hatch hatch-18">
+                                    <div class="empty-red-cargo"></div>
+                                    <div class="no-cargo cargo-18"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-bottom: 20px; margin-left: 420px; bottom: 0">
+                                <div class="empty-red-hatch"></div>
+                                <div class="no-hatch hatch-19">
+                                    <div class="empty-red-cargo"></div>
+                                    <div class="no-cargo cargo-19"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="blue ship-body-blue">
+                            <div class="ship-blue-bevel"></div>
+                            <div class="ship-blue-top-chamfer"></div>
+                            <div class="ship-blue-bot-chamfer"></div>
+                            <div class="hatch-container" style="margin-top: 50px; margin-right: 10px">
+                                <div class="empty-blue-hatch"></div>
+                                <div class="no-hatch hatch-12">
+                                    <div class="empty-blue-cargo"></div>
+                                    <div class="no-cargo cargo-12"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-bottom: 50px; margin-right: 10px; bottom: 0">
+                                <div class="empty-blue-hatch"></div>
+                                <div class="no-hatch hatch-13">
+                                    <div class="empty-blue-cargo"></div>
+                                    <div class="no-cargo cargo-13"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-top: 20px; margin-right: 160px">
+                                <div class="empty-blue-hatch"></div>
+                                <div class="no-hatch hatch-14">
+                                    <div class="empty-blue-cargo"></div>
+                                    <div class="no-cargo cargo-14"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-top: 20px; margin-right: 290px">
+                                <div class="empty-blue-hatch"></div>
+                                <div class="no-hatch hatch-15">
+                                    <div class="empty-blue-cargo"></div>
+                                    <div class="no-cargo cargo-15"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-top: 20px; margin-right: 420px">
+                                <div class="empty-blue-hatch"></div>
+                                <div class="no-hatch hatch-16">
+                                    <div class="empty-blue-cargo"></div>
+                                    <div class="no-cargo cargo-16"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-bottom: 20px; margin-right: 160px; bottom: 0">
+                                <div class="empty-blue-hatch"></div>
+                                <div class="no-hatch hatch-17">
+                                    <div class="empty-blue-cargo"></div>
+                                    <div class="no-cargo cargo-17"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-bottom: 20px; margin-right: 290px; bottom: 0">
+                                <div class="empty-blue-hatch"></div>
+                                <div class="no-hatch hatch-18">
+                                    <div class="empty-blue-cargo"></div>
+                                    <div class="no-cargo cargo-18"></div>
+                                </div>
+                            </div>
+                            <div class="hatch-container" style="margin-bottom: 20px; margin-right: 420px; bottom: 0">
+                                <div class="empty-blue-hatch"></div>
+                                <div class="no-hatch hatch-19">
+                                    <div class="empty-blue-cargo"></div>
+                                    <div class="no-cargo cargo-19"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="hab-panel">
+                    <div class="hab-container">
+                        <div class="hab-climb red climb-0" style="left: 0%"></div>
+                        <div class="hab-climb red climb-1" style="left: 33.3%"></div>
+                        <div class="hab-climb red climb-2" style="left: 66.7%"></div>
+                        <div class="hab-dismount red dismount-0" style="left: 17%"></div>
+                        <div class="hab-dismount red dismount-1" style="left: 50%"></div>
+                        <div class="hab-dismount red dismount-2" style="left: 83%"></div>
+                        <div class="hab-underline"></div>
+                    </div>
+                    <div class="hab-container">
+                        <div class="hab-climb blue climb-0" style="left: 0%"></div>
+                        <div class="hab-climb blue climb-1" style="left: 33.3%"></div>
+                        <div class="hab-climb blue climb-2" style="left: 66.7%"></div>
+                        <div class="hab-dismount blue dismount-0" style="left: 17%"></div>
+                        <div class="hab-dismount blue dismount-1" style="left: 50%"></div>
+                        <div class="hab-dismount blue dismount-2" style="left: 83%"></div>
+                        <div class="hab-underline"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="blue rocket-panel">
+                <div class="rocket-container">
+                    <div class="rocket-top-blue"></div>
+                    <div class="rocket-fin-left"></div>
+                    <div class="rocket-fin-right"></div>
+                    <div class="rocket-body"></div>
+                    <div class="hatch-container" style="margin-top: 110px">
+                        <div class="empty-blue-hatch"></div>
+                        <div class="no-hatch hatch-0">
+                            <div class="empty-blue-cargo"></div>
+                            <div class="no-cargo cargo-0"></div>
+                        </div>
+                    </div>
+                    <div class="hatch-container" style="margin-top: 235px">
+                        <div class="empty-blue-hatch"></div>
+                        <div class="no-hatch hatch-1">
+                            <div class="empty-blue-cargo"></div>
+                            <div class="no-cargo cargo-1"></div>
+                        </div>
+                    </div>
+                    <div class="hatch-container" style="margin-top: 360px">
+                        <div class="empty-blue-hatch"></div>
+                        <div class="no-hatch hatch-2">
+                            <div class="empty-blue-cargo"></div>
+                            <div class="no-cargo cargo-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rocket-container">
+                    <div class="rocket-top-blue"></div>
+                    <div class="rocket-fin-left"></div>
+                    <div class="rocket-fin-right"></div>
+                    <div class="rocket-body"></div>
+                    <div class="hatch-container" style="margin-top: 110px">
+                        <div class="empty-blue-hatch"></div>
+                        <div class="no-hatch hatch-3">
+                            <div class="empty-blue-cargo"></div>
+                            <div class="no-cargo cargo-3"></div>
+                        </div>
+                    </div>
+                    <div class="hatch-container" style="margin-top: 235px">
+                        <div class="empty-blue-hatch"></div>
+                        <div class="no-hatch hatch-4">
+                            <div class="empty-blue-cargo"></div>
+                            <div class="no-cargo cargo-4"></div>
+                        </div>
+                    </div>
+                    <div class="hatch-container" style="margin-top: 360px">
+                        <div class="empty-blue-hatch"></div>
+                        <div class="no-hatch hatch-5">
+                            <div class="empty-blue-cargo"></div>
+                            <div class="no-cargo cargo-5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- <div id="info"></div> -->
+        <!-- <div id="scoring-panel">
                 <div class="red indicator-panel">
                     <div class="auto">
                         <div class="label">Autonomous</div>
@@ -182,10 +480,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div> -->
     </div>
-    
+
 
     <div id="results-view">
         <div id="frame">
@@ -337,14 +634,14 @@
                 <tr>
                     <th>Rank</th>
                     <th>Team</th>
-                    <th>Ranking<br/>Score</th>
+                    <th>Ranking<br />Score</th>
                     <th>Auto</th>
                     <th>Endgame</th>
-                    <th>Teleop Cells and<br/>Control Panel</th>
-                    <th>Record<br/>(W-L-T)</th>
+                    <th>Teleop Cells and<br />Control Panel</th>
+                    <th>Record<br />(W-L-T)</th>
                     <th>DQs</th>
                     <th>Played</th>
-                    <th>Ranking<br/>Points</th>
+                    <th>Ranking<br />Points</th>
                 </tr>
             </table>
         </div>
@@ -361,4 +658,5 @@
 
     <script src="./renderer.js" type="module"></script>
 </body>
+
 </html>

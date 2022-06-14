@@ -81,7 +81,7 @@ export class Competition {
      * FMS electronics should happen.
      */
     static update() {
-        FmsFirmware.update(Competition.fieldPhase);
+        // FmsFirmware.update(Competition.fieldPhase);
         if (this.match) userInput.sendMatchData();
     }
 

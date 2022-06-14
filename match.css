@@ -13,6 +13,12 @@
     src: url("./fonts/roboto-mono/RobotoMono-VariableFont_wght.ttf") format("truetype");
 }
 
+@font-face {
+    font-family: "Electrolize";
+    src: url("./fonts/electrolize/Electrolize-Regular.ttf") format("truetype");
+}
+
+
 body {
     position: absolute;
     width: 100vw;
@@ -28,22 +34,18 @@ body {
     display: flex;
     flex-direction: column;
 
-    --timer-height: 40px;
     --info-bar-height: 40px;
     --border-color: black;
 }
 
 #timer {
-    display: flex;
-    top: 0;
-    left: 0;
-    right: 0;
-    box-sizing: content-box;
+    box-sizing: border-box;
     width: 100%;
-    height: var(--timer-height);
+    height: 45px;
     margin: 0px;
     background-color: white;
-    border-bottom: solid var(--border-color) 5px;
+    border-bottom: solid black 5px;
+    z-index: 1;
 }
 
 #timer #bar {
@@ -51,7 +53,7 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: var(--timer-height);
+    height: 40px;
     background-color: green;
 }
 
@@ -62,10 +64,10 @@ body {
     right: 0;
     margin: 0 auto;
     width: 100px;
-    min-height: var(--timer-height);
+    min-height: 40px;
     border-radius: 10px;
     background: rgba(210, 210, 210, 0.8);
-    line-height: var(--timer-height);
+    line-height: 40px;
     text-align: center;
     padding-top: 1px;
     font-size: 40px;
@@ -73,99 +75,72 @@ body {
     font-weight: bold;
 }
 
-#stream {
-    position: relative;
-    display: flex;
-    flex-grow: 1;
-    overflow: hidden;
-}
-
-#stream video {
-    position: absolute;
+#info-bar {
+    box-sizing: border-box;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-#overlay {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    bottom: 0;
-    width: 100%;
-    height: 250px;
+    height: 45px;
     margin: 0px;
-    background-color: white;
-    border-top: solid var(--border-color) 5px;
-    box-sizing: border-box;
-
-    --score-box-width: 500px;
-}
-
-#overlay #info {
-    width: 100%;
-    height: 50px;
-    border-bottom: solid var(--border-color) 5px;
-    box-sizing: border-box;
-}
-
-#overlay .indicator {
-    border: 5px solid var(--border-color);
-    box-sizing: border-box;
-    background-color: grey;
-    color: lightgrey;
-}
-
-#overlay .red .lit.indicator {
-    background-color: red;
-    color: white;
-}
-
-#overlay .blue .lit.indicator {
-    background-color: blue;
-    color: white;
-}
-
-#overlay #scoring-panel {
-    padding-bottom: 20px;
-    display: flex;
-    flex-grow: 1;
-    flex-direction: row;
-    justify-content: space-evenly;
-    width: 100%;
-    background: linear-gradient(to top, lightgrey 95%, grey);
-    /* background-color: lightgrey; */
-    box-sizing: border-box;
-}
-
-#overlay #scoring-panel #match-panel {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    width: 630px;
-}
-
-#overlay #scoring-panel #match-panel #match-name {
+    background-color: rgb(241, 241, 241);
+    border-bottom: solid black 5px;
+    z-index: 1;
+    line-height: 40px;
+    padding-top: 0px;
+    font-size: 38px;
     font-family: "Roboto Slab";
     font-weight: bold;
-    width: 500px;
-    font-size: 40px;
-    line-height: 45px;
-    text-align: center;
-    height: 50px;
-    background-color: white;
-    border: 5px solid var(--border-color);
-    border-bottom: none;
-    box-sizing: border-box;
 }
 
-#overlay #scoring-panel #match-panel #score-box {
+#info-up-next-red, #info-up-next-blue {
+    position: absolute;
+    color: black;
+}
+
+#info-up-next-red {
+    left: 10px;
+}
+
+#info-up-next-blue {
+    right: 10px;
+}
+
+#match-name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    line-height: 40px;
+    font-size: 38px;
+    font-family: "Roboto Slab";
+    color: black;
+    text-align: center;
+}
+
+#main-panel {
+    display: flex;
+    flex-direction: row;
+}
+
+#center-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#match-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 610px;
+}
+
+#match-panel #score-box {
     width: 500px;
     height: 160px;
     border: 5px solid var(--border-color);
-    font-family: Roboto;
+    border-top: none;
+    font-family: "Roboto";
     font-weight: bold;
     font-size: 90px;
     text-align: center;
@@ -175,7 +150,7 @@ body {
     box-sizing: border-box;
 }
 
-#overlay #scoring-panel #match-panel #score-box .red {
+#match-panel #score-box .red {
     width: calc(50% - 2px);
     height: 100%;
     float: left;
@@ -183,7 +158,7 @@ body {
     background-color: red;
 }
 
-#overlay #scoring-panel #match-panel #score-box .blue {
+#match-panel #score-box .blue {
     width: calc(50% - 2px);
     height: 100%;
     float: right;
@@ -191,18 +166,18 @@ body {
     background-color: blue;
 }
 
-#overlay #scoring-panel #match-panel #teams {
+#match-panel #teams {
     position: absolute;
     height: 135px;
     margin: 0 auto;
     left: 0;
     right: 0;
     bottom: 0;
-    max-width: calc(110px + var(--score-box-width));
+    width: 610px;
     box-sizing: border-box;
 }
 
-#overlay #scoring-panel #match-panel #teams .red, #overlay #scoring-panel #match-panel #teams .blue {
+#match-panel #teams .red, #match-panel #teams .blue {
     position: absolute;
     height: 120px;
     width: 50px;
@@ -211,17 +186,17 @@ body {
     border-top: 5px solid var(--border-color);
 }
 
-#overlay #scoring-panel #match-panel #teams .red {
+#match-panel #teams .red {
     left: 0;
     border-left: 5px solid var(--border-color);
 }
 
-#overlay #scoring-panel #match-panel #teams .blue {
+#match-panel #teams .blue {
     right: 0;
     border-right: 5px solid var(--border-color);
 }
 
-#overlay #scoring-panel #match-panel #teams .number {
+#match-panel #teams .number {
     position: relative;
     height: 40px;
     line-height: 35px;
@@ -233,369 +208,359 @@ body {
     box-sizing: border-box;
 }
 
-#overlay #scoring-panel .rp-panel {
-    position: relative;
+.rocket-panel {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    width: 180px;
-    bottom: 0;
-    font-family: "Roboto Slab";
-    font-size: 30px;
-    font-weight: bold;
-    text-align: center;
+    flex-grow: 1;
+    align-items: center;
 }
 
-.rp-panel .phase {
-    position: relative;
-    width: 100%;
-    margin-bottom: 15px;
+#rp-panel{
+   display: flex;
+   flex-direction: row; 
+   justify-content: space-between;
+   width: 500px;
 }
 
-.rp-panel .phase .label {
-    font-family: "Roboto Slab";
-    font-weight: bold;
-    width: 100%;
-    font-size: 30px;
-    height: 40px;
+#ship-panel {
+    width: 1100px;
+    height: 325px;
 }
 
-.rp-panel .phase .indicators {
+#hab-panel {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    height: 50px;
-    width: 100%;
+    margin-bottom: 10px;
 }
 
-.rp-panel .phase .indicators .indicator {
-    height: 50px;
-    width: 50px;
-    line-height: 40px;
+#red-bg {
+    position: fixed;
+    height: 100%;
+    width: 50%;
+    left: 0;
+    background-color: maroon;
+    z-index: -1;
 }
 
-.rp-panel .energized {
-    position: relative;
-    width: 100%;
-    height: 50px;
-    margin-top: 5px;
+#blue-bg {
+    position: fixed;
+    height: 100%;
+    width: 50%;
+    right: 0;
+    background-color: darkblue;
+    z-index: -1;
 }
 
-.rp-panel .operational {
-    position: relative;
-    width: 100%;
-    height: 50px;
-    margin-top: 5px;
+#score-container {
+    position: fixed;
+    top: 90px;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    width: 400px;
+    height: 150px;
+    border: 5px solid black;
+    border-top: 0px;
 }
 
-#overlay #scoring-panel .task-panel {
-    position: relative;
+.rocket-rp, .docked-rp {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    min-width: 200px;
+    justify-content: center;
+    align-content: center;
+    height: 70px;
+    width: 70px;
+    background-color: rgb(184, 184, 184);
+    border: 5px solid black;
     font-family: "Roboto Slab";
     font-weight: bold;
-    text-align: center;
-}
-
-.task-panel .label {
-    font-family: "Roboto Slab";
-    font-weight: bold;
-    width: 100%;
-    font-size: 30px;
-    height: 40px;
-    margin-top: 20px;
-}
-
-.task-panel .power-cell {
-    position: relative;
-    bottom: 0;
-    height: 175px;
-}
-
-.task-panel .power-cell svg {
-    height: 175px; width: 175px;
-    transform: rotate(-90deg);
-    border-radius: 50%;
-}
-
-.task-panel .power-cell svg circle {
-    fill: rgb(170, 170, 170);
-    stroke: yellow;
-    stroke-width: 32;
-    stroke-dasharray: 101;
-    stroke-dashoffset: 101;
-}
-
-.task-panel .power-cell .border {
-    position: absolute;
-    border: 10px solid var(--border-color);
-    border-radius: 50%;
-    height: 175px;
-    width: 175px;
-    margin: auto;
-    top: 0; bottom: 0;
-    left: 0; right: 0;
-    box-sizing: border-box;
-}
-
-.task-panel .power-cell .capacity {
-    position: absolute;
-    height: 150px;
-    line-height: 150px;
-    top: 0; bottom: 10px;
-    left: 0; right: 0;
-    margin: auto;
-    font-size: 120px;
-}
-
-.task-panel .rotation-control {
-    position: relative;
-    bottom: 0;
-    height: 175px;
-}
-
-.task-panel .rotation-control svg {
-    height: 175px; width: 175px;
-    border-radius: 50%;
-    animation: rotation 4s infinite linear;
-}
-
-.task-panel .rotation-control svg circle.border {
-    fill: transparent;
-    stroke: black;
-    stroke-width: 2px;
-}
-
-.task-panel .rotation-control svg circle.red {
-    fill: red;
-    stroke: red;
-    stroke-width: 32;
-    stroke-dasharray: 16.6 33.3;
-}
-
-.task-panel .rotation-control svg circle.green {
-    fill: transparent;
-    stroke: green;
-    stroke-width: 32;
-    stroke-dasharray: 16.6 33.3;
-    stroke-dashoffset: 17;
-}
-
-.task-panel .rotation-control svg circle.blue {
-    fill: transparent;
-    stroke: blue;
-    stroke-width: 32;
-    stroke-dasharray: 16.6 33.3;
-    stroke-dashoffset: 33.3;
-}
-
-.task-panel .rotation-control svg circle.center {
-    fill: gold;
-}
-
-@keyframes rotation {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(359deg); }
-}
-
-.task-panel .position-control {
-    position: relative;
-    bottom: 0;
-    height: 175px;
-}
-
-.task-panel .position-control svg {
-    height: 175px; width: 175px;
-    border-radius: 50%;
-}
-
-.task-panel .position-control svg circle.border {
-    fill: transparent;
-    stroke: black;
-    stroke-width: 2px;
-}
-
-.task-panel .position-control.red svg {
-    transform: rotate(0.17turn);
-}
-
-.task-panel .position-control svg circle.red {
-    fill: rgb(64, 0, 0);
-    stroke: rgb(64, 0, 0);
-    stroke-width: 32;
-    stroke-dasharray: 16.6 33.3;
-}
-
-.task-panel .position-control.red svg circle.red {
-    fill: red;
-    stroke: red;
-    animation: flash-red 0.5s infinite linear alternate;
-}
-
-@keyframes flash-red {
-    from {
-        fill: red;
-        stroke: red;
-    } to {
-        fill: rgb(255, 200, 200);
-        stroke: rgb(255, 200, 200);
-    }
-}
-
-.task-panel .position-control.green svg {
-    transform: rotate(0.34turn);
-}
-
-.task-panel .position-control svg circle.green {
-    fill: transparent;
-    stroke: rgb(80, 128, 80);
-    stroke-width: 32;
-    stroke-dasharray: 16.7 33.3;
-    stroke-dashoffset: 17;
-}
-
-.task-panel .position-control.green svg circle.green {
-    stroke: green;
-    animation: flash-green 0.5s infinite linear alternate;
-}
-
-@keyframes flash-green {
-    from { stroke: green; }
-    to { stroke: rgb(200, 255, 200); }
-}
-
-.task-panel .position-control svg circle.blue {
-    fill: transparent;
-    stroke: rgb(80, 80, 128);
-    stroke-width: 32;
-    stroke-dasharray: 16.6 33.3;
-    stroke-dashoffset: 33.3;
-}
-
-.task-panel .position-control.blue svg circle.blue {
-    stroke: blue;
-    animation: flash-blue 0.5s infinite linear alternate;
-}
-
-@keyframes flash-blue {
-    from { stroke: blue; }
-    to { stroke: rgb(200, 200, 255); }
-}
-
-.task-panel .position-control svg circle.center {
-    fill: gold;
-}
-
-.task-panel .done {
-    position: relative;
-    bottom: 0;
-    height: 175px;
-}
-
-.task-panel .done svg {
-    height: 175px; width: 175px;
-    border-radius: 50%;
-}
-
-.task-panel .done svg circle.border {
-    fill: transparent;
-    stroke: black;
-    stroke-width: 2px;
-}
-
-.red.task-panel .done svg circle {
-    fill: red;
-}
-
-.blue.task-panel .done svg circle {
-    fill: blue;
-}
-
-.task-panel .done .label {
-    position: absolute;
-    height: 150px;
-    line-height: 150px;
-    top: 0; bottom: 10px;
-    left: 0; right: 0;
-    margin: auto;
-    font-size: 30px;
     color: white;
 }
 
-#overlay #scoring-panel .indicator-panel {
+.rocket-rp img {
+    content: url(images/rocket-icon-grey.png)
+}
+.docked-rp img {
+    content: url(images/hab-icon-grey.png)
+}
+
+.rocket-rp.lit img {
+    content: url(images/rocket-icon.png)
+}
+.docked-rp.lit img {
+    content: url(images/hab-icon.png)
+}
+
+.rocket-rp.lit.red, .docked-rp.lit.red {
+    background-color: rgb(255, 72, 72);
+}
+.rocket-rp.lit.blue, .docked-rp.lit.blue {
+    background-color: rgb(79, 79, 252);
+}
+
+img {
+    margin: auto;
+}
+
+.rocket-container {
+    width: 400px;
+    height: 485px;
+    margin-left: 0px;
     position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    width: 180px;
-    font-family: "Roboto Slab";
-    font-size: 30px;
-    font-weight: bold;
-    text-align: center;
+    padding-top: 10px;
 }
 
-.indicator-panel .auto {
-    position: relative;
-    width: 100%;
+.rocket-body {
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    position: absolute;
+    margin-top: 100px;
+    width: 150px;
+    height: calc(475px - 100px);
+    background-color: rgb(179, 179, 179);
 }
 
-.indicator-panel .auto .label {
-    display: flex;
-    justify-content: center;
-    font-family: "Roboto Slab";
-    font-weight: bold;
-    width: 100%;
-    font-size: 30px;
-    height: 40px;
-    margin-top: 20px;
+.rocket-top-red, .rocket-top-blue {
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    position: absolute;
+    border-left: 80px solid transparent;
+    border-right: 80px solid transparent;
+    border-bottom: 100px solid rgb(255, 0, 0);
+    width: 0;
+    height: 0;
 }
 
-.indicator-panel .auto .indicators {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 50px;
-    width: 100%;
+.rocket-top-blue {
+    border-bottom: 100px solid blue;
 }
 
-.indicator-panel .auto .indicators .indicator {
+.rocket-fin-left, .rocket-fin-right {
+    bottom: 5px;
+    position: absolute;
+    border-bottom: 200px solid rgb(167, 167, 167);
+    width: 0;
+    height: 0;
+}
+
+.rocket-fin-left {
+    border-left: 75px solid transparent;
+    right: 275px;
+}
+
+.rocket-fin-right {
+    border-right: 75px solid transparent;
+    left: 275px;
+}
+
+.ship-container {
+    position: absolute;
+    width: 1100px;
+    height: 325px;
+}
+
+.ship-body-red, .ship-body-blue {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    background-color: rgb(213, 52, 52);
+}
+
+.ship-body-red {
+    left: 0;
+}
+
+.ship-body-blue {
+    right: 0;
+    background-color: rgb(43, 115, 209);
+}
+
+.ship-red-bevel {
+    position: absolute;
+    right: 0;
+    height: 0;
+    width: 450px;
+    border-top: 162px solid rgb(236, 74, 74);
+    border-bottom: 163px solid rgb(163, 41, 41);
+    border-left: 60px solid transparent;
+}
+
+.ship-blue-bevel {
+    position: absolute;
+    left: 0;
+    height: 0;
+    width: 450px;
+    border-top: 162px solid rgb(35, 130, 255);
+    border-bottom: 163px solid rgb(35, 97, 179);
+    border-right: 60px solid transparent;
+}
+
+.ship-red-top-chamfer, .ship-red-bot-chamfer, .ship-blue-top-chamfer, .ship-blue-bot-chamfer {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.ship-red-top-chamfer {
+    border-top: 60px solid maroon;
+    border-right: 100px solid transparent;
+}
+
+.ship-red-bot-chamfer {
+    border-bottom: 60px solid maroon;
+    border-right: 100px solid transparent;
+    bottom: 0;
+}
+
+.ship-blue-top-chamfer {
+    border-top: 60px solid darkblue;
+    border-left: 100px solid transparent;
+    right: 0;
+}
+
+.ship-blue-bot-chamfer {
+    border-bottom: 60px solid darkblue;
+    border-left: 100px solid transparent;
+    bottom: 0;
+    right: 0;
+}
+
+.hatch-container {
+    left: 0;
+    right: 0;
+    height: 100px;
+    width: 100px;
+    margin: 0 auto;
+    position: absolute;
+}
+
+.hatch, .left-half-hatch, .right-half-hatch, .empty-red-hatch, .empty-blue-hatch, .no-hatch, .null-hatch {
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    background-color: gold;
+    border-radius: 50px;
+    border-left-style: none;
+    --cargo-position: 25px;
+}
+
+.empty-red-hatch {
+    height: 80px;
+    width: 80px;
+    left: 10px;
+    top: 10px;
+    border-radius: 40px;
+    background-color: rgb(100, 0, 0);
+}
+
+.empty-blue-hatch {
+    height: 80px;
+    width: 80px;
+    left: 10px;
+    top: 10px;
+    border-radius: 40px;
+    background-color: rgb(0, 0, 100);
+}
+
+.no-hatch {
+    visibility: hidden;
+}
+
+.null-hatch {
+    background-color: rgb(202, 202, 202);
+}
+
+.left-half-hatch {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 50px;
+}
+
+.right-half-hatch {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    width: 50px;
+    left: 50px;
+    --cargo-position: -25px;
+}
+
+.cargo, .left-half-cargo, .right-half-cargo, .no-cargo, .empty-red-cargo, .empty-blue-cargo {
+    position: absolute;
+    top: 25px;
+    left: var(--cargo-position);
     height: 50px;
     width: 50px;
-    line-height: 40px;
+    background-color: rgb(255, 166, 0);
+    border-radius: 25px;
 }
 
-.indicator-panel .endgame {
+.no-cargo {
+    visibility: hidden;
+}
+
+.empty-red-cargo {
+    background-color: rgb(100, 0, 0);
+    top: 26px;
+    left: calc(var(--cargo-position) + 1px);
+    height: 48px;
+    width: 48px;
+    border-radius: 24px;
+}
+
+.empty-blue-cargo {
+    background-color: rgb(0, 0, 100);
+    top: 26px;
+    left: calc(var(--cargo-position) + 1px);
+    height: 48px;
+    width: 48px;
+    border-radius: 24px;
+}
+
+.left-half-cargo {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 25px;
+}
+
+.right-half-cargo {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    width: 25px;
+    left: calc(var(--cargo-position) + 25px);
+}
+
+.hab-container {
     position: relative;
-    width: 100%;
+    height: 300px;
+    width: 450px;
 }
 
-.indicator-panel .endgame .label {
-    font-family: "Roboto Slab";
-    font-weight: bold;
-    width: 100%;
-    font-size: 30px;
-    height: 40px;
-    margin-top: 10px;
+.hab-underline {
+    position: absolute;
+    bottom: 0;
+    width: 450px;
+    height: 5px;
+    background-color: white;
 }
 
-.indicator-panel .level {
-    height: 20px;
-    width: 100%;
-    margin-bottom: 5px;
+.hab-dismount {
+    position: absolute;
+    bottom: 0;
+    width: 20px;
+    transform: translate(-10px);
+    height: 0%;
+    background-color: rgb(255, 255, 255);
 }
 
-.indicator-panel .endgame .indicators {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 50px;
-    width: 100%;
+.hab-climb.red, .hab-climb.blue {
+    position: absolute;
+    bottom: 0;
+    width: 33%;
+    height: 0%;
+    background-color: rgb(255, 0, 0);
 }
 
-.indicator-panel .endgame .indicators .indicator {
-    height: 50px;
-    width: 50px;
-    line-height: 40px;
+.hab-climb.blue {
+    background-color: rgb(50, 132, 255);
 }
