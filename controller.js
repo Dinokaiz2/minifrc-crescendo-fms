@@ -12,11 +12,11 @@ import * as sound from "./sound.js";
 // Pre-match initialization: If qualifications, pull from schedule. For playoffs, generate the next match.
 
 const TELEOP_START = 0;
-const ENDGAME_START = 5; // 120;
-const MATCH_END = 10; // 150;
+const ENDGAME_START = 120;
+const MATCH_END = 150;
 
 const AUTO_LENGTH = 0;
-const TELEOP_LENGTH = 10; // 150;
+const TELEOP_LENGTH = 150;
 
 // TODO: add a postMatch variable, true if we finished a match but haven't announced it?
 
