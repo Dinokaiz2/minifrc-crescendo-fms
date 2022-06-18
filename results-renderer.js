@@ -12,6 +12,7 @@ export function hide() {
 }
 
 export function update() {
+    if (!Competition.results) return;
     updateMatchName();
     updateTeams(Competition.results.red);
     updateTeams(Competition.results.blue);
@@ -72,14 +73,14 @@ function updateScorePanel(alliance) {
 }
 
 function updateRpPanel(alliance) {
-    let energized = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .energized");
-    let operational = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .operational");
+    let docked = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .docked");
+    let rocket = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .rocket");
     let win = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .win");
-    let rp = alliance.shieldGeneratorEnergized ? 1 : 0 + alliance.shieldGeneratorOperational ? 1 : 0;
-    if (alliance.shieldGeneratorEnergized) energized.addClass("lit");
-    else energized.removeClass("lit");
-    if (alliance.shieldGeneratorOperational) operational.addClass("lit");
-    else operational.removeClass("lit");
+    let rp = (alliance.rocketComplete ? 1 : 0) + (alliance.docked ? 1 : 0);
+    if (alliance.rocketComplete) rocket.addClass("lit");
+    else rocket.removeClass("lit");
+    if (alliance.docked) docked.addClass("lit");
+    else docked.removeClass("lit");
     if ((alliance.color == Match.AllianceColor.RED && Competition.results.result == Match.Result.RED_WIN)
             || (alliance.color == Match.AllianceColor.BLUE && Competition.results.result == Match.Result.BLUE_WIN)) {
         rp += 2;
@@ -101,7 +102,7 @@ function updateRpPanel(alliance) {
 
 function updateCategoryPanel(alliance) {
     let categories = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .category-panel .category .points");
-    [alliance.initiationLinePoints, alliance.powerCellPoints, alliance.controlPanelPoints, alliance.endgamePoints, alliance.penaltyPoints].forEach(
+    [alliance.hatchPoints, alliance.cargoPoints, alliance.endgamePoints, alliance.penaltyPoints].forEach(
         (e, i) => categories.eq(i).text(e)
     );
 }

@@ -72,9 +72,9 @@ export class Match {
 
     static get PointValues() {
         return {
-            HAB_CROSS_1: 3,
-            HAB_CROSS_2: 6,
-            HAB_CROSS_3: 9,
+            HAB_DISMOUNT_1: 3,
+            HAB_DISMOUNT_2: 6,
+            HAB_DISMOUNT_3: 9,
             HATCH: 3,
             CARGO: 3,
             ROCKET: 10,
@@ -83,6 +83,24 @@ export class Match {
             HAB_CLIMB_3: 12,
             FOUL: 3,
             TECH_FOUL: 5
+        }
+    }
+    
+    static get DismountLevel() {
+        return {
+            0: 0,
+            1: Match.PointValues.HAB_DISMOUNT_1,
+            2: Match.PointValues.HAB_DISMOUNT_2,
+            3: Match.PointValues.HAB_DISMOUNT_3,
+        }
+    }
+
+    static get ClimbLevel() {
+        return {
+            0: 0,
+            1: Match.PointValues.HAB_CLIMB_1,
+            2: Match.PointValues.HAB_CLIMB_2,
+            3: Match.PointValues.HAB_CLIMB_3,
         }
     }
     
@@ -225,7 +243,7 @@ export class Match {
             if (m1.type == m2.type == Match.Type.QUALIFICATION) return m1.match - m2.match;
             else if (m1.type == m2.type) {
                 // Order playoffs by match first, so Bo3s are spread out
-                if (m1.match != m2.match) return m1.match - m2.match;
+                if (m1.number != m2.number) return m1.number - m2.number;
                 else return m1.set - m2.set;
             }
             else if (m1.type == Match.Type.QUALIFICATION) return -1;
@@ -268,16 +286,19 @@ export class Match {
         #color;
         #match;
 
-        /** @type {number[]} */    habCrossings = [0, 0, 0];
+        /** @type {number[]} */    habDismounts = [0, 0, 0];
         /** @type {HatchType[]} */ hatches = Array(20).fill(0);
         /** @type {boolean[]} */   cargo = Array(20).fill(0);
         /** @type {number[]} */    habClimbs = [0, 0, 0];
         /** @type {number} */      fouls;
         /** @type {number} */      techFouls;
 
-        setHabCross(pos, pts) { this.habCrossings[pos] = pts; }
-        setHabClimb(pos, pts) {this.habClimbs[pos] = pts; }
-        setHatch(pos, type) {this.hatches[pos] = type; }
+        setHabDismount(pos, lvl) { this.habDismounts[pos] = Match.DismountLevel[lvl]; }
+        setHabClimb(pos, lvl) { this.habClimbs[pos] = Match.ClimbLevel[lvl]; }
+        setHatch(pos, type) {
+            if (pos < 12 && type === Match.HatchType.NULL_HATCH) return;
+            this.hatches[pos] = type;
+        }
         setCargo(pos, bool) {this.cargo[pos] = bool; }
         addFoul() { this.fouls++; }
         removeFoul() { if (this.fouls > 0) this.fouls--; }
@@ -307,11 +328,12 @@ export class Match {
                  + this.cargoPoints
                  + this.hatchPoints
                  + this.endgamePoints
-                 + this.penaltyPoints;
+                 + this.penaltyPoints
+                 + (this.rocketComplete ? Match.PointValues.ROCKET : 0);
         }
 
         get autoPoints() {
-            return this.habCrossings.reduce((sum, pts) => sum + pts, 0);
+            return this.habDismounts.reduce((sum, pts) => sum + pts, 0);
         }
 
         get cargoPoints() {
@@ -358,7 +380,7 @@ export class Match {
             this.#color = color;
             this.#match = match;
 
-            this.habCrossings = repository.getHabCrossings(...this.#match.#id, this.color);
+            this.habDismounts = repository.getHabCrossings(...this.#match.#id, this.color);
             this.hatches      = repository.getHatches(...this.#match.#id, this.color);
             this.cargo        = repository.getCargo(...this.#match.#id, this.color);
             this.habClimbs    = repository.getHabClimbs(...this.#match.#id, this.color);
@@ -379,7 +401,7 @@ export class Match {
         }
         
         clear() {
-            this.habCrossings = [0, 0, 0];
+            this.habDismounts = [0, 0, 0];
             this.hatches = Array(20).fill(0);
             this.cargo = Array(20).fill(0);
             this.habClimbs = [0, 0, 0];

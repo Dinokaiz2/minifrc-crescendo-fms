@@ -15,8 +15,8 @@ export class Team {
     #rankingPoints;
     #autoPoints;
     #endgamePoints;
-    #teleopPowerCellPoints;
-    #controlPanelPoints;
+    #cargoPoints;
+    #hatchPoints;
     #wins;
     #ties;
     #losses;
@@ -43,8 +43,8 @@ export class Team {
         this.#rankingPoints = 0;
         this.#autoPoints = 0;
         this.#endgamePoints = 0;
-        this.#teleopPowerCellPoints = 0;
-        this.#controlPanelPoints = 0;
+        this.#hatchPoints = 0;
+        this.#cargoPoints = 0;
         this.#wins = 0;
         this.#ties = 0;
         this.#losses = 0;
@@ -63,12 +63,12 @@ export class Team {
                     } else {
                         this.#losses++;
                     }
-                    if (match.red.shieldGeneratorEnergized) this.#rankingPoints += 1;
-                    if (match.red.shieldGeneratorOperational) this.#rankingPoints += 1;
+                    if (match.red.rocketComplete) this.#rankingPoints += 1;
+                    if (match.red.docked) this.#rankingPoints += 1;
                     this.#autoPoints += match.red.autoPoints;
                     this.#endgamePoints += match.red.endgamePoints;
-                    this.#teleopPowerCellPoints += match.red.teleopPowerCellPoints;
-                    this.#controlPanelPoints += match.red.controlPanelPoints;
+                    this.#hatchPoints += match.red.hatchPoints;
+                    this.#cargoPoints += match.red.cargoPoints;
                 } else if (match.blue.teamNumbers.includes(this.number)) {
                     if (match.result == Match.Result.BLUE_WIN) {
                         this.#rankingPoints += 2;
@@ -79,12 +79,12 @@ export class Team {
                     } else {
                         this.#losses++;
                     }
-                    if (match.blue.shieldGeneratorEnergized) this.#rankingPoints += 1;
-                    if (match.blue.shieldGeneratorOperational) this.#rankingPoints += 1;
+                    if (match.blue.rocketComplete) this.#rankingPoints += 1;
+                    if (match.blue.docked) this.#rankingPoints += 1;
                     this.#autoPoints += match.blue.autoPoints;
                     this.#endgamePoints += match.blue.endgamePoints;
-                    this.#teleopPowerCellPoints += match.blue.teleopPowerCellPoints;
-                    this.#controlPanelPoints += match.blue.controlPanelPoints;
+                    this.#hatchPoints += match.red.hatchPoints;
+                    this.#cargoPoints += match.red.cargoPoints;
                 }
             }
         });
@@ -107,12 +107,12 @@ export class Team {
         return this.#endgamePoints;
     }
 
-    get teleopPowerCellPoints() {
-        return this.#teleopPowerCellPoints;
+    get hatchPoints() {
+        return this.#hatchPoints;
     }
 
-    get controlPanelPoints() {
-        return this.#controlPanelPoints;
+    get cargoPoints() {
+        return this.#cargoPoints;
     }
 
     get wins() {

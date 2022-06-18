@@ -24,8 +24,8 @@ export function update() {
     updateHatch(Competition.match.blue.hatches, Match.AllianceColor.BLUE);
     updateCargo(Competition.match.red.cargo, Match.AllianceColor.RED);
     updateCargo(Competition.match.blue.cargo, Match.AllianceColor.BLUE);
-    updateAutonomous(Competition.match.red.habCrossings, Match.AllianceColor.RED);
-    updateAutonomous(Competition.match.blue.habCrossings, Match.AllianceColor.BLUE);
+    updateAutonomous(Competition.match.red.habDismounts, Match.AllianceColor.RED);
+    updateAutonomous(Competition.match.blue.habDismounts, Match.AllianceColor.BLUE);
     updateEndgame(Competition.match.red.habClimbs, Match.AllianceColor.RED);
     updateEndgame(Competition.match.blue.habClimbs, Match.AllianceColor.BLUE);
     updateRankingPoints(Competition.match.red.rocketComplete, Competition.match.red.docked, Match.AllianceColor.RED);
@@ -66,9 +66,9 @@ function updateAutonomous(crossings, color) {
     for (let i = 0; i < 3; i++) {
         let crossing = $("#hab-panel " + getColorClass(color) + ".dismount-" + i);
         if (crossings[i] == 0) crossing.height("0%");
-        else if (crossings[i] == Match.PointValues.HAB_CROSS_1) crossing.height("33%");
-        else if (crossings[i] == Match.PointValues.HAB_CROSS_2) crossing.height("66%");
-        else if (crossings[i] == Match.PointValues.HAB_CROSS_3) crossing.height("100%");
+        else if (crossings[i] == Match.PointValues.HAB_DISMOUNT_1) crossing.height("33%");
+        else if (crossings[i] == Match.PointValues.HAB_DISMOUNT_2) crossing.height("66%");
+        else if (crossings[i] == Match.PointValues.HAB_DISMOUNT_3) crossing.height("100%");
     }
 }
 

@@ -45,7 +45,6 @@ body {
     margin: 0px;
     background-color: white;
     border-bottom: solid black 5px;
-    z-index: 1;
 }
 
 #timer #bar {
@@ -77,12 +76,12 @@ body {
 
 #info-bar {
     box-sizing: border-box;
-    width: 100%;
+    width: 500px;
     height: 45px;
-    margin: 0px;
+    margin: auto;
     background-color: rgb(241, 241, 241);
-    border-bottom: solid black 5px;
-    z-index: 1;
+    border: solid black 5px;
+    border-top: none;
     line-height: 40px;
     padding-top: 0px;
     font-size: 38px;

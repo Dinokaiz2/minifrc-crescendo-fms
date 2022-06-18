@@ -1,4 +1,6 @@
 const ipc = window.ipc;
+const CtrlMsg = window.ipc.CtrlMsg;
+const RenderMsg = window.ipc.RenderMsg;
 
 const View = {
     MATCH: 1,
@@ -22,89 +24,148 @@ let fault = false;
 
 $("#view button#match").on("click", () => {
     view = View.MATCH;
-    ipc.send("view-match");
+    ipc.send(CtrlMsg.VIEW_MATCH);
 });
 $("#view button#results").on("click", () => {
     view = View.RESULTS;
-    ipc.send("view-results")
+    ipc.send(CtrlMsg.VIEW_RESULTS)
 });
 $("#view button#rankings").on("click", () => {
     view = View.RANKINGS;
-    ipc.send("view-rankings")
+    ipc.send(CtrlMsg.VIEW_RANKINGS)
 });
 
 $("#phase button#no-entry").on("click", () => {
     phase = Phase.NO_ENTRY;
-    ipc.send("no-entry")
+    ipc.send(CtrlMsg.NO_ENTRY)
 });
 $("#phase button#safe-to-enter").on("click", () => {
-    phase = Phase.SAFE_TO_ENTER
-    ipc.send("safe-not-enter")
+    phase = Phase.SAFE_TO_ENTER;
+    ipc.send(CtrlMsg.SAFE_TO_ENTER)
 });
 $("#phase button#ready-for-match").on("click", () => {
     phase = Phase.READY_FOR_MATCH;
-    ipc.send("ready-for-match")
+    ipc.send(CtrlMsg.READY_FOR_MATCH)
 });
 $("#phase button#start-match").on("click", () => {
     phase = Phase.IN_MATCH;
-    ipc.send("start-match");
+    ipc.send(CtrlMsg.START_MATCH);
 });
 
 $("#match button#field-fault").on("click", () => {
     phase = Phase.NO_ENTRY;
     fault = true;
-    ipc.send("field-fault");
+    ipc.send(CtrlMsg.FIELD_FAULT);
 });
 $("#match button#replay-match").on("click", () => {
     currentMatchDetermined = false;
     matchResultsWaiting = false;
     fault = false;
-    ipc.send("replay-match")
+    ipc.send(CtrlMsg.REPLAY_MATCH)
 });
 $("#match button#save-results").on("click", () => {
     matchResultsWaiting = false;
     matchResultsValid = true;
-    ipc.send("save-results");
+    ipc.send(CtrlMsg.SAVE_RESULTS);
 });
-$("#match button#next-match").on("click", () => ipc.send("next-match"));
-$("#match button#previous-match").on("click", () => ipc.send("previous-match"));
+$("#match button#next-match").on("click", () => ipc.send(CtrlMsg.NEXT_MATCH));
+$("#match button#previous-match").on("click", () => ipc.send(CtrlMsg.PREVIOUS_MATCH));
 
-$("#points .initiation-line button.red.add").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-red-initiation-line"));
-$("#points .initiation-line button.blue.add").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-blue-initiation-line"));
-
-$("#points .hang button.red.add").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-red-hang"));
-$("#points .hang button.blue.add").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-blue-hang"));
-
-$("#points .park button.red.add").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-red-park"));
-$("#points .park button.blue.add").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-blue-park"));
-
-$("#points .level button.red.add").on("click", e => ipc.send(($(e.target).hasClass("add") ? "set" : "unset") + "-red-level"));
-$("#points .level button.blue.add").on("click", e => ipc.send(($(e.target).hasClass("add") ? "set" : "unset") + "-blue-level"));
+$(".dismount,.climb button").on("click", e => {
+    $(e.target).addClass("selected");
+    $(e.target).siblings().removeClass("selected");
+    let climb = $(e.target).parent().hasClass("climb");
+    let red = $(e.target).hasClass("red");
+    let message = red ? (climb ? CtrlMsg.RED_CLIMB : CtrlMsg.RED_DISMOUNT) : (climb ? CtrlMsg.BLUE_CLIMB : CtrlMsg.BLUE_DISMOUNT);
+    let lvlMap = { "none": 0, "lvl-1": 1, "lvl-2": 2, "lvl-3": 3 };
+    let posMap = { "left": 0, "mid": 1, "right": 2 };
+    let lvl = lvlMap[Object.keys(lvlMap).find(lvl => $(e.target).hasClass(lvl))];
+    let pos = posMap[Object.keys(posMap).find(pos => $(e.target).hasClass(pos))];
+    ipc.send(message, { Position: pos, Level: lvl });
+});
 
 // Award red fouls to blue and vice versa
-$("#points .foul button.red.add").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-blue-foul"));
-$("#points .foul button.blue.add").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-red-foul"));
+$("#fouls .foul button.red").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-blue-foul"));
+$("#fouls .foul button.blue").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-red-foul"));
 
-$("#points .tech-foul button.red.add").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-blue-tech-foul"));
-$("#points .tech-foul button.blue.add").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-red-tech-foul"));
+$("#fouls .tech-foul button.red").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-blue-tech-foul"));
+$("#fouls .tech-foul button.blue").on("click", e => ipc.send(($(e.target).hasClass("add") ? "add" : "remove") + "-red-tech-foul"));
 
+let mods = {
+    "ShiftLeft": false,
+    "ShiftRight": false,
+    "ControlLeft": false,
+    "ControlRight": false
+}
 
-ipc.on("loaded-undetermined-match", () => currentMatchDetermined = false);
-ipc.on("loaded-determined-match", () => currentMatchDetermined = true);
-ipc.on("match-ended", () => {
+const keyMap = {
+    "KeyQ": ["red", 0, "ShiftLeft"],
+    "KeyW": ["red", 1, "ShiftLeft"],
+    "KeyA": ["red", 2, "ShiftLeft"],
+    "KeyS": ["red", 3, "ShiftLeft"],
+    "KeyZ": ["red", 4, "ShiftLeft"],
+    "KeyX": ["red", 5, "ShiftLeft"],
+    "Digit1": ["red", 13, "ShiftLeft"],
+    "Digit2": ["red", 17, "ShiftLeft"],
+    "Digit3": ["red", 18, "ShiftLeft"],
+    "Digit4": ["red", 19, "ShiftLeft"],
+
+    "KeyE": ["red", 7, "ControlLeft"],
+    "KeyR": ["red", 6, "ControlLeft"],
+    "KeyD": ["red", 9, "ControlLeft"],
+    "KeyF": ["red", 8, "ControlLeft"],
+    "KeyC": ["red", 11, "ControlLeft"],
+    "KeyV": ["red", 10, "ControlLeft"],
+    "Digit5": ["red", 16, "ControlLeft"],
+    "Digit6": ["red", 15, "ControlLeft"],
+    "Digit7": ["red", 14, "ControlLeft"],
+    "Digit8": ["red", 12, "ControlLeft"],
+
+    "KeyT": ["blue", 0, "ShiftRight"],
+    "KeyY": ["blue", 1, "ShiftRight"],
+    "KeyG": ["blue", 2, "ShiftRight"],
+    "KeyH": ["blue", 3, "ShiftRight"],
+    "KeyB": ["blue", 4, "ShiftRight"],
+    "KeyN": ["blue", 5, "ShiftRight"],
+    "Digit9": ["blue", 19, "ShiftRight"],
+    "Digit0": ["blue", 18, "ShiftRight"],
+    "Minus": ["blue", 17, "ShiftRight"],
+    "Equal": ["blue", 13, "ShiftRight"],
+
+    "KeyU": ["blue", 7, "ControlRight"],
+    "KeyI": ["blue", 6, "ControlRight"],
+    "KeyJ": ["blue", 9, "ControlRight"],
+    "KeyK": ["blue", 8, "ControlRight"],
+    "KeyM": ["blue", 11, "ControlRight"],
+    "Comma": ["blue", 10, "ControlRight"],
+    "KeyO": ["blue", 12, "ControlRight"],
+    "KeyP": ["blue", 14, "ControlRight"],
+    "BracketLeft": ["blue", 15, "ControlRight"],
+    "BracketRight": ["blue", 16, "ControlRight"],
+};
+
+$(document).on("keydown", e => {
+    console.log(e.code);
+    let pos = keyMap[e.code];
+    if (!pos) return;
+    ipc.send(CtrlMsg.GAME_PIECE, {
+        Color: pos[0],
+        Position: pos[1],
+        Remove: mods[pos[2]]
+    });
+});
+
+$(document).on("keydown", e => { if (e.code in mods) mods[e.code] = true; });
+$(document).on("keyup", e => { if (e.code in mods) mods[e.code] = false; });
+
+ipc.on(RenderMsg.LOADED_UNDETERMINED_MATCH, () => currentMatchDetermined = false);
+ipc.on(RenderMsg.LOADED_DETERMINED_MATCH, () => currentMatchDetermined = true);
+ipc.on(RenderMsg.MATCH_ENDED, () => {
     phase = Phase.NO_ENTRY;
     matchResultsWaiting = true;
     matchResultsValid = false;
 });
-ipc.on("match-data", (event, data) => {
-    $("#data #crossings .red span").text(data.RedInitiationLine);
-    $("#data #crossings .blue span").text(data.BlueInitiationLine);
-    $("#data #parks .red span").text(data.RedParks);
-    $("#data #parks .blue span").text(data.BlueParks);
-    $("#data #hangs .red span").text(data.RedHangs);
-    $("#data #hangs .blue span").text(data.BlueHangs);
-    $("#data #level .red span").text(data.RedLevel ? "Yes" : "No");
-    $("#data #level .blue span").text(data.BlueLevel ? "Yes" : "No");
+ipc.on(RenderMsg.MATCH_DATA, (event, data) => {
     $("#data #fouls .red span").text(data.BlueFouls);
     $("#data #fouls .blue span").text(data.RedFouls);
     $("#data #tech-fouls .red span").text(data.BlueTechFouls);
@@ -135,11 +196,13 @@ function update() {
 
     if (phase == Phase.IN_MATCH || matchResultsWaiting) {
         $("#points button").attr("disabled", false);
+        $("#fouls button").attr("disabled", false);
         $("#phase button#ready-for-match").attr("disabled", true);
         $("#match button#next-match").attr("disabled", true);
         $("#match button#previous-match").attr("disabled", true);
     } else {
         $("#points button").attr("disabled", true);
+        $("#fouls button").attr("disabled", true);
         $("#phase button#ready-for-match").attr("disabled", false);
         $("#match button#next-match").attr("disabled", false);
         $("#match button#previous-match").attr("disabled", false);

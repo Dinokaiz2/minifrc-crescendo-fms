@@ -2,6 +2,7 @@ const { ipcRenderer, contextBridge } = require("electron");
 const Database = require('somewhere');
 const path = require('path');
 const { SerialPort } = require("serialport");
+const { CtrlMsg, RenderMsg } = require("./messages.js");
 let db;
 try {
     db = new Database(path.join(__dirname, './database.json'))
@@ -45,7 +46,9 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld("ipc", {
     on: (channel, listener) => ipcRenderer.on(channel, listener),
-    send: (channel, ...args) => ipcRenderer.send(channel, ...args)
+    send: (channel, ...args) => ipcRenderer.send(channel, ...args),
+    CtrlMsg: CtrlMsg,
+    RenderMsg: RenderMsg
 });
 
 port.on("error", () => {}); // We check port.isOpen, only need an error stream for debugging

@@ -11,14 +11,12 @@ import * as sound from "./sound.js";
 
 // Pre-match initialization: If qualifications, pull from schedule. For playoffs, generate the next match.
 
-const AUTO_GRACE_PERIOD_START = 15;
-const TELEOP_START = 20;
-const ENDGAME_START = 120;
-const TELEOP_GRACE_PERIOD_START = 150;
-const MATCH_END = 155;
+const TELEOP_START = 0;
+const ENDGAME_START = 5; // 120;
+const MATCH_END = 10; // 150;
 
-const AUTO_LENGTH = 15;
-const TELEOP_LENGTH = 135;
+const AUTO_LENGTH = 0;
+const TELEOP_LENGTH = 10; // 150;
 
 // TODO: add a postMatch variable, true if we finished a match but haven't announced it?
 
@@ -33,10 +31,8 @@ export class Competition {
     static #rankings;
 
     static #matchStartDate;
-    static #startAutoGracePeriodHandle;
     static #startTeleopHandle;
     static #startEndgameHandle;
-    static #startTeleopGracePeriodHandle;
     static #endMatchHandle;
 
     // Example flow on boot:
@@ -47,11 +43,8 @@ export class Competition {
             NO_ENTRY: 1,
             SAFE_TO_ENTER: 2,
             READY_FOR_MATCH: 3, // TODO: Must announce score/replay match before ready to start next match
-            AUTO: 4,
-            AUTO_GRACE_PERIOD: 5,
             TELEOP: 6,
             ENDGAME: 7,
-            TELEOP_GRACE_PERIOD: 8
         };
     }
 
@@ -115,11 +108,6 @@ export class Competition {
         this.#loadMatch(matches[Math.min(index + 1, matches.length - 1)]);
     }
 
-    static #startAutoGracePeriod() {
-        Competition.#fieldPhase = Competition.FieldPhase.AUTO_GRACE_PERIOD;
-        sound.startTeleop();
-    }
-
     static #startTeleop() {
         Competition.#fieldPhase = Competition.FieldPhase.TELEOP;
     }
@@ -129,30 +117,22 @@ export class Competition {
         sound.startEndgame()
     }
 
-    static #startTeleopGracePeriod() {
-        Competition.#inMatch = false;
-        Competition.#matchOver = true;
-        Competition.#fieldPhase = Competition.FieldPhase.TELEOP_GRACE_PERIOD;
-        sound.endMatch();
-    }
-
     static #endMatch() {
         Competition.#inMatch = false;
         Competition.#endMatchHandle = null;
+        Competition.#matchOver = true;
         userInput.matchEnded();
+        sound.endMatch();
     }
 
     static startMatch() {
         Competition.#inMatch = true;
-        Competition.#fieldPhase = Competition.FieldPhase.AUTO;
         Competition.#matchStartDate = new Date();
 
-        Competition.#startAutoGracePeriodHandle = setTimeout(() => Competition.#startAutoGracePeriod(), AUTO_GRACE_PERIOD_START * 1000);
-        Competition.#startTeleopHandle = setTimeout(() => Competition.#startTeleop(), TELEOP_START * 1000);
         Competition.#startEndgameHandle = setTimeout(() => Competition.#startEndgame(), ENDGAME_START * 1000);
-        Competition.#startTeleopGracePeriodHandle = setTimeout(() => Competition.#startTeleopGracePeriod(), TELEOP_GRACE_PERIOD_START * 1000);
         Competition.#endMatchHandle = setTimeout(() => Competition.#endMatch(), MATCH_END * 1000);
 
+        this.#startTeleop();
         sound.startMatch();
     }
 
@@ -160,10 +140,8 @@ export class Competition {
         FmsFirmware.acceptingInput = false;
         this.#inMatch = false;
         this.#matchOver = true;
-        clearTimeout(Competition.#startAutoGracePeriodHandle);
         clearTimeout(Competition.#startTeleopHandle);
         clearTimeout(Competition.#startEndgameHandle);
-        clearTimeout(Competition.#startTeleopGracePeriodHandle);
         clearTimeout(Competition.#endMatchHandle);
         sound.fieldFault();
     }
@@ -202,9 +180,10 @@ export class Competition {
         teams.forEach(team => team.calculateFields())
         teams.sort((t1, t2) => {
             if (t1.rankingScore != t2.rankingScore) return t2.rankingScore - t1.rankingScore;
-            else if (t1.autoPoints != t2.autoPoints) return t2.autoPoints - t1.autoPoints;
-            else if (t1.endgamePoints != t2.endgamePoints) return t2.endgamePoints - t1.endgamePoints;
-            return (t2.teleopPowerCellPoints + t2.controlPanelPoints) - (t2.teleopPowerCellPoints + t1.controlPanelPoints);
+            if (t1.cargoPoints != t2.cargoPoints) return t2.cargoPoints - t1.cargoPoints;
+            if (t1.hatchPoints != t2.hatchPoints) return t2.hatchPoints - t1.hatchPoints;
+            if (t1.endgamePoints != t2.endgamePoints) return t2.endgamePoints - t1.endgamePoints;
+            return t2.autoPoints - t1.autoPoints;
         });
         return teams;
     }
@@ -267,8 +246,7 @@ export class Competition {
     }
 
     static get inTeleop() {
-        return Competition.fieldPhase == Competition.FieldPhase.AUTO_GRACE_PERIOD
-            || Competition.fieldPhase == Competition.FieldPhase.TELEOP
+        return Competition.fieldPhase == Competition.FieldPhase.TELEOP
             || Competition.fieldPhase == Competition.FieldPhase.ENDGAME;
     }
 
@@ -298,12 +276,9 @@ setInterval(() => Competition.update(), 100);
 setTimeout(() => Competition.loadNextMatch(), 1000);
 console.log("Controller started.");
 
-matchRepository.generateMatch(1, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6]);
-matchRepository.generateMatch(1, 1, Match.Type.SEMIFINAL, [1, 2, 3], [4, 5, 6]);
-
-teamRepository.generateTeam(1, "team 1");
-teamRepository.generateTeam(2, "team 2");
-teamRepository.generateTeam(3, "team 3");
-teamRepository.generateTeam(4, "team 4");
-teamRepository.generateTeam(5, "team 5");
-teamRepository.generateTeam(6, "team 6");
+matchRepository.generateMatch(1, 1, Match.Type.QUARTERFINAL, [1, 2, 3], [4, 5, 6]);
+matchRepository.generateMatch(2, 1, Match.Type.QUARTERFINAL, [1, 2, 3], [4, 5, 6]);
+matchRepository.generateMatch(3, 1, Match.Type.QUARTERFINAL, [1, 2, 3], [4, 5, 6]);
+matchRepository.generateMatch(1, 2, Match.Type.QUARTERFINAL, [1, 2, 3], [4, 5, 6]);
+matchRepository.generateMatch(2, 2, Match.Type.QUARTERFINAL, [1, 2, 3], [4, 5, 6]);
+matchRepository.generateMatch(3, 2, Match.Type.QUARTERFINAL, [1, 2, 3], [4, 5, 6]);
