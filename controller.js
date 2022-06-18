@@ -275,10 +275,3 @@ setInterval(() => Competition.update(), 100);
 // Wait before loading match so control window is ready
 setTimeout(() => Competition.loadNextMatch(), 1000);
 console.log("Controller started.");
-
-matchRepository.generateMatch(1, 1, Match.Type.QUARTERFINAL, [1, 2, 3], [4, 5, 6]);
-matchRepository.generateMatch(2, 1, Match.Type.QUARTERFINAL, [1, 2, 3], [4, 5, 6]);
-matchRepository.generateMatch(3, 1, Match.Type.QUARTERFINAL, [1, 2, 3], [4, 5, 6]);
-matchRepository.generateMatch(1, 2, Match.Type.QUARTERFINAL, [1, 2, 3], [4, 5, 6]);
-matchRepository.generateMatch(2, 2, Match.Type.QUARTERFINAL, [1, 2, 3], [4, 5, 6]);
-matchRepository.generateMatch(3, 2, Match.Type.QUARTERFINAL, [1, 2, 3], [4, 5, 6]);
