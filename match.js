@@ -390,7 +390,7 @@ export class Match {
 
         save() {
             repository.setMatchPoints(this.matchPoints, ...this.#match.#id, this.color);
-            repository.setHabCrossings(this.habClimbs, ...this.#match.#id, this.color);
+            repository.setHabCrossings(this.habDismounts, ...this.#match.#id, this.color);
             repository.setHatches(this.hatches, ...this.#match.#id, this.color);
             repository.setCargo(this.cargo, ...this.#match.#id, this.color);
             repository.setHabClimbs(this.habClimbs, ...this.#match.#id, this.color);
