@@ -50,6 +50,8 @@ $("#phase button#ready-for-match").on("click", () => {
 $("#phase button#start-match").on("click", () => {
     phase = Phase.IN_MATCH;
     ipc.send(CtrlMsg.START_MATCH);
+    $(".dismount,.climb button").removeClass("selected");
+    $(".dismount,.climb button.none").addClass("selected");
 });
 
 $("#match button#field-fault").on("click", () => {
