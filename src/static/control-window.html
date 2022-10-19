@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>FMS Control Window</title>
+    <!-- TODO: Content Security Policy -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./control-window.css">
+    <script type="text/javascript" src="../../node_modules/jquery/dist/jquery.js"></script>
+</head>
+
+<body>
+    <div class="label">View</div>
+    <div id="view" class="row">
+        <button id="match">Match</button>
+        <button id="results">Results</button>
+        <button id="rankings">Rankings</button>
+    </div>
+
+    <div class="label">Phase</div>
+    <div id="phase" class="row">
+        <button id="no-entry">Do not Enter</button>
+        <button id="safe-to-enter">Safe to Enter</button>
+        <button id="ready-for-match">Ready for Match</button>
+        <button id="start-match">Start Match</button>
+    </div>
+
+    <div class="label">Match</div>
+    <div id="match" class="row">
+        <div class="column">
+            <button id="next-match">Next Match</button>
+            <button id="previous-match">Prev Match</button>
+        </div>
+        <button id="field-fault">Field Fault</button>
+        <button id="replay-match">Replay Match</button>
+        <button id="save-results">Save Results</button>
+    </div>
+
+    <div class="label">Points</div>
+    <div id="points" class="row">
+<!--    <div class="column">
+            <span>Red Dismounts</span>
+            <div class="row">
+                <div class="dismount small column">
+                    <button class="red lvl-3 left">Lvl 3</button>
+                    <button class="red lvl-2 left">Lvl 2</button>
+                    <button class="red lvl-1 left">Lvl 1</button>
+                    <button class="red none left selected">None</button>
+                </div>
+                <div class="dismount small column">
+                    <button class="red lvl-3 mid">Lvl 3</button>
+                    <button class="red lvl-2 mid">Lvl 2</button>
+                    <button class="red lvl-1 mid">Lvl 1</button>
+                    <button class="red none mid selected">None</button>
+                </div>
+                <div class="dismount small column">
+                    <button class="red lvl-3 right">Lvl 3</button>
+                    <button class="red lvl-2 right">Lvl 2</button>
+                    <button class="red lvl-1 right">Lvl 1</button>
+                    <button class="red none right selected">None</button>
+                </div>
+            </div>
+        </div>
+        <div style="padding: 0 10px"></div>
+        <div class="column">
+            <span>Blue Dismounts</span>
+            <div class="row">
+                <div class="dismount small column">
+                    <button class="blue lvl-3 left">Lvl 3</button>
+                    <button class="blue lvl-2 left">Lvl 2</button>
+                    <button class="blue lvl-1 left">Lvl 1</button>
+                    <button class="blue none left selected">None</button>
+                </div>
+                <div class="dismount small column">
+                    <button class="blue lvl-3 mid">Lvl 3</button>
+                    <button class="blue lvl-2 mid">Lvl 2</button>
+                    <button class="blue lvl-1 mid">Lvl 1</button>
+                    <button class="blue none mid selected">None</button>
+                </div>
+                <div class="dismount small column">
+                    <button class="blue lvl-3 right">Lvl 3</button>
+                    <button class="blue lvl-2 right">Lvl 2</button>
+                    <button class="blue lvl-1 right">Lvl 1</button>
+                    <button class="blue none right selected">None</button>
+                </div>
+            </div>
+        </div>
+        <div style="padding: 0 10px"></div> -->
+        <div class="column">
+            <span>Blue Climbs</span>
+            <div class="row">
+                <div class="climb small column">
+                    <button class="blue lvl-3 left">Lvl 3</button>
+                    <button class="blue lvl-2 left">Lvl 2</button>
+                    <button class="blue lvl-1 left">Lvl 1</button>
+                    <button class="blue none left selected">None</button>
+                </div>
+                <div class="climb small column">
+                    <button class="blue lvl-3 mid">Lvl 3</button>
+                    <button class="blue lvl-2 mid">Lvl 2</button>
+                    <button class="blue lvl-1 mid">Lvl 1</button>
+                    <button class="blue none mid selected">None</button>
+                </div>
+                <div class="climb small column">
+                    <button class="blue lvl-3 right">Lvl 3</button>
+                    <button class="blue lvl-2 right">Lvl 2</button>
+                    <button class="blue lvl-1 right">Lvl 1</button>
+                    <button class="blue none right selected">None</button>
+                </div>
+            </div>
+        </div>
+        <div style="padding: 0 10px"></div>
+        <div class="column">
+            <span>Red Climbs</span>
+            <div class="row">
+                <div class="climb small column">
+                    <button class="red lvl-3 left">Lvl 3</button>
+                    <button class="red lvl-2 left">Lvl 2</button>
+                    <button class="red lvl-1 left">Lvl 1</button>
+                    <button class="red none left selected">None</button>
+                </div>
+                <div class="climb small column">
+                    <button class="red lvl-3 mid">Lvl 3</button>
+                    <button class="red lvl-2 mid">Lvl 2</button>
+                    <button class="red lvl-1 mid">Lvl 1</button>
+                    <button class="red none mid selected">None</button>
+                </div>
+                <div class="climb small column">
+                    <button class="red lvl-3 right">Lvl 3</button>
+                    <button class="red lvl-2 right">Lvl 2</button>
+                    <button class="red lvl-1 right">Lvl 1</button>
+                    <button class="red none right selected">None</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="label">Fouls</div>
+    <div id="fouls" class="row">
+        <div class="foul column">
+            <button class="blue add">Add Blue Foul</button>
+            <button class="blue remove">Remove Blue Foul</button>
+        </div>
+        <div class="tech-foul column">
+            <button class="blue add">Add Blue Tech Foul</button>
+            <button class="blue remove">Remove Blue Tech Foul</button>
+        </div>
+        <div style="padding: 0 10px"></div>
+        <div class="foul column">
+            <button class="red add">Add Red Foul</button>
+            <button class="red remove">Remove Blue Foul</button>
+        </div>
+        <div class="tech-foul column">
+            <button class="red add">Add Red Tech Foul</button>
+            <button class="red remove">Remove Red Tech Foul</button>
+        </div>
+    </div>
+
+    <div class="label">Data</div>
+    <div id="data">
+        <div style="padding: 0 10px"></div>
+        <div id="fouls" class="info-column">
+            <div class="red">Red fouls: <span></span></div>
+            <div class="blue">Blue fouls: <span></span></div>
+        </div>
+        <div id="tech-fouls" class="info-column">
+            <div class="red">Red tech fouls: <span></span></div>
+            <div class="blue">Blue tech fouls: <span></span></div>
+        </div>
+    </div>
+
+    <script src="../renderer/control-window-renderer.js" type="module"></script>
+</body>
+</html>

@@ -1,21 +1,21 @@
 @font-face {
     font-family: "Roboto";
-    src: url("./fonts/roboto/Roboto-Regular.ttf") format("truetype");
+    src: url("../../fonts/roboto/Roboto-Regular.ttf") format("truetype");
 }
 
 @font-face {
     font-family: "Roboto Slab";
-    src: url("./fonts/roboto-slab/RobotoSlab-VariableFont_wght.ttf") format("truetype");
+    src: url("../../fonts/roboto-slab/RobotoSlab-VariableFont_wght.ttf") format("truetype");
 }
 
 @font-face {
     font-family: "Roboto Mono";
-    src: url("./fonts/roboto-mono/RobotoMono-VariableFont_wght.ttf") format("truetype");
+    src: url("../../fonts/roboto-mono/RobotoMono-VariableFont_wght.ttf") format("truetype");
 }
 
 @font-face {
     font-family: "Electrolize";
-    src: url("./fonts/electrolize/Electrolize-Regular.ttf") format("truetype");
+    src: url("../../fonts/electrolize/Electrolize-Regular.ttf") format("truetype");
 }
 
 
@@ -276,17 +276,17 @@ body {
 }
 
 .rocket-rp img {
-    content: url(images/rocket-icon-grey.png)
+    content: url(../../images/rocket-icon-grey.png)
 }
 .docked-rp img {
-    content: url(images/hab-icon-grey.png)
+    content: url(../../images/hab-icon-grey.png)
 }
 
 .rocket-rp.lit img {
-    content: url(images/rocket-icon.png)
+    content: url(../../images/rocket-icon.png)
 }
 .docked-rp.lit img {
-    content: url(images/hab-icon.png)
+    content: url(../../images/hab-icon.png)
 }
 
 .rocket-rp.lit.red, .docked-rp.lit.red {

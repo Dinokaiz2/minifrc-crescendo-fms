@@ -2,7 +2,7 @@
   "name": "minifrc-infinite-recharge-fms",
   "version": "1.0.0",
   "description": "Field Management System for MiniFRC: Infinite Recharge",
-  "main": "main.js",
+  "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
     "rebuild": "./node_modules/.bin/electron-rebuild"
