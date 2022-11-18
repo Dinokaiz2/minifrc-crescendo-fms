@@ -2,6 +2,8 @@ const { app, BrowserWindow, Menu, ipcMain } = require("electron");
 const path = require("path");
 const { CtrlMsg, RenderMsg } = require("./messages.js");
 
+const debug = true;
+
 app.allowRendererProcessReuse = false; // Deprecated, but required by Node Serialport
 
 function createWindows() {
@@ -29,6 +31,7 @@ function createWindows() {
     
     Object.values(CtrlMsg).forEach(msg => ipcMain.on(msg, (event, data) => mainWindow.webContents.send(msg, data)));
     Object.values(RenderMsg).forEach(msg => ipcMain.on(msg, (event, data) => controlWindow.webContents.send(msg, data)));
+    
 }
 
 app.whenReady().then(createWindows);
@@ -54,22 +57,22 @@ const menuTemplate = [
             },
             {
                 label: "Toggle DevTools",
-                // accelerator: "Ctrl+Shift+I",
-                click(item, focusedWindow) {
-                    focusedWindow.toggleDevTools()
-                }
+                click(item, focusedWindow) { focusedWindow.toggleDevTools() }
             },
-            // {
-            //     label: "Reload",
-            //     role: "reload",
-            //     accelerator: "Ctrl+R",
-            // },
+            {
+                label: "Reload",
+                role: "reload",
+                accelerator: ""
+            },
             {
                 label: "Quit",
-                click() {
-                    app.quit()
-                }
+                click() { app.quit() }
             }
         ]
     }
 ];
+
+if (debug) {
+    menuTemplate[0].submenu[1].accelerator = "Ctrl+Shift+I"; // Toggle DevTools
+    menuTemplate[0].submenu[2].accelerator = "Ctrl+R"; // Reload
+}
