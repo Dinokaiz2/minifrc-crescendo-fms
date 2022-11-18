@@ -130,3 +130,12 @@ function getColorClass(color) {
     else if (color == Match.AllianceColor.BLUE) return ".blue";
     else throw "Color must be a Match.AllianceColor";
 }
+
+// Set up video stream
+console.log("Media devices:", navigator.mediaDevices.enumerateDevices());
+let video = document.querySelector("#stream video");
+if (navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ video: { width: { exact: 1920 }, height: { exact: 1080 } } }).then(stream => {
+        video.srcObject = stream;
+    }).catch((e) => console.log("Could not find camera.", e));
+}

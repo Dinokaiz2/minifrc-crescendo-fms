@@ -38,6 +38,20 @@ body {
     --border-color: black;
 }
 
+#stream {
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+#stream video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 #timer {
     box-sizing: border-box;
     width: 100%;
@@ -562,4 +576,512 @@ img {
 
 .hab-climb.blue {
     background-color: rgb(50, 132, 255);
+}
+
+/* Infinite Recharge overlay */
+
+#overlay {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    bottom: 0;
+    width: 100%;
+    height: 250px;
+    margin: 0px;
+    background-color: white;
+    border-top: solid var(--border-color) 5px;
+    box-sizing: border-box;
+
+    --score-box-width: 500px;
+}
+
+#overlay .indicator {
+    border: 5px solid var(--border-color);
+    box-sizing: border-box;
+    background-color: grey;
+    color: lightgrey;
+}
+
+#overlay .red .lit.indicator {
+    background-color: red;
+    color: white;
+}
+
+#overlay .blue .lit.indicator {
+    background-color: blue;
+    color: white;
+}
+
+#overlay #scoring-panel {
+    padding-bottom: 20px;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    background: linear-gradient(to top, lightgrey 95%, grey);
+    /* background-color: lightgrey; */
+    box-sizing: border-box;
+}
+
+#overlay #scoring-panel #match-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    width: 630px;
+}
+
+#overlay #scoring-panel #match-panel #match-name {
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    width: 500px;
+    font-size: 40px;
+    line-height: 45px;
+    text-align: center;
+    height: 50px;
+    background-color: white;
+    border: 5px solid var(--border-color);
+    border-bottom: none;
+    box-sizing: border-box;
+}
+
+#overlay #scoring-panel #match-panel #score-box {
+    width: 500px;
+    height: 160px;
+    border: 5px solid var(--border-color);
+    font-family: Roboto;
+    font-weight: bold;
+    font-size: 90px;
+    text-align: center;
+    line-height: 150px;
+    color: white;
+    text-shadow: 0 0 5px var(--border-color);
+    box-sizing: border-box;
+}
+
+#overlay #scoring-panel #match-panel #score-box .red {
+    width: calc(50% - 2px);
+    height: 100%;
+    float: left;
+    border-right: 2px solid var(--border-color);
+    background-color: red;
+}
+
+#overlay #scoring-panel #match-panel #score-box .blue {
+    width: calc(50% - 2px);
+    height: 100%;
+    float: right;
+    border-left: 2px solid var(--border-color);
+    background-color: blue;
+}
+
+#overlay #scoring-panel #match-panel #teams {
+    position: absolute;
+    height: 135px;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: calc(110px + var(--score-box-width));
+    box-sizing: border-box;
+}
+
+#overlay #scoring-panel #match-panel #teams .red, #overlay #scoring-panel #match-panel #teams .blue {
+    position: absolute;
+    height: 120px;
+    width: 50px;
+    bottom: 0px;
+    background-color: white;
+    border-top: 5px solid var(--border-color);
+}
+
+#overlay #scoring-panel #match-panel #teams .red {
+    left: 0;
+    border-left: 5px solid var(--border-color);
+}
+
+#overlay #scoring-panel #match-panel #teams .blue {
+    right: 0;
+    border-right: 5px solid var(--border-color);
+}
+
+#overlay #scoring-panel #match-panel #teams .number {
+    position: relative;
+    height: 40px;
+    line-height: 35px;
+    border-bottom: 5px solid var(--border-color);
+    text-align: center;
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    font-size: 30px;
+    box-sizing: border-box;
+}
+
+#overlay #scoring-panel .rp-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 180px;
+    bottom: 0;
+    font-family: "Roboto Slab";
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.rp-panel .phase {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.rp-panel .phase .label {
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    width: 100%;
+    font-size: 30px;
+    height: 40px;
+}
+
+.rp-panel .phase .indicators {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 50px;
+    width: 100%;
+}
+
+.rp-panel .phase .indicators .indicator {
+    height: 50px;
+    width: 50px;
+    line-height: 40px;
+}
+
+.rp-panel .energized {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin-top: 5px;
+}
+
+.rp-panel .operational {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin-top: 5px;
+}
+
+#overlay #scoring-panel .task-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-width: 200px;
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    text-align: center;
+}
+
+.task-panel .label {
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    width: 100%;
+    font-size: 30px;
+    height: 40px;
+    margin-top: 20px;
+}
+
+.task-panel .power-cell {
+    position: relative;
+    bottom: 0;
+    height: 175px;
+}
+
+.task-panel .power-cell svg {
+    height: 175px; width: 175px;
+    transform: rotate(-90deg);
+    border-radius: 50%;
+}
+
+.task-panel .power-cell svg circle {
+    fill: rgb(170, 170, 170);
+    stroke: yellow;
+    stroke-width: 32;
+    stroke-dasharray: 101;
+    stroke-dashoffset: 101;
+}
+
+.task-panel .power-cell .border {
+    position: absolute;
+    border: 10px solid var(--border-color);
+    border-radius: 50%;
+    height: 175px;
+    width: 175px;
+    margin: auto;
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+    box-sizing: border-box;
+}
+
+.task-panel .power-cell .capacity {
+    position: absolute;
+    height: 150px;
+    line-height: 150px;
+    top: 0; bottom: 10px;
+    left: 0; right: 0;
+    margin: auto;
+    font-size: 120px;
+}
+
+.task-panel .rotation-control {
+    position: relative;
+    bottom: 0;
+    height: 175px;
+}
+
+.task-panel .rotation-control svg {
+    height: 175px; width: 175px;
+    border-radius: 50%;
+    animation: rotation 4s infinite linear;
+}
+
+.task-panel .rotation-control svg circle.border {
+    fill: transparent;
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.task-panel .rotation-control svg circle.red {
+    fill: red;
+    stroke: red;
+    stroke-width: 32;
+    stroke-dasharray: 16.6 33.3;
+}
+
+.task-panel .rotation-control svg circle.green {
+    fill: transparent;
+    stroke: green;
+    stroke-width: 32;
+    stroke-dasharray: 16.6 33.3;
+    stroke-dashoffset: 17;
+}
+
+.task-panel .rotation-control svg circle.blue {
+    fill: transparent;
+    stroke: blue;
+    stroke-width: 32;
+    stroke-dasharray: 16.6 33.3;
+    stroke-dashoffset: 33.3;
+}
+
+.task-panel .rotation-control svg circle.center {
+    fill: gold;
+}
+
+@keyframes rotation {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(359deg); }
+}
+
+.task-panel .position-control {
+    position: relative;
+    bottom: 0;
+    height: 175px;
+}
+
+.task-panel .position-control svg {
+    height: 175px; width: 175px;
+    border-radius: 50%;
+}
+
+.task-panel .position-control svg circle.border {
+    fill: transparent;
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.task-panel .position-control.red svg {
+    transform: rotate(0.17turn);
+}
+
+.task-panel .position-control svg circle.red {
+    fill: rgb(64, 0, 0);
+    stroke: rgb(64, 0, 0);
+    stroke-width: 32;
+    stroke-dasharray: 16.6 33.3;
+}
+
+.task-panel .position-control.red svg circle.red {
+    fill: red;
+    stroke: red;
+    animation: flash-red 0.5s infinite linear alternate;
+}
+
+@keyframes flash-red {
+    from {
+        fill: red;
+        stroke: red;
+    } to {
+        fill: rgb(255, 200, 200);
+        stroke: rgb(255, 200, 200);
+    }
+}
+
+.task-panel .position-control.green svg {
+    transform: rotate(0.34turn);
+}
+
+.task-panel .position-control svg circle.green {
+    fill: transparent;
+    stroke: rgb(80, 128, 80);
+    stroke-width: 32;
+    stroke-dasharray: 16.7 33.3;
+    stroke-dashoffset: 17;
+}
+
+.task-panel .position-control.green svg circle.green {
+    stroke: green;
+    animation: flash-green 0.5s infinite linear alternate;
+}
+
+@keyframes flash-green {
+    from { stroke: green; }
+    to { stroke: rgb(200, 255, 200); }
+}
+
+.task-panel .position-control svg circle.blue {
+    fill: transparent;
+    stroke: rgb(80, 80, 128);
+    stroke-width: 32;
+    stroke-dasharray: 16.6 33.3;
+    stroke-dashoffset: 33.3;
+}
+
+.task-panel .position-control.blue svg circle.blue {
+    stroke: blue;
+    animation: flash-blue 0.5s infinite linear alternate;
+}
+
+@keyframes flash-blue {
+    from { stroke: blue; }
+    to { stroke: rgb(200, 200, 255); }
+}
+
+.task-panel .position-control svg circle.center {
+    fill: gold;
+}
+
+.task-panel .done {
+    position: relative;
+    bottom: 0;
+    height: 175px;
+}
+
+.task-panel .done svg {
+    height: 175px; width: 175px;
+    border-radius: 50%;
+}
+
+.task-panel .done svg circle.border {
+    fill: transparent;
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.red.task-panel .done svg circle {
+    fill: red;
+}
+
+.blue.task-panel .done svg circle {
+    fill: blue;
+}
+
+.task-panel .done .label {
+    position: absolute;
+    height: 150px;
+    line-height: 150px;
+    top: 0; bottom: 10px;
+    left: 0; right: 0;
+    margin: auto;
+    font-size: 30px;
+    color: white;
+}
+
+#overlay #scoring-panel .indicator-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 180px;
+    font-family: "Roboto Slab";
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.indicator-panel .auto {
+    position: relative;
+    width: 100%;
+}
+
+.indicator-panel .auto .label {
+    display: flex;
+    justify-content: center;
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    width: 100%;
+    font-size: 30px;
+    height: 40px;
+    margin-top: 20px;
+}
+
+.indicator-panel .auto .indicators {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 50px;
+    width: 100%;
+}
+
+.indicator-panel .auto .indicators .indicator {
+    height: 50px;
+    width: 50px;
+    line-height: 40px;
+}
+
+.indicator-panel .endgame {
+    position: relative;
+    width: 100%;
+}
+
+.indicator-panel .endgame .label {
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    width: 100%;
+    font-size: 30px;
+    height: 40px;
+    margin-top: 10px;
+}
+
+.indicator-panel .level {
+    height: 20px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.indicator-panel .endgame .indicators {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 50px;
+    width: 100%;
+}
+
+.indicator-panel .endgame .indicators .indicator {
+    height: 50px;
+    width: 50px;
+    line-height: 40px;
 }
