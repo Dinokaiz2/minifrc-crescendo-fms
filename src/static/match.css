@@ -116,18 +116,6 @@ body {
     right: 10px;
 }
 
-#match-name {
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    line-height: 40px;
-    font-size: 38px;
-    font-family: "Roboto Slab";
-    color: black;
-    text-align: center;
-}
-
 #main-panel {
     display: flex;
     flex-direction: row;
@@ -612,7 +600,18 @@ img {
     color: white;
 }
 
+#overlay .label {
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    text-align: center;
+    justify-self: flex-start;
+    width: 100%;
+    font-size: 30px;
+    height: 40px;
+}
+
 #overlay #scoring-panel {
+    padding-top: 20px;
     padding-bottom: 20px;
     display: flex;
     flex-grow: 1;
@@ -620,7 +619,6 @@ img {
     justify-content: space-evenly;
     width: 100%;
     background: linear-gradient(to top, lightgrey 95%, grey);
-    /* background-color: lightgrey; */
     box-sizing: border-box;
 }
 
@@ -723,7 +721,7 @@ img {
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: space-between;
     width: 180px;
     bottom: 0;
     font-family: "Roboto Slab";
@@ -732,21 +730,26 @@ img {
     text-align: center;
 }
 
-.rp-panel .phase {
+.rp-panel .breach {
     position: relative;
     width: 100%;
-    margin-bottom: 15px;
+    height: 50px;
+    margin-top: 5px;
 }
 
-.rp-panel .phase .label {
-    font-family: "Roboto Slab";
-    font-weight: bold;
+.rp-panel .capture {
+    position: relative;
     width: 100%;
-    font-size: 30px;
-    height: 40px;
+    height: 50px;
+    margin-top: 5px;
 }
 
-.rp-panel .phase .indicators {
+.rp-panel .auto {
+    position: relative;
+    width: 100%;
+}
+
+.rp-panel .auto .indicators {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -754,334 +757,216 @@ img {
     width: 100%;
 }
 
-.rp-panel .phase .indicators .indicator {
+.rp-panel .auto .indicators .indicator {
     height: 50px;
     width: 50px;
     line-height: 40px;
 }
 
-.rp-panel .energized {
-    position: relative;
-    width: 100%;
-    height: 50px;
-    margin-top: 5px;
-}
-
-.rp-panel .operational {
-    position: relative;
-    width: 100%;
-    height: 50px;
-    margin-top: 5px;
-}
-
-#overlay #scoring-panel .task-panel {
+.endgame {
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    min-width: 200px;
-    font-family: "Roboto Slab";
-    font-weight: bold;
-    text-align: center;
+    width: 180px;
 }
 
-.task-panel .label {
-    font-family: "Roboto Slab";
-    font-weight: bold;
+.endgame .indicators {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 50px;
     width: 100%;
-    font-size: 30px;
-    height: 40px;
-    margin-top: 20px;
 }
 
-.task-panel .power-cell {
+.endgame .indicators .indicator {
+    height: 50px;
+    width: 50px;
+    line-height: 40px;
+}
+
+#overlay .defenses {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 150px;
+}
+
+.defenses .defense {
+    height: 30px;
+    background-color: grey;
+}
+
+#overlay .tower-panel {
+    display: flex;
     position: relative;
-    bottom: 0;
-    height: 175px;
+    width: 150px;
 }
 
-.task-panel .power-cell svg {
-    height: 175px; width: 175px;
-    transform: rotate(-90deg);
-    border-radius: 50%;
-}
-
-.task-panel .power-cell svg circle {
-    fill: rgb(170, 170, 170);
-    stroke: yellow;
-    stroke-width: 32;
-    stroke-dasharray: 101;
-    stroke-dashoffset: 101;
-}
-
-.task-panel .power-cell .border {
+.tower-panel .capture-progress {
     position: absolute;
-    border: 10px solid var(--border-color);
-    border-radius: 50%;
-    height: 175px;
-    width: 175px;
-    margin: auto;
-    top: 0; bottom: 0;
-    left: 0; right: 0;
+    height: 100%;
+    width: 20px;
+    background-color: grey;
     box-sizing: border-box;
-}
-
-.task-panel .power-cell .capacity {
-    position: absolute;
-    height: 150px;
-    line-height: 150px;
-    top: 0; bottom: 10px;
-    left: 0; right: 0;
-    margin: auto;
-    font-size: 120px;
-}
-
-.task-panel .rotation-control {
-    position: relative;
-    bottom: 0;
-    height: 175px;
-}
-
-.task-panel .rotation-control svg {
-    height: 175px; width: 175px;
-    border-radius: 50%;
-    animation: rotation 4s infinite linear;
-}
-
-.task-panel .rotation-control svg circle.border {
-    fill: transparent;
-    stroke: black;
-    stroke-width: 2px;
-}
-
-.task-panel .rotation-control svg circle.red {
-    fill: red;
-    stroke: red;
-    stroke-width: 32;
-    stroke-dasharray: 16.6 33.3;
-}
-
-.task-panel .rotation-control svg circle.green {
-    fill: transparent;
-    stroke: green;
-    stroke-width: 32;
-    stroke-dasharray: 16.6 33.3;
-    stroke-dashoffset: 17;
-}
-
-.task-panel .rotation-control svg circle.blue {
-    fill: transparent;
-    stroke: blue;
-    stroke-width: 32;
-    stroke-dasharray: 16.6 33.3;
-    stroke-dashoffset: 33.3;
-}
-
-.task-panel .rotation-control svg circle.center {
-    fill: gold;
-}
-
-@keyframes rotation {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(359deg); }
-}
-
-.task-panel .position-control {
-    position: relative;
-    bottom: 0;
-    height: 175px;
-}
-
-.task-panel .position-control svg {
-    height: 175px; width: 175px;
-    border-radius: 50%;
-}
-
-.task-panel .position-control svg circle.border {
-    fill: transparent;
-    stroke: black;
-    stroke-width: 2px;
-}
-
-.task-panel .position-control.red svg {
-    transform: rotate(0.17turn);
-}
-
-.task-panel .position-control svg circle.red {
-    fill: rgb(64, 0, 0);
-    stroke: rgb(64, 0, 0);
-    stroke-width: 32;
-    stroke-dasharray: 16.6 33.3;
-}
-
-.task-panel .position-control.red svg circle.red {
-    fill: red;
-    stroke: red;
-    animation: flash-red 0.5s infinite linear alternate;
+    border: 5px solid black;
 }
 
 @keyframes flash-red {
-    from {
-        fill: red;
-        stroke: red;
-    } to {
-        fill: rgb(255, 200, 200);
-        stroke: rgb(255, 200, 200);
-    }
-}
-
-.task-panel .position-control.green svg {
-    transform: rotate(0.34turn);
-}
-
-.task-panel .position-control svg circle.green {
-    fill: transparent;
-    stroke: rgb(80, 128, 80);
-    stroke-width: 32;
-    stroke-dasharray: 16.7 33.3;
-    stroke-dashoffset: 17;
-}
-
-.task-panel .position-control.green svg circle.green {
-    stroke: green;
-    animation: flash-green 0.5s infinite linear alternate;
-}
-
-@keyframes flash-green {
-    from { stroke: green; }
-    to { stroke: rgb(200, 255, 200); }
-}
-
-.task-panel .position-control svg circle.blue {
-    fill: transparent;
-    stroke: rgb(80, 80, 128);
-    stroke-width: 32;
-    stroke-dasharray: 16.6 33.3;
-    stroke-dashoffset: 33.3;
-}
-
-.task-panel .position-control.blue svg circle.blue {
-    stroke: blue;
-    animation: flash-blue 0.5s infinite linear alternate;
+    from { background-color: red; }
+    to { background-color: rgb(255, 100, 100); }
 }
 
 @keyframes flash-blue {
-    from { stroke: blue; }
-    to { stroke: rgb(200, 200, 255); }
+    from { background-color: blue; }
+    to { background-color: rgb(100, 100, 255); }
 }
 
-.task-panel .position-control svg circle.center {
-    fill: gold;
-}
+.red.tower-panel .capture-progress { right: -15px; }
+.blue.tower-panel .capture-progress { left: -15px; }
 
-.task-panel .done {
-    position: relative;
-    bottom: 0;
-    height: 175px;
-}
-
-.task-panel .done svg {
-    height: 175px; width: 175px;
-    border-radius: 50%;
-}
-
-.task-panel .done svg circle.border {
-    fill: transparent;
-    stroke: black;
-    stroke-width: 2px;
-}
-
-.red.task-panel .done svg circle {
-    fill: red;
-}
-
-.blue.task-panel .done svg circle {
-    fill: blue;
-}
-
-.task-panel .done .label {
+.capture-progress .bar {
     position: absolute;
-    height: 150px;
-    line-height: 150px;
-    top: 0; bottom: 10px;
-    left: 0; right: 0;
-    margin: auto;
-    font-size: 30px;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.red .capture-progress .bar {
+    background-color: red;
+    animation: flash-red 0.5s infinite linear alternate;
+}
+.blue .capture-progress .bar {
+    background-color: blue;
+    animation: flash-blue 0.5s infinite linear alternate;
+}
+
+.tower-panel .tower {
+    position: absolute;
+    inset: auto 0 0 0;
+    margin: 0 auto;
+    width: 90px;
+    height: 105px;
+    background-color: darkgrey;
+    box-sizing: border-box;
+    border: 5px black solid;
+    border-top: none;
+}
+
+.tower-panel .turret-bevel-outline {
+    position: absolute;
+    width: 90px;
+    height: 0px;
+    inset: 90px 0 auto 0;
+    margin: 0 auto;
+    border-top: 17px solid black;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+}
+
+.tower-panel .turret-bevel {
+    position: absolute;
+    width: 80px;
+    height: 0px;
+    inset: 90px 0 auto 0;
+    margin: 0 auto;
+    border-top: 15px solid grey;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+}
+
+.tower-panel .turret {
+    position: absolute;
+    width: 130px;
+    height: 75px;
+    inset: 15px 0 auto 0;
+    margin: 0 auto;
+    background-color: darkgrey;
+    box-sizing: border-box;
+    border: 5px solid black;
+    border-bottom: none;
+}
+
+.tower-panel .goal {
+    width: 50px;
+    height: 60px;
+    inset: auto 0;
+    margin: 0 auto; 
+    background-color: black;
+    border-radius: 25px 25px 0 0;
+    font-family: "Roboto Slab";
     color: white;
-}
-
-#overlay #scoring-panel .indicator-panel {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    width: 180px;
-    font-family: "Roboto Slab";
-    font-size: 30px;
-    font-weight: bold;
+    font-size: 40px;
     text-align: center;
+    line-height: 60px;
 }
 
-.indicator-panel .auto {
-    position: relative;
-    width: 100%;
+.high.goal {
+    position: absolute;
+    top: 25px;
 }
 
-.indicator-panel .auto .label {
-    display: flex;
-    justify-content: center;
-    font-family: "Roboto Slab";
-    font-weight: bold;
-    width: 100%;
-    font-size: 30px;
-    height: 40px;
-    margin-top: 20px;
+.low.goal {
+    position: absolute;
+    bottom: 10px;
 }
 
-.indicator-panel .auto .indicators {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 50px;
-    width: 100%;
-}
-
-.indicator-panel .auto .indicators .indicator {
-    height: 50px;
-    width: 50px;
-    line-height: 40px;
-}
-
-.indicator-panel .endgame {
-    position: relative;
-    width: 100%;
-}
-
-.indicator-panel .endgame .label {
-    font-family: "Roboto Slab";
-    font-weight: bold;
-    width: 100%;
-    font-size: 30px;
-    height: 40px;
-    margin-top: 10px;
-}
-
-.indicator-panel .level {
+.tower-panel .parapet {
+    position: absolute;
+    width: 40px;
     height: 20px;
-    width: 100%;
-    margin-bottom: 5px;
+    inset: -20px 0 auto 0;
+    margin: 0 auto;
+    background-color: darkgrey;
+    box-sizing: border-box;
+    border: 5px black solid;
+    border-bottom: none;
 }
 
-.indicator-panel .endgame .indicators {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 50px;
-    width: 100%;
+.parapet.left {
+    width: 30px;
+    margin-left: -5px;
+    margin-right: auto;
 }
 
-.indicator-panel .endgame .indicators .indicator {
-    height: 50px;
-    width: 50px;
-    line-height: 40px;
+.parapet.right {
+    width: 30px;
+    margin-left: auto;
+    margin-right: -5px;
+}
+
+.tower-panel .challenge, .tower-panel .scale {
+    position: absolute;
+    transform: scale(3);
+    image-rendering: pixelated;
+}
+
+.left.challenge {
+    bottom: 10px;
+    left: 15px;
+}
+
+.mid.challenge {
+    transform: scale(-3, 3);
+    bottom: 15px;
+    right: 15px;
+}
+
+.right.challenge {
+    bottom: 2px;
+    right: 45px;
+}
+
+.left.scale {
+    top: -10px;
+    left: 27px;
+}
+
+.mid.scale {
+    top: -25px;
+    left: 70px;
+}
+
+.right.scale {
+    top: -15px;
+    right: 23px;
 }
