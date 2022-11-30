@@ -72,46 +72,24 @@ export class Match {
 
     static get PointValues() {
         return {
-            HAB_DISMOUNT_1: 3,
-            HAB_DISMOUNT_2: 6,
-            HAB_DISMOUNT_3: 9,
-            HATCH: 3,
-            CARGO: 3,
-            ROCKET: 10,
-            HAB_CLIMB_1: 3,
-            HAB_CLIMB_2: 6,
-            HAB_CLIMB_3: 12,
-            FOUL: 3,
-            TECH_FOUL: 5
+            REACH: 2,
+            AUTO_CROSS: 10,
+            AUTO_LOW_GOAL: 5,
+            AUTO_HIGH_GOAL: 10,
+            CROSS: 5,
+            LOW_GOAL: 2,
+            HIGH_GOAL: 5,
+            CHALLENGE: 5,
+            SCALE: 15,
+            PLAYOFF_BREACH: 20,
+            PLAYOFF_CAPTURE: 25,
+            FOUL: 5,
+            TECH_FOUL: 5 // Also increases opponent tower strength by one
         }
     }
     
-    static get DismountLevel() {
-        return {
-            0: 0,
-            1: Match.PointValues.HAB_DISMOUNT_1,
-            2: Match.PointValues.HAB_DISMOUNT_2,
-            3: Match.PointValues.HAB_DISMOUNT_3,
-        }
-    }
-
-    static get ClimbLevel() {
-        return {
-            0: 0,
-            1: Match.PointValues.HAB_CLIMB_1,
-            2: Match.PointValues.HAB_CLIMB_2,
-            3: Match.PointValues.HAB_CLIMB_3,
-        }
-    }
+    static MAX_TOWER_STRENGTH = 6;
     
-    static get HatchType() {
-        return {
-            NULL_HATCH: -1,
-            NO_HATCH: 0,
-            HATCH: 1
-        }
-    }
-
     /**
      * Gets the number of this match (e.g. 9 for Qualification 9, 2 for Quarterfinal 3
      * Match 2)
@@ -286,24 +264,36 @@ export class Match {
         #color;
         #match;
 
-        /** @type {number[]} */    habDismounts = [0, 0, 0];
-        /** @type {HatchType[]} */ hatches = Array(20).fill(0);
-        /** @type {boolean[]} */   cargo = Array(20).fill(0);
-        /** @type {number[]} */    habClimbs = [0, 0, 0];
-        /** @type {number} */      fouls;
-        /** @type {number} */      techFouls;
+        /** @type {number} */   reaches;
+        /** @type {number} */   autoLowGoals;
+        /** @type {number} */   autoHighGoals;
+        /** @type {number} */   autoCrosses; // Just keep track of the number, not position
+        /** @type {number} */   lowGoals; // Teleop only
+        /** @type {number} */   highGoals; // Teleop only
+        /** @type {number[]} */ defenseStrengths = [2, 2, 2, 2, 2];
+        /** @type {number[]} */ endgame = [0, 0, 0]; // Set to point values of completed endgame tasks. Ordered so head ref can control display order if they choose.
+        /** @type {number} */   fouls; // Awarded to this alliance, committed by opponent
+        /** @type {number} */   techFouls; // Awarded to this alliance, committed by opponent
 
-        setHabDismount(pos, lvl) { this.habDismounts[pos] = Match.DismountLevel[lvl]; }
-        setHabClimb(pos, lvl) { this.habClimbs[pos] = Match.ClimbLevel[lvl]; }
-        setHatch(pos, type) {
-            if (pos < 12 && type === Match.HatchType.NULL_HATCH) return;
-            this.hatches[pos] = type;
-        }
-        setCargo(pos, bool) {this.cargo[pos] = bool; }
-        addFoul() { this.fouls++; }
-        removeFoul() { if (this.fouls > 0) this.fouls--; }
-        addTechFoul() { this.techFouls++; }
-        removeTechFoul() { if (this.techFouls > 0) this.techFouls--; }
+        addReach()             { if (reaches < 3) this.reaches++; };
+        removeReach()          { if (reaches > 0) this.reaches--; };
+        addAutoLowGoal()       { this.autoLowGoals++; };
+        removeAutoLowGoal()    { if (autoLowGoals > 0) this.autoLowGoals--; };
+        addAutoHighGoal()      { this.autoHighGoals++; };
+        removeAutoHighGoal()   { if (autoHighGoals > 0) this.autoHighGoals--; };
+        addAutoCross()         { if (this.autoCrosses < 5) this.autoCrosses++; };
+        removeAutoCross()      { if (this.autoCrosses > 0) this.autoCrosses--; };
+        addLowGoal()           { this.autoLowGoals++; };
+        removeLowGoal()        { if (autoLowGoals > 0) this.autoLowGoals--; };
+        addHighGoal()          { this.autoHighGoals++; };
+        removeHighGoal()       { if (autoHighGoals > 0) this.autoHighGoals--; };
+        damageDefense(pos)     { if (this.defenseStrengths[pos] > 0) this.defenseStrengths[pos]--; };
+        undoDefenseDamage(pos) { if (this.defenseStrengths[pos] < 2) this.defenseStrengths[pos]++; };
+        setEndgame(pos, pts)   { this.endgame[pos] = pts; }
+        addFoul()              { this.fouls++; }
+        removeFoul()           { if (this.fouls > 0) this.fouls--; }
+        addTechFoul()          { this.techFouls++; }
+        removeTechFoul()       { if (this.techFouls > 0) this.techFouls--; }
 
         /**
          * @type {Team[]}
@@ -324,50 +314,53 @@ export class Match {
         }
 
         get matchPoints() {
-            return this.autoPoints
-                 + this.cargoPoints
-                 + this.hatchPoints
+            return this.defensePoints
+                 + this.boulderPoints
                  + this.endgamePoints
                  + this.penaltyPoints
-                 + (this.rocketComplete ? Match.PointValues.ROCKET : 0);
+                 + (this.breach && this.#match.type != Match.Type.QUALIFICATION ? Match.PointValues.PLAYOFF_BREACH : 0)
+                 + (this.capture && this.#match.type != Match.Type.QUALIFICATION  ? Match.PointValues.PLAYOFF_CAPTURE : 0);
         }
 
         get autoPoints() {
-            return this.habDismounts.reduce((sum, pts) => sum + pts, 0);
+            return this.reaches * Match.PointValues.REACH
+                 + this.autoCrosses * Match.PointValues.AUTO_CROSS
+                 + this.autoLowGoals * Match.PointValues.AUTO_LOW_GOAL
+                 + this.autoHighGoals * Match.PointValues.AUTO_HIGH_GOAL;
         }
 
-        get cargoPoints() {
-            return this.cargo.filter(Boolean).length * Match.PointValues.CARGO;
+        get defensePoints() {
+            return (10 - this.defenseStrengths.reduce((sum, str) => sum + str, 0) - this.autoCrosses) * Match.PointValues.CROSS
+                 + this.autoCrosses * Match.PointValues.AUTO_CROSS;
         }
 
-        get hatchPoints() {
-            return this.hatches.filter(e => e === Match.HatchType.HATCH).length * Match.PointValues.HATCH;
+        get boulderPoints() {
+            return this.autoLowGoals * Match.PointValues.AUTO_LOW_GOAL
+                 + this.autoHighGoals * Match.PointValues.AUTO_HIGH_GOAL
+                 + this.lowGoals * Match.PointValues.AUTO_LOW_GOAL
+                 + this.highGoals * Match.PointValues.AUTO_HIGH_GOAL;
         }
 
         get endgamePoints() {
-            return this.habClimbs.reduce((sum, pts) => sum + pts, 0);
+            return this.endgame.reduce((sum, pts) => sum + pts, 0);
         }
 
-        /**
-         * The number of foul points awarded to this alliance as a result of fouls
-         * committed by the opponent alliance.
-         */
         get penaltyPoints() {
             return this.fouls * Match.PointValues.FOUL
                  + this.techFouls * Match.PointValues.TECH_FOUL;
         }
-
-        get rocketComplete() {
-            let rockets = [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11]];
-            for (const rocket of rockets) {
-                let completedSpots = rocket.map(pos => this.hatches[pos] == Match.HatchType.HATCH && this.cargo[pos]);
-                if (completedSpots.every(Boolean)) return true;
-            }
-            return false;
+        
+        get opponentTowerStrength() {
+            return Math.max(0, MAX_TOWER_STRENGTH - (this.autoLowGoals + this.autoHighGoals + this.lowGoals + this.highGoals) + this.techFouls);
         }
 
-        get docked() {
-            return this.endgamePoints >= 15;
+        get breach() {
+            return this.defenseStrengths.filter(str => str == 0).length >= 4;
+        }
+
+        // TODO: Section 3.1.4 of the FRC Stronghold manual says each robot has to challenge/scale a UNIQUE face to capture
+        get capture() {
+            return this.opponentTowerStrength == 0 && this.endgame.filter(pts => pts == 0).length == 0;
         }
 
         /**
@@ -380,31 +373,43 @@ export class Match {
             this.#color = color;
             this.#match = match;
 
-            this.habDismounts = repository.getHabCrossings(...this.#match.#id, this.color);
-            this.hatches      = repository.getHatches(...this.#match.#id, this.color);
-            this.cargo        = repository.getCargo(...this.#match.#id, this.color);
-            this.habClimbs    = repository.getHabClimbs(...this.#match.#id, this.color);
-            this.fouls        = repository.getRegularFouls(...this.#match.#id, this.color);
-            this.techFouls    = repository.getTechFouls(...this.#match.#id, this.color);
+            this.reaches          = repository.getReaches(...this.#match.#id, this.color);
+            this.autoLowGoals     = repository.getAutoLowGoals(...this.#match.#id, this.color);
+            this.autoHighGoals    = repository.getAutoHighGoals(...this.#match.#id, this.color);
+            this.autoCrosses      = repository.getAutoCrosses(...this.#match.#id, this.color);
+            this.lowGoals         = repository.getLowGoals(...this.#match.#id, this.color);
+            this.highGoals        = repository.getHighGoals(...this.#match.#id, this.color);
+            this.defenseStrengths = repository.getDefenseStengths(...this.#match.#id, this.color);
+            this.endgame          = repository.getEndgame(...this.#match.#id, this.color);
+            this.fouls            = repository.getFouls(...this.#match.#id, this.color);
+            this.techFouls        = repository.getTechFouls(...this.#match.#id, this.color);
         }
 
         save() {
             repository.setMatchPoints(this.matchPoints, ...this.#match.#id, this.color);
-            repository.setHabCrossings(this.habDismounts, ...this.#match.#id, this.color);
-            repository.setHatches(this.hatches, ...this.#match.#id, this.color);
-            repository.setCargo(this.cargo, ...this.#match.#id, this.color);
-            repository.setHabClimbs(this.habClimbs, ...this.#match.#id, this.color);
-            repository.setRegularFouls(this.fouls, ...this.#match.#id, this.color);
+            repository.setReaches(this.reaches, ...this.#match.#id, this.color);
+            repository.setAutoLowGoals(this.autoLowGoals, ...this.#match.#id, this.color);
+            repository.setAutoHighGoals(this.autoHighGoals, ...this.#match.#id, this.color);
+            repository.setAutoCrosses(this.autoCrosses, ...this.#match.#id, this.color);
+            repository.setLowGoals(this.lowGoals, ...this.#match.#id, this.color);
+            repository.setHighGoals(this.highGoals, ...this.#match.#id, this.color);
+            repository.setDefenseStengths(this.defensePoints, ...this.#match.#id, this.color);
+            repository.setEndgame(this.endgame, ...this.#match.#id, this.color);
+            repository.setFouls(this.fouls, ...this.#match.#id, this.color);
             repository.setTechFouls(this.techFouls, ...this.#match.#id, this.color);
-            repository.setRocketComplete(this.rocketComplete, ...this.#match.#id, this.color);
-            repository.setDocked(this.docked, ...this.#match.#id, this.color);
+            repository.setBreach(this.breach, ...this.#match.#id, this.color);
+            repository.setCapture(this.capture, ...this.#match.#id, this.color);
         }
         
         clear() {
-            this.habDismounts = [0, 0, 0];
-            this.hatches = Array(20).fill(0);
-            this.cargo = Array(20).fill(0);
-            this.habClimbs = [0, 0, 0];
+            this.reaches = 0;
+            this.autoLowGoals;
+            this.autoHighGoals = 0;
+            this.autoCrosses = 0;
+            this.lowGoals = 0;
+            this.highGoals = 0;
+            this.defenseStrengths = [2, 2, 2, 2, 2];
+            this.endgame = [0, 0, 0];
             this.fouls = 0;
             this.techFouls = 0;
         }
