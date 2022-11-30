@@ -30,8 +30,8 @@ export class Match {
         this.#set = type == Match.Type.QUALIFICATION ? 0 : set;
         this.#type = type;
         this.#id = [number, set, type]; // This triple uniquely identifies a match
-        this.#red = new Match.#Alliance(repository.getRedTeams(...this.#id), Match.AllianceColor.RED, this);
-        this.#blue = new Match.#Alliance(repository.getBlueTeams(...this.#id), Match.AllianceColor.BLUE, this);
+        this.#red = new Match.#Alliance(Match.AllianceColor.RED, this);
+        this.#blue = new Match.#Alliance(Match.AllianceColor.BLUE, this);
 
         this.result = repository.getResult(...this.#id);
     }
@@ -295,24 +295,11 @@ export class Match {
         removeFoul()           { if (this.fouls > 0) this.fouls--; }
         addTechFoul()          { this.techFouls++; }
         removeTechFoul()       { if (this.techFouls > 0) this.techFouls--; }
-
-        /**
-         * @type {Team[]}
-         */
-        get teams() {
-            return this.#teams;
-        }
-
-        get teamNumbers() {
-            return this.#teams.map(team => team.number);
-        }
-
-        /**
-         * @type {Match.AllianceColor}
-         */
-        get color() {
-            return this.#color;
-        }
+        
+        get teams() { return this.#teams; }
+        get teamNumbers() { return this.#teams.map(team => team.number); }
+        get color() { return this.#color; }
+        get number() { return this.#number; }
 
         get matchPoints() {
             return this.defensePoints
@@ -352,7 +339,7 @@ export class Match {
         }
         
         get opponentTowerStrength() {
-            return Math.max(0, MAX_TOWER_STRENGTH - (this.autoLowGoals + this.autoHighGoals + this.lowGoals + this.highGoals) + this.techFouls);
+            return Math.max(0, Match.MAX_TOWER_STRENGTH - (this.autoLowGoals + this.autoHighGoals + this.lowGoals + this.highGoals) + this.techFouls);
         }
 
         get breach() {
@@ -363,24 +350,29 @@ export class Match {
         get capture() {
             return this.opponentTowerStrength == 0 && this.endgame.filter(pts => pts == 0).length == 0;
         }
+        
+        get totalHighGoals() { return this.autoHighGoals + this.highGoals; }
+        get totalLowGoals() { return this.autoLowGoals + this.lowGoals; }
 
         /**
          * @param {number[]} teams 
          * @param {Match.AllianceColor} color 
          * @param {Match} match instance of Match enclosing this Alliance
          */
-        constructor(teams, color, match) {
-            this.#teams = teams.map(number => new Team(number));
+        constructor(color, match) {
             this.#color = color;
             this.#match = match;
+
+            let teamNumbers = repository.getAllianceTeams(...this.#match.#id, this.color)
+            this.#teams = teamNumbers.map(number => new Team(number));
 
             this.reaches          = repository.getReaches(...this.#match.#id, this.color);
             this.autoLowGoals     = repository.getAutoLowGoals(...this.#match.#id, this.color);
             this.autoHighGoals    = repository.getAutoHighGoals(...this.#match.#id, this.color);
-            this.autoCrosses      = repository.getAutoCrosses(...this.#match.#id, this.color);
+            this.autoCrosses      = repository.getAutoCrossings(...this.#match.#id, this.color);
             this.lowGoals         = repository.getLowGoals(...this.#match.#id, this.color);
             this.highGoals        = repository.getHighGoals(...this.#match.#id, this.color);
-            this.defenseStrengths = repository.getDefenseStengths(...this.#match.#id, this.color);
+            this.defenseStrengths = repository.getDefenseStrengths(...this.#match.#id, this.color);
             this.endgame          = repository.getEndgame(...this.#match.#id, this.color);
             this.fouls            = repository.getFouls(...this.#match.#id, this.color);
             this.techFouls        = repository.getTechFouls(...this.#match.#id, this.color);
@@ -391,10 +383,10 @@ export class Match {
             repository.setReaches(this.reaches, ...this.#match.#id, this.color);
             repository.setAutoLowGoals(this.autoLowGoals, ...this.#match.#id, this.color);
             repository.setAutoHighGoals(this.autoHighGoals, ...this.#match.#id, this.color);
-            repository.setAutoCrosses(this.autoCrosses, ...this.#match.#id, this.color);
+            repository.setAutoCrossings(this.autoCrosses, ...this.#match.#id, this.color);
             repository.setLowGoals(this.lowGoals, ...this.#match.#id, this.color);
             repository.setHighGoals(this.highGoals, ...this.#match.#id, this.color);
-            repository.setDefenseStengths(this.defensePoints, ...this.#match.#id, this.color);
+            repository.setDefenseStrengths(this.defensePoints, ...this.#match.#id, this.color);
             repository.setEndgame(this.endgame, ...this.#match.#id, this.color);
             repository.setFouls(this.fouls, ...this.#match.#id, this.color);
             repository.setTechFouls(this.techFouls, ...this.#match.#id, this.color);
