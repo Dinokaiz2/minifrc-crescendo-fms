@@ -263,6 +263,7 @@ export class Match {
         #teams;
         #color;
         #match;
+        #number; // 0 in qualifications
 
         /** @type {number} */   reaches;
         /** @type {number} */   autoLowGoals;
