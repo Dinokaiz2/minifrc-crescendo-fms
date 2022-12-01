@@ -216,7 +216,7 @@ body {
     align-items: center;
 }
 
-#rp-panel{
+#indicator-panel{
    display: flex;
    flex-direction: row; 
    justify-content: space-between;
@@ -717,7 +717,7 @@ img {
     box-sizing: border-box;
 }
 
-#overlay #scoring-panel .rp-panel {
+#overlay #scoring-panel .indicator-panel {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -730,26 +730,26 @@ img {
     text-align: center;
 }
 
-.rp-panel .breach {
+.indicator-panel .breach {
     position: relative;
     width: 100%;
     height: 50px;
     margin-top: 5px;
 }
 
-.rp-panel .capture {
+.indicator-panel .capture {
     position: relative;
     width: 100%;
     height: 50px;
     margin-top: 5px;
 }
 
-.rp-panel .auto {
+.indicator-panel .auto {
     position: relative;
     width: 100%;
 }
 
-.rp-panel .auto .indicators {
+.indicator-panel .auto .indicators {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -757,7 +757,7 @@ img {
     width: 100%;
 }
 
-.rp-panel .auto .indicators .indicator {
+.indicator-panel .auto .indicators .indicator {
     height: 50px;
     width: 50px;
     line-height: 40px;
