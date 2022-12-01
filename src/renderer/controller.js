@@ -225,7 +225,7 @@ export class Competition {
     }
 
     /**
-     * True number of milliseconds since the match started. -1 if not in a match.
+     * Number of milliseconds since the match started. -1 if not in a match.
      * @type {number}
      */
     static get matchMillisElapsed() {

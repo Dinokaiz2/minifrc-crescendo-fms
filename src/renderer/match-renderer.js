@@ -13,23 +13,26 @@ export function hide() {
  * Refreshes the display.
  */
 export function update() {
-    if (!Competition.match) return;
+    let match = Competition.match;
+    if (!match) return;
+    let red = match.red;
+    let blue = match.blue;
     updateTimer();
-    updateMatchName(Competition.match.friendlyName);
-    updateTeams(...Competition.match.red.teams, Match.AllianceColor.RED);
-    updateTeams(...Competition.match.blue.teams, Match.AllianceColor.BLUE);
-    updateMatchPoints(Competition.match.red.matchPoints, Match.AllianceColor.RED);
-    updateMatchPoints(Competition.match.blue.matchPoints, Match.AllianceColor.BLUE);
-    updateHatch(Competition.match.red.hatches, Match.AllianceColor.RED);
-    updateHatch(Competition.match.blue.hatches, Match.AllianceColor.BLUE);
-    updateCargo(Competition.match.red.cargo, Match.AllianceColor.RED);
-    updateCargo(Competition.match.blue.cargo, Match.AllianceColor.BLUE);
-    updateAutonomous(Competition.match.red.habDismounts, Match.AllianceColor.RED);
-    updateAutonomous(Competition.match.blue.habDismounts, Match.AllianceColor.BLUE);
-    updateEndgame(Competition.match.red.habClimbs, Match.AllianceColor.RED);
-    updateEndgame(Competition.match.blue.habClimbs, Match.AllianceColor.BLUE);
-    updateRankingPoints(Competition.match.red.rocketComplete, Competition.match.red.docked, Match.AllianceColor.RED);
-    updateRankingPoints(Competition.match.blue.rocketComplete, Competition.match.blue.docked, Match.AllianceColor.BLUE);
+    updateMatchName(match.friendlyName);
+    updateTeams(...red.teams, Match.AllianceColor.RED);
+    updateTeams(...blue.teams, Match.AllianceColor.BLUE);
+    updateMatchPoints(red.matchPoints, Match.AllianceColor.RED);
+    updateMatchPoints(blue.matchPoints, Match.AllianceColor.BLUE);
+    updateAutonomous(red.reaches, red.autoCrosses, Match.AllianceColor.RED);
+    updateAutonomous(blue.reaches, blue.autoCrosses, Match.AllianceColor.BLUE);
+    updateOpponentDefenses(red.defenseStrengths, Match.AllianceColor.RED);
+    updateOpponentDefenses(blue.defenseStrengths, Match.AllianceColor.BLUE);
+    updateOpponentTower(red.totalLowGoals, red.totalHighGoals, red.opponentTowerProgress, red.capturePossible, Match.AllianceColor.RED);
+    updateOpponentTower(blue.totalLowGoals, blue.totalHighGoals, blue.opponentTowerProgress, blue.capturePossible, Match.AllianceColor.BLUE);
+    updateEndgame(red.endgame, Match.AllianceColor.RED);
+    updateEndgame(blue.endgame, Match.AllianceColor.BLUE);
+    updateRankingPoints(red.breach, red.capture, Match.AllianceColor.RED);
+    updateRankingPoints(blue.breach, blue.capture, Match.AllianceColor.BLUE);
 }
 
 function updateTimer() {
@@ -54,80 +57,64 @@ function updateMatchName(name) {
 }
 
 function updateTeams(team1, team2, team3, color) {
-    let teams = $("#match-view #match-panel #teams " + getColorClass(color)).children();
+    let teams = $(`#match-view #match-panel #teams ${getColorClass(color)}`).children();
     [team1, team2, team3].forEach((e, i) => teams.eq(i).text(e.number));
 }
 
 function updateMatchPoints(points, color) {
-    $("#match-view #match-panel #score-box " + getColorClass(color)).text(points);
+    $(`#match-view #match-panel #score-box ${getColorClass(color)}`).text(points);
 }
 
-function updateAutonomous(crossings, color) {
-    for (let i = 0; i < 3; i++) {
-        let crossing = $("#hab-panel " + getColorClass(color) + ".dismount-" + i);
-        if (crossings[i] == 0) crossing.height("0%");
-        else if (crossings[i] == Match.PointValues.HAB_DISMOUNT_1) crossing.height("33%");
-        else if (crossings[i] == Match.PointValues.HAB_DISMOUNT_2) crossing.height("66%");
-        else if (crossings[i] == Match.PointValues.HAB_DISMOUNT_3) crossing.height("100%");
-    }
+function updateAutonomous(reaches, crossings, color) {
+    let indicators = $(`#match-view ${getColorClass(color)}.indicator-panel .auto .indicators`).children();
+    indicators.each((i, e) => {
+        i < reaches + crossings ? $(e).addClass("lit") : $(e).removeClass("lit");
+        i < crossings ? $(e).children().show() : $(e).children().hide();
+    });
 }
 
-function updateEndgame(climbs, color) {
-    for (let i = 0; i < 3; i++) {
-        let climb = $("#hab-panel " + getColorClass(color) + ".climb-" + i);
-        if (climbs[i] == 0) climb.height("0%");
-        else if (climbs[i] == Match.PointValues.HAB_CLIMB_1) climb.height("33%");
-        else if (climbs[i] == Match.PointValues.HAB_CLIMB_2) climb.height("66%");
-        else if (climbs[i] == Match.PointValues.HAB_CLIMB_3) climb.height("100%");
-    }
+const STRENGTH_TO_WIDTH = { 0: "100%", 1: "50%", 2: "5%" }
+
+function updateOpponentDefenses(defenseStrengths, color) {
+    $(`#match-view ${getOpponentColorClass(color)} .defense .bar`).each((i, e) => $(e).width(STRENGTH_TO_WIDTH[defenseStrengths[i]]));
 }
 
-function updateHatch(hatches, color) {
-    function setHatchClass(hatch, cls) {
-        hatch.removeClass(["hatch", "left-half-hatch", "right-half-hatch", "no-hatch", "null-hatch"]);
-        hatch.addClass(cls);
-    }
-    for (let i = 0; i < 6; i++) {
-        let left = hatches[2*i] === Match.HatchType.HATCH;
-        let right = hatches[2*i+1] === Match.HatchType.HATCH;
-        let hatch = $(getColorClass(color) + ".rocket-panel .hatch-" + i);
-        setHatchClass(hatch, left && right ? "hatch" : left ? "left-half-hatch" : right ? "right-half-hatch" : "no-hatch");
-    }
-    for (let i = 12; i < 20; i++) {
-        let hatch = $("#ship-panel " + getColorClass(color) + " .hatch-" + i);
-        if (hatches[i] === Match.HatchType.NO_HATCH) setHatchClass(hatch, "no-hatch");
-        else if (hatches[i] === Match.HatchType.HATCH) setHatchClass(hatch, "hatch");
-        else if (hatches[i] === Match.HatchType.NULL_HATCH) setHatchClass(hatch, "null-hatch");
-    }
+function updateOpponentTower(low, high, progress, capturePossible, color) {
+    $(`#match-view ${getOpponentColorClass(color)}.tower-panel .low.goal`).text(low);
+    $(`#match-view ${getOpponentColorClass(color)}.tower-panel .high.goal`).text(high);
+    $(`#match-view ${getOpponentColorClass(color)}.tower-panel .capture-progress .bar`).height(progress + "%");
+    let captureBar = $(`#match-view ${getOpponentColorClass(color)}.tower-panel .capture-progress .bar`);
+    if (capturePossible) captureBar.addClass("flashing");
+    else captureBar.removeClass("flashing");
 }
 
-function updateCargo(cargo, color) {
-    function setCargoClass(cargo, cls) {
-        cargo.removeClass(["cargo", "left-half-cargo", "right-half-cargo", "no-cargo"]);
-        cargo.addClass(cls);
-    }
-    for (let i = 0; i < 6; i++) {
-        let left = cargo[2*i];
-        let right = cargo[2*i+1];
-        let cargoElement = $(getColorClass(color) + ".rocket-panel .cargo-" + i);
-        setCargoClass(cargoElement, left && right ? "cargo" : left ? "left-half-cargo" : right ? "right-half-cargo" : "no-cargo");
-    }
-    for (let i = 12; i < 20; i++) {
-        let cargoElement = $("#ship-panel " + getColorClass(color) + " .cargo-" + i);
-        setCargoClass(cargoElement, cargo[i] ? "cargo" : "no-cargo");
-    }
+function updateEndgame(endgame, color) {
+    $(`#match-view ${getOpponentColorClass(color)}.tower-panel .scale`).each((i, e) => {
+        if (endgame[i] == Match.PointValues.SCALE) $(e).show();
+        else $(e).hide();
+    });
+    $(`#match-view ${getOpponentColorClass(color)}.tower-panel .challenge`).each((i, e) => {
+        if (endgame[i] == Match.PointValues.CHALLENGE) $(e).show();
+        else $(e).hide();
+    });
 }
 
-function updateRankingPoints(rocket, docked, color) {
-    if (rocket) $("#match-view " + getColorClass(color) + ".rocket-rp").addClass("lit");
-    else $("#match-view " + getColorClass(color) + ".rocket-rp").removeClass("lit");
-    if (docked) $("#match-view " + getColorClass(color) + ".docked-rp").addClass("lit");
-    else $("#match-view " + getColorClass(color) + ".docked-rp").removeClass("lit");
+function updateRankingPoints(breach, capture, color) {
+    if (breach) $(`#match-view ${getColorClass(color)} .breach`).addClass("lit");
+    else $(`#match-view ${getColorClass(color)} .breach`).removeClass("lit");
+    if (capture) $(`#match-view ${getColorClass(color)} .capture`).addClass("lit");
+    else $(`#match-view ${getColorClass(color)} .capture`).removeClass("lit");
 }
 
 function getColorClass(color) {
     if (color == Match.AllianceColor.RED) return ".red";
     else if (color == Match.AllianceColor.BLUE) return ".blue";
+    else throw "Color must be a Match.AllianceColor";
+}
+
+function getOpponentColorClass(color) {
+    if (color == Match.AllianceColor.RED) return ".blue";
+    else if (color == Match.AllianceColor.BLUE) return ".red";
     else throw "Color must be a Match.AllianceColor";
 }
 

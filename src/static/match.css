@@ -88,486 +88,6 @@ body {
     font-weight: bold;
 }
 
-#info-bar {
-    box-sizing: border-box;
-    width: 500px;
-    height: 45px;
-    margin: auto;
-    background-color: rgb(241, 241, 241);
-    border: solid black 5px;
-    border-top: none;
-    line-height: 40px;
-    padding-top: 0px;
-    font-size: 38px;
-    font-family: "Roboto Slab";
-    font-weight: bold;
-}
-
-#info-up-next-red, #info-up-next-blue {
-    position: absolute;
-    color: black;
-}
-
-#info-up-next-red {
-    left: 10px;
-}
-
-#info-up-next-blue {
-    right: 10px;
-}
-
-#main-panel {
-    display: flex;
-    flex-direction: row;
-}
-
-#center-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-}
-
-#match-panel {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 610px;
-}
-
-#match-panel #score-box {
-    width: 500px;
-    height: 160px;
-    border: 5px solid var(--border-color);
-    border-top: none;
-    font-family: "Roboto";
-    font-weight: bold;
-    font-size: 90px;
-    text-align: center;
-    line-height: 150px;
-    color: white;
-    text-shadow: 0 0 5px var(--border-color);
-    box-sizing: border-box;
-}
-
-#match-panel #score-box .red {
-    width: calc(50% - 2px);
-    height: 100%;
-    float: left;
-    border-right: 2px solid var(--border-color);
-    background-color: red;
-}
-
-#match-panel #score-box .blue {
-    width: calc(50% - 2px);
-    height: 100%;
-    float: right;
-    border-left: 2px solid var(--border-color);
-    background-color: blue;
-}
-
-#match-panel #teams {
-    position: absolute;
-    height: 135px;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 610px;
-    box-sizing: border-box;
-}
-
-#match-panel #teams .red, #match-panel #teams .blue {
-    position: absolute;
-    height: 120px;
-    width: 50px;
-    bottom: 0px;
-    background-color: white;
-    border-top: 5px solid var(--border-color);
-}
-
-#match-panel #teams .red {
-    left: 0;
-    border-left: 5px solid var(--border-color);
-}
-
-#match-panel #teams .blue {
-    right: 0;
-    border-right: 5px solid var(--border-color);
-}
-
-#match-panel #teams .number {
-    position: relative;
-    height: 40px;
-    line-height: 35px;
-    border-bottom: 5px solid var(--border-color);
-    text-align: center;
-    font-family: "Roboto Slab";
-    font-weight: bold;
-    font-size: 30px;
-    box-sizing: border-box;
-}
-
-.rocket-panel {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    align-items: center;
-}
-
-#indicator-panel{
-   display: flex;
-   flex-direction: row; 
-   justify-content: space-between;
-   width: 500px;
-}
-
-#ship-panel {
-    width: 1100px;
-    height: 325px;
-}
-
-#hab-panel {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 10px;
-}
-
-#red-bg {
-    position: fixed;
-    height: 100%;
-    width: 50%;
-    left: 0;
-    background-color: maroon;
-    z-index: -1;
-}
-
-#blue-bg {
-    position: fixed;
-    height: 100%;
-    width: 50%;
-    right: 0;
-    background-color: darkblue;
-    z-index: -1;
-}
-
-#score-container {
-    position: fixed;
-    top: 90px;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    width: 400px;
-    height: 150px;
-    border: 5px solid black;
-    border-top: 0px;
-}
-
-.rocket-rp, .docked-rp {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    height: 70px;
-    width: 70px;
-    background-color: rgb(184, 184, 184);
-    border: 5px solid black;
-    font-family: "Roboto Slab";
-    font-weight: bold;
-    color: white;
-}
-
-.rocket-rp img {
-    content: url(../../images/rocket-icon-grey.png)
-}
-.docked-rp img {
-    content: url(../../images/hab-icon-grey.png)
-}
-
-.rocket-rp.lit img {
-    content: url(../../images/rocket-icon.png)
-}
-.docked-rp.lit img {
-    content: url(../../images/hab-icon.png)
-}
-
-.rocket-rp.lit.red, .docked-rp.lit.red {
-    background-color: rgb(255, 72, 72);
-}
-.rocket-rp.lit.blue, .docked-rp.lit.blue {
-    background-color: rgb(79, 79, 252);
-}
-
-img {
-    margin: auto;
-}
-
-.rocket-container {
-    width: 400px;
-    height: 485px;
-    margin-left: 0px;
-    position: relative;
-    padding-top: 10px;
-}
-
-.rocket-body {
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    position: absolute;
-    margin-top: 100px;
-    width: 150px;
-    height: calc(475px - 100px);
-    background-color: rgb(179, 179, 179);
-}
-
-.rocket-top-red, .rocket-top-blue {
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    position: absolute;
-    border-left: 80px solid transparent;
-    border-right: 80px solid transparent;
-    border-bottom: 100px solid rgb(255, 0, 0);
-    width: 0;
-    height: 0;
-}
-
-.rocket-top-blue {
-    border-bottom: 100px solid blue;
-}
-
-.rocket-fin-left, .rocket-fin-right {
-    bottom: 5px;
-    position: absolute;
-    border-bottom: 200px solid rgb(167, 167, 167);
-    width: 0;
-    height: 0;
-}
-
-.rocket-fin-left {
-    border-left: 75px solid transparent;
-    right: 275px;
-}
-
-.rocket-fin-right {
-    border-right: 75px solid transparent;
-    left: 275px;
-}
-
-.ship-container {
-    position: absolute;
-    width: 1100px;
-    height: 325px;
-}
-
-.ship-body-red, .ship-body-blue {
-    position: absolute;
-    width: 50%;
-    height: 100%;
-    background-color: rgb(213, 52, 52);
-}
-
-.ship-body-red {
-    left: 0;
-}
-
-.ship-body-blue {
-    right: 0;
-    background-color: rgb(43, 115, 209);
-}
-
-.ship-red-bevel {
-    position: absolute;
-    right: 0;
-    height: 0;
-    width: 450px;
-    border-top: 162px solid rgb(236, 74, 74);
-    border-bottom: 163px solid rgb(163, 41, 41);
-    border-left: 60px solid transparent;
-}
-
-.ship-blue-bevel {
-    position: absolute;
-    left: 0;
-    height: 0;
-    width: 450px;
-    border-top: 162px solid rgb(35, 130, 255);
-    border-bottom: 163px solid rgb(35, 97, 179);
-    border-right: 60px solid transparent;
-}
-
-.ship-red-top-chamfer, .ship-red-bot-chamfer, .ship-blue-top-chamfer, .ship-blue-bot-chamfer {
-    position: absolute;
-    width: 0;
-    height: 0;
-}
-
-.ship-red-top-chamfer {
-    border-top: 60px solid maroon;
-    border-right: 100px solid transparent;
-}
-
-.ship-red-bot-chamfer {
-    border-bottom: 60px solid maroon;
-    border-right: 100px solid transparent;
-    bottom: 0;
-}
-
-.ship-blue-top-chamfer {
-    border-top: 60px solid darkblue;
-    border-left: 100px solid transparent;
-    right: 0;
-}
-
-.ship-blue-bot-chamfer {
-    border-bottom: 60px solid darkblue;
-    border-left: 100px solid transparent;
-    bottom: 0;
-    right: 0;
-}
-
-.hatch-container {
-    left: 0;
-    right: 0;
-    height: 100px;
-    width: 100px;
-    margin: 0 auto;
-    position: absolute;
-}
-
-.hatch, .left-half-hatch, .right-half-hatch, .empty-red-hatch, .empty-blue-hatch, .no-hatch, .null-hatch {
-    position: absolute;
-    height: 100px;
-    width: 100px;
-    background-color: gold;
-    border-radius: 50px;
-    border-left-style: none;
-    --cargo-position: 25px;
-}
-
-.empty-red-hatch {
-    height: 80px;
-    width: 80px;
-    left: 10px;
-    top: 10px;
-    border-radius: 40px;
-    background-color: rgb(100, 0, 0);
-}
-
-.empty-blue-hatch {
-    height: 80px;
-    width: 80px;
-    left: 10px;
-    top: 10px;
-    border-radius: 40px;
-    background-color: rgb(0, 0, 100);
-}
-
-.no-hatch {
-    visibility: hidden;
-}
-
-.null-hatch {
-    background-color: rgb(202, 202, 202);
-}
-
-.left-half-hatch {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    width: 50px;
-}
-
-.right-half-hatch {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    width: 50px;
-    left: 50px;
-    --cargo-position: -25px;
-}
-
-.cargo, .left-half-cargo, .right-half-cargo, .no-cargo, .empty-red-cargo, .empty-blue-cargo {
-    position: absolute;
-    top: 25px;
-    left: var(--cargo-position);
-    height: 50px;
-    width: 50px;
-    background-color: rgb(255, 166, 0);
-    border-radius: 25px;
-}
-
-.no-cargo {
-    visibility: hidden;
-}
-
-.empty-red-cargo {
-    background-color: rgb(100, 0, 0);
-    top: 26px;
-    left: calc(var(--cargo-position) + 1px);
-    height: 48px;
-    width: 48px;
-    border-radius: 24px;
-}
-
-.empty-blue-cargo {
-    background-color: rgb(0, 0, 100);
-    top: 26px;
-    left: calc(var(--cargo-position) + 1px);
-    height: 48px;
-    width: 48px;
-    border-radius: 24px;
-}
-
-.left-half-cargo {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    width: 25px;
-}
-
-.right-half-cargo {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    width: 25px;
-    left: calc(var(--cargo-position) + 25px);
-}
-
-.hab-container {
-    position: relative;
-    height: 300px;
-    width: 450px;
-}
-
-.hab-underline {
-    position: absolute;
-    bottom: 0;
-    width: 450px;
-    height: 5px;
-    background-color: white;
-}
-
-.hab-dismount {
-    position: absolute;
-    bottom: 0;
-    width: 20px;
-    transform: translate(-10px);
-    height: 0%;
-    background-color: rgb(255, 255, 255);
-}
-
-.hab-climb.red, .hab-climb.blue {
-    position: absolute;
-    bottom: 0;
-    width: 33%;
-    height: 0%;
-    background-color: rgb(255, 0, 0);
-}
-
-.hab-climb.blue {
-    background-color: rgb(50, 132, 255);
-}
-
-/* Infinite Recharge overlay */
-
 #overlay {
     position: relative;
     display: flex;
@@ -659,20 +179,20 @@ img {
     box-sizing: border-box;
 }
 
-#overlay #scoring-panel #match-panel #score-box .red {
+#overlay #scoring-panel #match-panel #score-box .blue {
     width: calc(50% - 2px);
     height: 100%;
     float: left;
     border-right: 2px solid var(--border-color);
-    background-color: red;
+    background-color: blue;
 }
 
-#overlay #scoring-panel #match-panel #score-box .blue {
+#overlay #scoring-panel #match-panel #score-box .red {
     width: calc(50% - 2px);
     height: 100%;
     float: right;
     border-left: 2px solid var(--border-color);
-    background-color: blue;
+    background-color: red;
 }
 
 #overlay #scoring-panel #match-panel #teams {
@@ -696,13 +216,13 @@ img {
 }
 
 #overlay #scoring-panel #match-panel #teams .red {
-    left: 0;
-    border-left: 5px solid var(--border-color);
+    right: 0;
+    border-right: 5px solid var(--border-color);
 }
 
 #overlay #scoring-panel #match-panel #teams .blue {
-    right: 0;
-    border-right: 5px solid var(--border-color);
+    left: 0;
+    border-left: 5px solid var(--border-color);
 }
 
 #overlay #scoring-panel #match-panel #teams .number {
@@ -757,10 +277,29 @@ img {
     width: 100%;
 }
 
-.indicator-panel .auto .indicators .indicator {
+.indicator-panel .auto .indicator {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
     height: 50px;
     width: 50px;
-    line-height: 40px;
+    line-height: 18px;
+}
+.indicator-panel .auto .cross {
+    width: 100%;
+    height: 100%;
+    font-size: 108px;
+    font-weight: 100;
+    color: black;
+}
+.indicator-panel .auto .cross:before {
+    content: "";
+    margin-left: -100%;
+}
+.indicator-panel .auto .cross:after {
+    content: "";
+    margin-right: -100%;
 }
 
 .endgame {
@@ -792,8 +331,32 @@ img {
 }
 
 .defenses .defense {
+    position: relative;
     height: 30px;
-    background-color: grey;
+}
+
+.red.defenses .defense {
+    background-color: rgb(189, 134, 134) !important;
+}
+.blue.defenses .defense {
+    background-color: rgb(141, 134, 189) !important;
+}
+
+.defenses .bar {
+    position: absolute;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.red.defenses .bar {
+    background-color: rgb(21, 103, 255);
+    border: 3px solid rgb(0, 26, 219);
+}
+.blue.defenses .bar {
+    background-color: red;
+    border: 3px solid rgb(138, 0, 0);
 }
 
 #overlay .tower-panel {
@@ -811,6 +374,20 @@ img {
     border: 5px solid black;
 }
 
+.red.tower-panel .capture-progress { left: -15px; }
+.blue.tower-panel .capture-progress { right: -15px; }
+
+.capture-progress .bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 0%;
+    box-sizing: border-box;
+}
+
+.red .capture-progress .bar { background-color: blue; }
+.blue .capture-progress .bar { background-color: red; }
+
 @keyframes flash-red {
     from { background-color: red; }
     to { background-color: rgb(255, 100, 100); }
@@ -821,24 +398,8 @@ img {
     to { background-color: rgb(100, 100, 255); }
 }
 
-.red.tower-panel .capture-progress { right: -15px; }
-.blue.tower-panel .capture-progress { left: -15px; }
-
-.capture-progress .bar {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.red .capture-progress .bar {
-    background-color: red;
-    animation: flash-red 0.5s infinite linear alternate;
-}
-.blue .capture-progress .bar {
-    background-color: blue;
-    animation: flash-blue 0.5s infinite linear alternate;
-}
+.red .capture-progress .bar.flashing { animation: flash-blue 0.5s infinite linear alternate; }
+.blue .capture-progress .bar.flashing { animation: flash-red 0.5s infinite linear alternate; }
 
 .tower-panel .tower {
     position: absolute;

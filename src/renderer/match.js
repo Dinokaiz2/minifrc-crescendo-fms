@@ -339,16 +339,28 @@ export class Match {
         }
         
         get opponentTowerStrength() {
-            return Math.max(0, Match.MAX_TOWER_STRENGTH - (this.autoLowGoals + this.autoHighGoals + this.lowGoals + this.highGoals) + this.techFouls);
+            return Match.MAX_TOWER_STRENGTH - (this.autoLowGoals + this.autoHighGoals + this.lowGoals + this.highGoals) + this.techFouls;
+        }
+
+        // Clamped percentage of strength depletion for UI
+        get opponentTowerProgress() {
+            let progress = Match.MAX_TOWER_STRENGTH - this.opponentTowerStrength;
+            return Math.min(100, Math.max(0, (progress / Match.MAX_TOWER_STRENGTH) * 100));
+        }
+        
+        // Check if the tower is weakened but three robots have not yet completed endgame
+        get capturePossible() {
+            return this.opponentTowerStrength <= 0 && this.endgame.some(e => e == 0);
         }
 
         get breach() {
             return this.defenseStrengths.filter(str => str == 0).length >= 4;
         }
 
-        // TODO: Section 3.1.4 of the FRC Stronghold manual says each robot has to challenge/scale a UNIQUE face to capture
+        // Note: Section 3.1.4 of the FRC Stronghold manual says each robot has to challenge/scale a UNIQUE tower face to capture.
+        // We've decided to ignore this for MiniFRC.
         get capture() {
-            return this.opponentTowerStrength == 0 && this.endgame.filter(pts => pts == 0).length == 0;
+            return this.opponentTowerStrength <= 0 && this.endgame.every(pts => pts != 0);
         }
         
         get totalHighGoals() { return this.autoHighGoals + this.highGoals; }
