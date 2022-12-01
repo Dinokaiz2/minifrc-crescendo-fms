@@ -11,19 +11,12 @@ let CtrlMsg = {
     SAVE_RESULTS:               "save-results",
     NEXT_MATCH:                 "next-match",
     PREVIOUS_MATCH:             "previous-match",
-    RED_DISMOUNT:               "red-dismount", // Params: [0-2], level
-    BLUE_DISMOUNT:              "blue-dismount", // Params: [0-2], level
-    RED_CLIMB:                  "red-climb", // Params: [0-2], level
-    BLUE_CLIMB:                 "blue-climb", // Params: [0-2], level
-    GAME_PIECE:                 "game-piece", // Params: ["red", "blue"], idx, remove
-    ADD_RED_FOUL:               "add-red-foul",
-    REMOVE_RED_FOUL:            "remove-red-foul",
-    ADD_BLUE_FOUL:              "add-blue-foul",
-    REMOVE_BLUE_FOUL:           "remove-blue-foul",
-    ADD_RED_TECH_FOUL:          "add-red-tech-foul",
-    REMOVE_RED_TECH_FOUL:       "remove-red-tech-foul",
-    ADD_BLUE_TECH_FOUL:         "add-blue-tech-foul",
-    REMOVE_BLUE_TECH_FOUL:      "remove-blue-tech-foul",
+
+    AUTO:                       "auto",    // Params: { red: bool, position: (0-2), level: (0-2) = (none, reach, cross) }
+    DEFENSE:                    "defense", // Params: { red: bool, position: (0-4), undo: bool }
+    BOULDER:                    "boulder", // Params: { red: bool, high: bool, auto: bool, undo: bool }
+    ENDGAME:                    "endgame", // Params: { red: bool, position: (0-2), level: (0-2) = (none, challenge, scale) }
+    FOUL:                       "foul",    // Params: { red: bool, tech: bool, undo: bool }
 }
 
 let RenderMsg = {

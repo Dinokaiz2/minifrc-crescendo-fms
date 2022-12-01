@@ -87,7 +87,6 @@ span {
 
 }
 
-
 #data {
     display: flex;
     flex-direction: row;
@@ -101,8 +100,5 @@ span {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-}
-
-#data .info-column .red, #data .info-column .blue {
     width: 150px;
 }

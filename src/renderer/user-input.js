@@ -21,37 +21,44 @@ ipc.on("next-match", () => Competition.nextMatch());
 ipc.on("previous-match", () => Competition.previousMatch());
 
 // Points
-ipc.on(CtrlMsg.RED_DISMOUNT, (_, data) => Competition.match.red.setHabDismount(data.Position, data.Level));
-ipc.on(CtrlMsg.BLUE_DISMOUNT, (_, data) => Competition.match.blue.setHabDismount(data.Position, data.Level));
-ipc.on(CtrlMsg.RED_CLIMB, (_, data) => Competition.match.red.setHabClimb(data.Position, data.Level));
-ipc.on(CtrlMsg.BLUE_CLIMB, (_, data) => Competition.match.blue.setHabClimb(data.Position, data.Level));
-
-ipc.on(CtrlMsg.GAME_PIECE, (_, data) => {
-    let alliance = data.Color === "red" ? Competition.match.red : Competition.match.blue;
-    let hatch = alliance.hatches[data.Position];
-    let cargo = alliance.cargo[data.Position];
-    if (data.Remove) {
-        if (cargo) alliance.setCargo(data.Position, false);
-        else if (
-            hatch === Match.HatchType.HATCH
-            || (!Competition.inMatch && !Competition.matchOver && hatch === Match.HatchType.NULL_HATCH)
-        ) alliance.setHatch(data.Position, Match.HatchType.NO_HATCH);
-    } else {
-        let hatchType = (Competition.inMatch || Competition.matchOver) ? Match.HatchType.HATCH : Match.HatchType.NULL_HATCH;
-        if (hatch === Match.HatchType.NO_HATCH) alliance.setHatch(data.Position, hatchType);
-        else if (Competition.inMatch || Competition.matchOver) alliance.setCargo(data.Position, true);
-    }
+const autoLevelMap = { 0: 0, 1: Match.PointValues.REACH, 2: Match.PointValues.AUTO_CROSS };
+ipc.on(CtrlMsg.AUTO, (_, data) => {
+    if (data.red) Competition.match.red.setAutoMovement(data.position, autoLevelMap[data.level]);
+    else Competition.match.blue.setAutoMovement(data.position, autoLevelMap[data.level]);
 });
 
-ipc.on("add-red-foul", () => Competition.match.red.addFoul());
-ipc.on("remove-red-foul", () => Competition.match.red.removeFoul());
-ipc.on("add-blue-foul", () => Competition.match.blue.addFoul());
-ipc.on("remove-blue-foul", () => Competition.match.blue.removeFoul());
+const endgameLevelMap = { 0: 0, 1: Match.PointValues.CHALLENGE, 2: Match.PointValues.SCALE };
+ipc.on(CtrlMsg.ENDGAME, (_, data) => {
+    if (data.red) Competition.match.red.setEndgame(data.position, endgameLevelMap[data.level]);
+    else Competition.match.blue.setEndgame(data.position, endgameLevelMap[data.level]);
+});
 
-ipc.on("add-red-tech-foul", () => Competition.match.red.addTechFoul());
-ipc.on("remove-red-tech-foul", () => Competition.match.red.removeTechFoul());
-ipc.on("add-blue-tech-foul", () => Competition.match.blue.addTechFoul());
-ipc.on("remove-blue-tech-foul", () => Competition.match.blue.removeTechFoul());
+ipc.on(CtrlMsg.BOULDER, (_, data) => {
+    console.log(data);
+    let alliance = data.red ? Competition.match.red : Competition.match.blue;
+    if (!data.high && data.auto && !data.undo) alliance.addAutoLowGoal();
+    else if (data.high && data.auto && !data.undo) alliance.addAutoHighGoal();
+    else if (!data.high && !data.auto && !data.undo) alliance.addLowGoal();
+    else if (data.high && !data.auto && !data.undo) alliance.addHighGoal();
+    else if (!data.high && data.auto && data.undo) alliance.removeAutoLowGoal();
+    else if (data.high && data.auto && data.undo) alliance.removeAutoHighGoal();
+    else if (!data.high && !data.auto && data.undo) alliance.removeLowGoal();
+    else if (data.high && !data.auto && data.undo) alliance.removeHighGoal();
+});
+
+ipc.on(CtrlMsg.FOUL, (_, data) => {
+    let alliance = data.red ? Competition.match.red : Competition.match.blue;
+    if (!data.tech && !data.undo) alliance.addFoul();
+    if (!data.tech && data.undo) alliance.removeFoul();
+    if (data.tech && !data.undo) alliance.addTechFoul();
+    if (data.tech && data.undo) alliance.removeTechFoul();
+});
+
+ipc.on(CtrlMsg.DEFENSE, (_, data) => {
+    let alliance = data.red ? Competition.match.red : Competition.match.blue;
+    if (data.undo) alliance.undoDefenseDamage(data.position);
+    else alliance.damageDefense(data.position);
+});
 
 export function matchEnded() {
     ipc.send("match-ended");
@@ -67,9 +74,13 @@ export function loadedDeterminedMatch() {
 
 export function sendMatchData() {
     ipc.send("match-data", {
-        RedFouls: Competition.match.red.fouls,
-        BlueFouls: Competition.match.blue.fouls,
-        RedTechFouls: Competition.match.red.techFouls,
-        BlueTechFouls: Competition.match.blue.techFouls,
+        redFouls: Competition.match.blue.fouls,
+        blueFouls: Competition.match.red.fouls,
+        redTechFouls: Competition.match.blue.techFouls,
+        blueTechFouls: Competition.match.red.techFouls,
+        redAutoLowGoals: Competition.match.red.autoLowGoals,
+        blueAutoLowGoals: Competition.match.blue.autoLowGoals,
+        redAutoHighGoals: Competition.match.red.autoHighGoals,
+        blueAutoHighGoals: Competition.match.blue.autoHighGoals
     });
 }

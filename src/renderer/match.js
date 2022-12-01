@@ -265,36 +265,32 @@ export class Match {
         #match;
         #number; // 0 in qualifications
 
-        /** @type {number} */   reaches;
+        /** @type {number[]} */ autoMovement = [0, 0, 0]; // Point values of auto reach and cross
         /** @type {number} */   autoLowGoals;
         /** @type {number} */   autoHighGoals;
-        /** @type {number} */   autoCrosses; // Just keep track of the number, not position
         /** @type {number} */   lowGoals; // Teleop only
         /** @type {number} */   highGoals; // Teleop only
         /** @type {number[]} */ defenseStrengths = [2, 2, 2, 2, 2];
-        /** @type {number[]} */ endgame = [0, 0, 0]; // Set to point values of completed endgame tasks. Ordered so head ref can control display order if they choose.
+        /** @type {number[]} */ endgame = [0, 0, 0]; // Point values of completed endgame tasks
         /** @type {number} */   fouls; // Awarded to this alliance, committed by opponent
         /** @type {number} */   techFouls; // Awarded to this alliance, committed by opponent
 
-        addReach()             { if (reaches < 3) this.reaches++; };
-        removeReach()          { if (reaches > 0) this.reaches--; };
-        addAutoLowGoal()       { this.autoLowGoals++; };
-        removeAutoLowGoal()    { if (autoLowGoals > 0) this.autoLowGoals--; };
-        addAutoHighGoal()      { this.autoHighGoals++; };
-        removeAutoHighGoal()   { if (autoHighGoals > 0) this.autoHighGoals--; };
-        addAutoCross()         { if (this.autoCrosses < 5) this.autoCrosses++; };
-        removeAutoCross()      { if (this.autoCrosses > 0) this.autoCrosses--; };
-        addLowGoal()           { this.autoLowGoals++; };
-        removeLowGoal()        { if (autoLowGoals > 0) this.autoLowGoals--; };
-        addHighGoal()          { this.autoHighGoals++; };
-        removeHighGoal()       { if (autoHighGoals > 0) this.autoHighGoals--; };
-        damageDefense(pos)     { if (this.defenseStrengths[pos] > 0) this.defenseStrengths[pos]--; };
-        undoDefenseDamage(pos) { if (this.defenseStrengths[pos] < 2) this.defenseStrengths[pos]++; };
-        setEndgame(pos, pts)   { this.endgame[pos] = pts; }
-        addFoul()              { this.fouls++; }
-        removeFoul()           { if (this.fouls > 0) this.fouls--; }
-        addTechFoul()          { this.techFouls++; }
-        removeTechFoul()       { if (this.techFouls > 0) this.techFouls--; }
+        setAutoMovement(pos, pts) { this.autoMovement[pos] = pts; }
+        addAutoLowGoal()          { this.autoLowGoals++; };
+        removeAutoLowGoal()       { if (this.autoLowGoals > 0) this.autoLowGoals--; };
+        addAutoHighGoal()         { this.autoHighGoals++; };
+        removeAutoHighGoal()      { if (this.autoHighGoals > 0) this.autoHighGoals--; };
+        addLowGoal()              { this.lowGoals++; };
+        removeLowGoal()           { if (this.lowGoals > 0) this.lowGoals--; };
+        addHighGoal()             { this.highGoals++; };
+        removeHighGoal()          { if (this.highGoals > 0) this.highGoals--; };
+        damageDefense(pos)        { if (this.defenseStrengths[pos] > 0) this.defenseStrengths[pos]--; };
+        undoDefenseDamage(pos)    { if (this.defenseStrengths[pos] < 2) this.defenseStrengths[pos]++; };
+        setEndgame(pos, pts)      { this.endgame[pos] = pts; }
+        addFoul()                 { this.fouls++; }
+        removeFoul()              { if (this.fouls > 0) this.fouls--; }
+        addTechFoul()             { this.techFouls++; }
+        removeTechFoul()          { if (this.techFouls > 0) this.techFouls--; }
         
         get teams() { return this.#teams; }
         get teamNumbers() { return this.#teams.map(team => team.number); }
@@ -302,7 +298,8 @@ export class Match {
         get number() { return this.#number; }
 
         get matchPoints() {
-            return this.defensePoints
+            return this.reaches * Match.PointValues.REACH
+                 + this.defensePoints
                  + this.boulderPoints
                  + this.endgamePoints
                  + this.penaltyPoints
@@ -311,22 +308,21 @@ export class Match {
         }
 
         get autoPoints() {
-            return this.reaches * Match.PointValues.REACH
-                 + this.autoCrosses * Match.PointValues.AUTO_CROSS
+            return this.autoMovement.reduce((sum, pts) => sum + pts, 0)
                  + this.autoLowGoals * Match.PointValues.AUTO_LOW_GOAL
                  + this.autoHighGoals * Match.PointValues.AUTO_HIGH_GOAL;
         }
 
         get defensePoints() {
-            return (10 - this.defenseStrengths.reduce((sum, str) => sum + str, 0) - this.autoCrosses) * Match.PointValues.CROSS
-                 + this.autoCrosses * Match.PointValues.AUTO_CROSS;
+            return (10 - this.defenseStrengths.reduce((sum, str) => sum + str, 0) - this.autoCrossings) * Match.PointValues.CROSS
+                 + this.autoCrossings * Match.PointValues.AUTO_CROSS;
         }
 
         get boulderPoints() {
             return this.autoLowGoals * Match.PointValues.AUTO_LOW_GOAL
                  + this.autoHighGoals * Match.PointValues.AUTO_HIGH_GOAL
-                 + this.lowGoals * Match.PointValues.AUTO_LOW_GOAL
-                 + this.highGoals * Match.PointValues.AUTO_HIGH_GOAL;
+                 + this.lowGoals * Match.PointValues.LOW_GOAL
+                 + this.highGoals * Match.PointValues.HIGH_GOAL;
         }
 
         get endgamePoints() {
@@ -363,6 +359,8 @@ export class Match {
             return this.opponentTowerStrength <= 0 && this.endgame.every(pts => pts != 0);
         }
         
+        get reaches() { return this.autoMovement.filter(e => e == Match.PointValues.REACH).length; }
+        get autoCrossings() { return this.autoMovement.filter(e => e == Match.PointValues.AUTO_CROSS).length; }
         get totalHighGoals() { return this.autoHighGoals + this.highGoals; }
         get totalLowGoals() { return this.autoLowGoals + this.lowGoals; }
 
@@ -378,10 +376,9 @@ export class Match {
             let teamNumbers = repository.getAllianceTeams(...this.#match.#id, this.color)
             this.#teams = teamNumbers.map(number => new Team(number));
 
-            this.reaches          = repository.getReaches(...this.#match.#id, this.color);
+            this.autoMovement     = repository.getAutoMovement(...this.#match.#id, this.color);
             this.autoLowGoals     = repository.getAutoLowGoals(...this.#match.#id, this.color);
             this.autoHighGoals    = repository.getAutoHighGoals(...this.#match.#id, this.color);
-            this.autoCrosses      = repository.getAutoCrossings(...this.#match.#id, this.color);
             this.lowGoals         = repository.getLowGoals(...this.#match.#id, this.color);
             this.highGoals        = repository.getHighGoals(...this.#match.#id, this.color);
             this.defenseStrengths = repository.getDefenseStrengths(...this.#match.#id, this.color);
@@ -392,10 +389,9 @@ export class Match {
 
         save() {
             repository.setMatchPoints(this.matchPoints, ...this.#match.#id, this.color);
-            repository.setReaches(this.reaches, ...this.#match.#id, this.color);
+            repository.setAutoMovement(this.autoMovement, ...this.#match.#id, this.color);
             repository.setAutoLowGoals(this.autoLowGoals, ...this.#match.#id, this.color);
             repository.setAutoHighGoals(this.autoHighGoals, ...this.#match.#id, this.color);
-            repository.setAutoCrossings(this.autoCrosses, ...this.#match.#id, this.color);
             repository.setLowGoals(this.lowGoals, ...this.#match.#id, this.color);
             repository.setHighGoals(this.highGoals, ...this.#match.#id, this.color);
             repository.setDefenseStrengths(this.defensePoints, ...this.#match.#id, this.color);
@@ -407,10 +403,9 @@ export class Match {
         }
         
         clear() {
-            this.reaches = 0;
-            this.autoLowGoals;
+            this.autoMovement = [0, 0, 0];
+            this.autoLowGoals = 0;
             this.autoHighGoals = 0;
-            this.autoCrosses = 0;
             this.lowGoals = 0;
             this.highGoals = 0;
             this.defenseStrengths = [2, 2, 2, 2, 2];

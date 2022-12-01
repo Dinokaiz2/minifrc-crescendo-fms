@@ -23,8 +23,8 @@ export function update() {
     updateTeams(...blue.teams, Match.AllianceColor.BLUE);
     updateMatchPoints(red.matchPoints, Match.AllianceColor.RED);
     updateMatchPoints(blue.matchPoints, Match.AllianceColor.BLUE);
-    updateAutonomous(red.reaches, red.autoCrosses, Match.AllianceColor.RED);
-    updateAutonomous(blue.reaches, blue.autoCrosses, Match.AllianceColor.BLUE);
+    updateAutonomous(red.reaches, red.autoCrossings, Match.AllianceColor.RED);
+    updateAutonomous(blue.reaches, blue.autoCrossings, Match.AllianceColor.BLUE);
     updateOpponentDefenses(red.defenseStrengths, Match.AllianceColor.RED);
     updateOpponentDefenses(blue.defenseStrengths, Match.AllianceColor.BLUE);
     updateOpponentTower(red.totalLowGoals, red.totalHighGoals, red.opponentTowerProgress, red.capturePossible, Match.AllianceColor.RED);
@@ -76,7 +76,7 @@ function updateAutonomous(reaches, crossings, color) {
 const STRENGTH_TO_WIDTH = { 0: "100%", 1: "50%", 2: "5%" }
 
 function updateOpponentDefenses(defenseStrengths, color) {
-    $(`#match-view ${getOpponentColorClass(color)} .defense .bar`).each((i, e) => $(e).width(STRENGTH_TO_WIDTH[defenseStrengths[i]]));
+    $(`#match-view ${getOpponentColorClass(color)} .defense .bar`).each((i, e) => $(e).css("width", STRENGTH_TO_WIDTH[defenseStrengths[i]]));
 }
 
 function updateOpponentTower(low, high, progress, capturePossible, color) {

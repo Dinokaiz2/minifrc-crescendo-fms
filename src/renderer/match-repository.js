@@ -39,10 +39,9 @@ export function generateMatch(number, set, type, redTeams, blueTeams, redAllianc
             redName: redAllianceName,
             redNumber: 0,
             redMatchPoints: 0,
-            redReaches: 0,
+            redAutoMovement: [0, 0, 0],
             redAutoLowGoals: 0,
             redAutoHighGoals: 0,
-            redAutoCrossings: 0,
             redLowGoals: 0,
             redHighGoals: 0,
             redDefenseStrengths: [2, 2, 2, 2, 2],
@@ -55,10 +54,9 @@ export function generateMatch(number, set, type, redTeams, blueTeams, redAllianc
             blueName: blueAllianceName,
             blueNumber: 0,
             blueMatchPoints: 0,
-            blueReaches: 0,
+            blueAutoMovement: [0, 0, 0],
             blueAutoLowGoals: 0,
             blueAutoHighGoals: 0,
-            blueAutoCrossings: 0,
             blueLowGoals: 0,
             blueHighGoals: 0,
             blueDefenseStrengths: [2, 2, 2, 2, 2],
@@ -170,12 +168,12 @@ export function setMatchPoints(points, number, set, type, color) {
     updateByAlliance("MatchPoints", points, color, number, set, type);
 }
 
-export function getReaches(number, set, type, color) {
-    return lookupByAlliance("Reaches", color, number, set, type);
+export function getAutoMovement(number, set, type, color) {
+    return lookupByAlliance("AutoMovement", color, number, set, type);
 }
 
-export function setReaches(reaches, number, set, type, color) {
-    updateByAlliance("Reaches", reaches, color, number, set, type);
+export function setAutoMovement(autoMovement, number, set, type, color) {
+    updateByAlliance("AutoMovement", autoMovement, color, number, set, type);
 }
 
 export function getAutoLowGoals(number, set, type, color) {
@@ -192,14 +190,6 @@ export function getAutoHighGoals(number, set, type, color) {
 
 export function setAutoHighGoals(goals, number, set, type, color) {
     updateByAlliance("AutoHighGoals", goals, color, number, set, type);
-}
-
-export function getAutoCrossings(number, set, type, color) {
-    return lookupByAlliance("AutoCrossings", color, number, set, type);
-}
-
-export function setAutoCrossings(crossings, number, set, type, color) {
-    updateByAlliance("AutoCrossings", crossings, color, number, set, type);
 }
 
 export function getLowGoals(number, set, type, color) {
