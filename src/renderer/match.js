@@ -298,13 +298,17 @@ export class Match {
         get number() { return this.#number; }
 
         get matchPoints() {
-            return this.reaches * Match.PointValues.REACH
+            return this.reachPoints
                  + this.defensePoints
                  + this.boulderPoints
                  + this.endgamePoints
                  + this.penaltyPoints
                  + (this.breach && this.#match.type != Match.Type.QUALIFICATION ? Match.PointValues.PLAYOFF_BREACH : 0)
                  + (this.capture && this.#match.type != Match.Type.QUALIFICATION  ? Match.PointValues.PLAYOFF_CAPTURE : 0);
+        }
+
+        get reachPoints() {
+            return this.reaches * Match.PointValues.REACH;
         }
 
         get autoPoints() {
@@ -394,7 +398,7 @@ export class Match {
             repository.setAutoHighGoals(this.autoHighGoals, ...this.#match.#id, this.color);
             repository.setLowGoals(this.lowGoals, ...this.#match.#id, this.color);
             repository.setHighGoals(this.highGoals, ...this.#match.#id, this.color);
-            repository.setDefenseStrengths(this.defensePoints, ...this.#match.#id, this.color);
+            repository.setDefenseStrengths(this.defenseStrengths, ...this.#match.#id, this.color);
             repository.setEndgame(this.endgame, ...this.#match.#id, this.color);
             repository.setFouls(this.fouls, ...this.#match.#id, this.color);
             repository.setTechFouls(this.techFouls, ...this.#match.#id, this.color);

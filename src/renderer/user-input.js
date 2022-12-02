@@ -34,7 +34,6 @@ ipc.on(CtrlMsg.ENDGAME, (_, data) => {
 });
 
 ipc.on(CtrlMsg.BOULDER, (_, data) => {
-    console.log(data);
     let alliance = data.red ? Competition.match.red : Competition.match.blue;
     if (!data.high && data.auto && !data.undo) alliance.addAutoLowGoal();
     else if (data.high && data.auto && !data.undo) alliance.addAutoHighGoal();

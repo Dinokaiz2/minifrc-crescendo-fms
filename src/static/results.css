@@ -202,6 +202,13 @@
     box-sizing: border-box;
 }
 
+.rp-panel .breach.indicator img { content: url(../../images/breach-icon-grey.png); }
+.rp-panel .lit.breach.indicator img { content: url(../../images/breach-icon.png); }
+.rp-panel .capture.indicator img { content: url(../../images/capture-icon-grey.png); }
+.rp-panel .lit.capture.indicator img { content: url(../../images/capture-icon.png); }
+.rp-panel .win.indicator img { content: url(../../images/win-icon-grey.png); }
+.rp-panel .lit.win.indicator img { content: url(../../images/win-icon.png); }
+
 .alliance-panel .details .category-panel {
     display: flex;
     flex-direction: column;
