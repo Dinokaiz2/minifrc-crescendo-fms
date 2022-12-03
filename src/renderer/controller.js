@@ -11,12 +11,12 @@ import * as sound from "./sound.js";
 
 // Pre-match initialization: If qualifications, pull from schedule. For playoffs, generate the next match.
 
-const TELEOP_START = 0;
+const TELEOP_START = 15;
 const ENDGAME_START = 120;
 const MATCH_END = 150;
 
-const AUTO_LENGTH = 0;
-const TELEOP_LENGTH = 150;
+const AUTO_LENGTH = 15;
+const TELEOP_LENGTH = 135;
 
 // TODO: add a postMatch variable, true if we finished a match but haven't announced it?
 
@@ -43,6 +43,7 @@ export class Competition {
             NO_ENTRY: 1,
             SAFE_TO_ENTER: 2,
             READY_FOR_MATCH: 3, // TODO: Must announce score/replay match before ready to start next match
+            AUTO: 5,
             TELEOP: 6,
             ENDGAME: 7,
         };
@@ -108,8 +109,13 @@ export class Competition {
         this.#loadMatch(matches[Math.min(index + 1, matches.length - 1)]);
     }
 
+    static #startAuto() {
+        Competition.#fieldPhase = Competition.FieldPhase.AUTO;
+    }
+
     static #startTeleop() {
         Competition.#fieldPhase = Competition.FieldPhase.TELEOP;
+        sound.startTeleop()
     }
 
     static #startEndgame() {
@@ -129,10 +135,11 @@ export class Competition {
         Competition.#inMatch = true;
         Competition.#matchStartDate = new Date();
 
+        Competition.#startTeleopHandle = setTimeout(() => Competition.#startTeleop(), TELEOP_START * 1000);
         Competition.#startEndgameHandle = setTimeout(() => Competition.#startEndgame(), ENDGAME_START * 1000);
         Competition.#endMatchHandle = setTimeout(() => Competition.#endMatch(), MATCH_END * 1000);
 
-        this.#startTeleop();
+        this.#startAuto();
         sound.startMatch();
     }
 
