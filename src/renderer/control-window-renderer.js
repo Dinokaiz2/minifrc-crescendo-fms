@@ -96,7 +96,7 @@ $(".auto button,.endgame button").on("click", e => {
 
 // Fouls
 $("#fouls button").on("click", e => {
-    let red = !$(e.target).hasClass("blue"); // Award red fouls to blue and vice versa
+    let red = $(e.target).hasClass("blue"); // Award red fouls to blue and vice versa
     let tech = $(e.target).hasClass("tech");
     let undo = $(e.target).hasClass("remove");
     ipc.send(CtrlMsg.FOUL, {red: red, tech: tech, undo: undo})
@@ -154,10 +154,10 @@ ipc.on(RenderMsg.MATCH_ENDED, () => {
     matchResultsValid = false;
 });
 ipc.on(RenderMsg.MATCH_DATA, (event, data) => {
-    $("#data .red .fouls span").text(data.blueFouls);
-    $("#data .red .tech-fouls span").text(data.blueTechFouls);
-    $("#data .blue .fouls span").text(data.redFouls);
-    $("#data .blue .tech-fouls span").text(data.redTechFouls);
+    $("#data .red .fouls span").text(data.redFouls);
+    $("#data .red .tech-fouls span").text(data.redTechFouls);
+    $("#data .blue .fouls span").text(data.blueFouls);
+    $("#data .blue .tech-fouls span").text(data.blueTechFouls);
     $("#data .red .auto-low span").text(data.redAutoLowGoals);
     $("#data .red .auto-high span").text(data.redAutoHighGoals);
     $("#data .blue .auto-low span").text(data.blueAutoLowGoals);
