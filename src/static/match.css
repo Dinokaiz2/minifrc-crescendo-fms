@@ -50,6 +50,9 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+
+    /* Mirror stream */
+    transform: rotateY(180deg);
 }
 
 #timer {
