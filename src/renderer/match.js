@@ -64,8 +64,7 @@ export class Match {
     static get Type() {
         return {
             QUALIFICATION: "Qualification",
-            QUARTERFINAL: "Quarterfinal",
-            SEMIFINAL: "Semifinal",
+            PLAYOFF: "Playoff",
             FINAL: "Final"
         }
     }
@@ -127,11 +126,7 @@ export class Match {
      * Gets this match's friendly name.
      */
     get friendlyName() {
-        if (this.type == Match.Type.QUALIFICATION || this.type == Match.Type.FINAL) {
-            return this.type + " " + this.number;
-        } else {
-            return this.type + " " + this.set + " Match " + this.number;
-        }
+        return this.type + " " + this.number;
     }
 
     /**
@@ -175,6 +170,10 @@ export class Match {
             return repository.isSurrogate(team, ...this.#id);
         }
         return false;
+    }
+
+    isPlayoff() {
+        return this.#type == Match.Type.PLAYOFF || this.#type == Match.Type.FINAL;
     }
 
     determineResult() {
@@ -226,10 +225,8 @@ export class Match {
             }
             else if (m1.type == Match.Type.QUALIFICATION) return -1;
             else if (m2.type == Match.Type.QUALIFICATION) return 1;
-            else if (m1.type == Match.Type.QUARTERFINAL) return -1;
-            else if (m2.type == Match.Type.QUARTERFINAL) return 1;
-            else if (m1.type == Match.Type.SEMIFINAL) return -1;
-            else if (m2.type == Match.Type.SEMIFINAL) return 1;
+            else if (m1.type == Match.Type.PLAYOFF) return -1;
+            else if (m2.type == Match.Type.PLAYOFF) return 1;
             return 0; // Both matches are finals with the same set and match, shouldn't ever happen
         });
         return matches;

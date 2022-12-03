@@ -77,6 +77,7 @@ function updateRpPanel(alliance) {
     let capture = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .capture");
     let win = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .win");
     let rp = (alliance.breach ? 1 : 0) + (alliance.capture ? 1 : 0);
+    let pts = (alliance.breach ? Match.PointValues.PLAYOFF_BREACH : 0) + (alliance.capture ? Match.PointValues.PLAYOFF_CAPTURE : 0);
     if (alliance.breach) breach.addClass("lit");
     else breach.removeClass("lit");
     if (alliance.capture) capture.addClass("lit");
@@ -95,7 +96,8 @@ function updateRpPanel(alliance) {
         win.children("#win").show();
         win.children("#tie").hide();
     }
-    $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .count").text(rp + " RP");
+    if (Competition.results.isPlayoff()) $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .count").text(pts + " Points");
+    else $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .count").text(rp + " RP");
 }
 
 function updateCategoryPanel(alliance) {
