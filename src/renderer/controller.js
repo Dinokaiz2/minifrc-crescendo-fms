@@ -180,10 +180,9 @@ export class Competition {
         teams.forEach(team => team.calculateFields())
         teams.sort((t1, t2) => {
             if (t1.rankingScore != t2.rankingScore) return t2.rankingScore - t1.rankingScore;
-            if (t1.cargoPoints != t2.cargoPoints) return t2.cargoPoints - t1.cargoPoints;
-            if (t1.hatchPoints != t2.hatchPoints) return t2.hatchPoints - t1.hatchPoints;
+            if (t1.autoPoints != t2.cargoPoints) return t2.cargoPoints - t1.cargoPoints;
             if (t1.endgamePoints != t2.endgamePoints) return t2.endgamePoints - t1.endgamePoints;
-            return t2.autoPoints - t1.autoPoints;
+            return t2.boulderPoints - t1.boulderPoints;
         });
         return teams;
     }

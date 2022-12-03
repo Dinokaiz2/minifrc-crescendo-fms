@@ -15,8 +15,8 @@ export class Team {
     #rankingPoints;
     #autoPoints;
     #endgamePoints;
-    #cargoPoints;
-    #hatchPoints;
+    #boulderPoints;
+    #defensePoints;
     #wins;
     #ties;
     #losses;
@@ -43,8 +43,8 @@ export class Team {
         this.#rankingPoints = 0;
         this.#autoPoints = 0;
         this.#endgamePoints = 0;
-        this.#hatchPoints = 0;
-        this.#cargoPoints = 0;
+        this.#boulderPoints = 0;
+        this.#defensePoints = 0;
         this.#wins = 0;
         this.#ties = 0;
         this.#losses = 0;
@@ -67,8 +67,8 @@ export class Team {
                     if (match.red.docked) this.#rankingPoints += 1;
                     this.#autoPoints += match.red.autoPoints;
                     this.#endgamePoints += match.red.endgamePoints;
-                    this.#hatchPoints += match.red.hatchPoints;
-                    this.#cargoPoints += match.red.cargoPoints;
+                    this.#boulderPoints += match.red.boulderPoints;
+                    this.#defensePoints += match.red.defensePoints;
                 } else if (match.blue.teamNumbers.includes(this.number)) {
                     if (match.result == Match.Result.BLUE_WIN) {
                         this.#rankingPoints += 2;
@@ -81,10 +81,10 @@ export class Team {
                     }
                     if (match.blue.rocketComplete) this.#rankingPoints += 1;
                     if (match.blue.docked) this.#rankingPoints += 1;
-                    this.#autoPoints += match.blue.autoPoints;
-                    this.#endgamePoints += match.blue.endgamePoints;
-                    this.#hatchPoints += match.red.hatchPoints;
-                    this.#cargoPoints += match.red.cargoPoints;
+                    this.#autoPoints += match.red.autoPoints;
+                    this.#endgamePoints += match.red.endgamePoints;
+                    this.#boulderPoints += match.red.boulderPoints;
+                    this.#defensePoints += match.red.defensePoints;
                 }
             }
         });
@@ -107,12 +107,12 @@ export class Team {
         return this.#endgamePoints;
     }
 
-    get hatchPoints() {
-        return this.#hatchPoints;
+    get boulderPoints() {
+        return this.#boulderPoints;
     }
 
-    get cargoPoints() {
-        return this.#cargoPoints;
+    get defensePoints() {
+        return this.#defensePoints;
     }
 
     get wins() {

@@ -11,6 +11,7 @@ var db = window.db;
 // Put manual db generation here
 function generate() {
     generateMatch(1, 0, Match.Type.QUALIFICATION, [3, 4, 5], [7, 8, 9]);
+    generateMatch(2, 0, Match.Type.QUALIFICATION, [10, 11, 12], [13, 14, 15]);
 }
 
 $(generate);

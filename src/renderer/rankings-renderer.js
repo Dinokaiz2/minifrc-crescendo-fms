@@ -22,9 +22,10 @@ function updateRankings() {
         row.append($("<td>" + (i + 1) + "</td>"));
         row.append($("<td>" + e.number + "</td>"));
         row.append($("<td>" + (isNaN(e.rankingScore) ? "-" : e.rankingScore.toFixed(2)) + "</td>"));
-        row.append($("<td>" + e.cargoPoints + "</td>"));
-        row.append($("<td>" + e.hatchPoints + "</td>"));
+        row.append($("<td>" + e.autoPoints + "</td>"));
         row.append($("<td>" + e.endgamePoints + "</td>"));
+        row.append($("<td>" + e.boulderPoints + "</td>"));
+        row.append($("<td>" + e.defensePoints + "</td>"));
         row.append($("<td class='text'>" + e.wins + "-" + e.losses + "-" + e.ties + "</td>"));
         row.append($("<td>" + e.disqualifications + "</td>"));
         row.append($("<td>" + e.matchesPlayed + "</td>"));
