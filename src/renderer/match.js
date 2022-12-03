@@ -374,8 +374,9 @@ export class Match {
             this.#color = color;
             this.#match = match;
 
-            let teamNumbers = repository.getAllianceTeams(...this.#match.#id, this.color)
+            let teamNumbers = repository.getAllianceTeams(...this.#match.#id, this.color);
             this.#teams = teamNumbers.map(number => new Team(number));
+            if (match.isPlayoff()) this.#number = repository.getAllianceNumber(...this.#match.#id, this.color);
 
             this.autoMovement     = repository.getAutoMovement(...this.#match.#id, this.color);
             this.autoLowGoals     = repository.getAutoLowGoals(...this.#match.#id, this.color);

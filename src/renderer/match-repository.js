@@ -10,8 +10,6 @@ var db = window.db;
 
 // Put manual db generation here
 function generate() {
-    generateMatch(1, 0, Match.Type.QUALIFICATION, [3, 4, 5], [7, 8, 9]);
-    generateMatch(2, 0, Match.Type.QUALIFICATION, [10, 11, 12], [13, 14, 15]);
 }
 
 $(generate);
@@ -27,7 +25,7 @@ $(generate);
  * @param {string} redAllianceName name to use for the red alliance in a playoff match
  * @param {string} blueAllianceName name to use for the blue alliance in a playoff match
  */
-export function generateMatch(number, set, type, redTeams, blueTeams, redAllianceName = "", blueAllianceName = "") {
+export function generateMatch(number, set, type, redTeams, blueTeams, redAllianceNumber = 0, blueAllianceNumber = 0) {
     if (Object.keys(getMatchData(number, set, type)) == 0) {
         db.save({
             number: number,
@@ -37,8 +35,7 @@ export function generateMatch(number, set, type, redTeams, blueTeams, redAllianc
             surrogates: [],
             result: Match.Result.UNDETERMINED,
             redTeams: redTeams,
-            redName: redAllianceName,
-            redNumber: 0,
+            redNumber: redAllianceNumber,
             redMatchPoints: 0,
             redAutoMovement: [0, 0, 0],
             redAutoLowGoals: 0,
@@ -52,8 +49,7 @@ export function generateMatch(number, set, type, redTeams, blueTeams, redAllianc
             redBreach: false,
             redCapture: false,
             blueTeams: blueTeams,
-            blueName: blueAllianceName,
-            blueNumber: 0,
+            blueNumber: blueAllianceNumber,
             blueMatchPoints: 0,
             blueAutoMovement: [0, 0, 0],
             blueAutoLowGoals: 0,
@@ -118,8 +114,8 @@ export function getAllianceTeams(number, set, type, color) {
     return lookupByAlliance("Teams", color, number, set, type);
 }
 
-export function getAllianceName(number, set, type, color) {
-    return lookupByAlliance("Name", color, number, set, type);
+export function getAllianceNumber(number, set, type, color) {
+    return lookupByAlliance("Number", color, number, set, type);
 }
 
 export function getResult(number, set, type) {

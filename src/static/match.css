@@ -200,7 +200,7 @@ body {
 
 #overlay #scoring-panel #match-panel #teams {
     position: absolute;
-    height: 135px;
+    height: 210px;
     margin: 0 auto;
     left: 0;
     right: 0;
@@ -218,17 +218,17 @@ body {
     border-top: 5px solid var(--border-color);
 }
 
-#overlay #scoring-panel #match-panel #teams .red {
+#overlay #scoring-panel #match-panel #teams .red.team-column {
     right: 0;
     border-right: 5px solid var(--border-color);
 }
 
-#overlay #scoring-panel #match-panel #teams .blue {
+#overlay #scoring-panel #match-panel #teams .blue.team-column {
     left: 0;
     border-left: 5px solid var(--border-color);
 }
 
-#overlay #scoring-panel #match-panel #teams .number {
+#overlay #scoring-panel #match-panel #teams .team-column .number {
     position: relative;
     height: 40px;
     line-height: 35px;
@@ -239,6 +239,24 @@ body {
     font-size: 30px;
     box-sizing: border-box;
 }
+
+#overlay #scoring-panel #match-panel #teams .red.alliance-number,
+#overlay #scoring-panel #match-panel #teams .blue.alliance-number {
+    position: absolute;
+    height: 45px;
+    width: 40px;
+    top: 0px;
+    background-color: white;
+    border: 5px solid var(--border-color);
+    text-align: center;
+    font-family: "Roboto Slab";
+    font-weight: bold;
+    font-size: 35px;
+    line-height: 40px;
+}
+
+#overlay #scoring-panel #match-panel #teams .red.alliance-number { right: 0; }
+#overlay #scoring-panel #match-panel #teams .blue.alliance-number { left: 0; }
 
 #overlay #scoring-panel .indicator-panel {
     position: relative;

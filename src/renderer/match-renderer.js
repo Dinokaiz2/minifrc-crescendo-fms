@@ -19,8 +19,8 @@ export function update() {
     let blue = match.blue;
     updateTimer();
     updateMatchName(match.friendlyName);
-    updateTeams(...red.teams, Match.AllianceColor.RED);
-    updateTeams(...blue.teams, Match.AllianceColor.BLUE);
+    updateTeams(...red.teams, red.number, match.isPlayoff(), Match.AllianceColor.RED);
+    updateTeams(...blue.teams, blue.number, match.isPlayoff(), Match.AllianceColor.BLUE);
     updateMatchPoints(red.matchPoints, Match.AllianceColor.RED);
     updateMatchPoints(blue.matchPoints, Match.AllianceColor.BLUE);
     updateAutonomous(red.reaches, red.autoCrossings, Match.AllianceColor.RED);
@@ -56,9 +56,16 @@ function updateMatchName(name) {
     $("#match-view #match-name").text(name);
 }
 
-function updateTeams(team1, team2, team3, color) {
+function updateTeams(team1, team2, team3, number, isPlayoff, color) {
     let teams = $(`#match-view #match-panel #teams ${getColorClass(color)}`).children();
     [team1, team2, team3].forEach((e, i) => teams.eq(i).text(e.number));
+    let allianceNumElement = $(`#match-view #match-panel #teams ${getColorClass(color)}.alliance-number`);
+    if (isPlayoff) {
+        allianceNumElement.text(number);
+        allianceNumElement.show();
+    } else {
+        allianceNumElement.hide();
+    }
 }
 
 function updateMatchPoints(points, color) {
