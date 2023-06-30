@@ -111,6 +111,17 @@ body {
     box-sizing: border-box;
     background-color: grey;
     color: lightgrey;
+    font-family: "Roboto Slab";
+    text-align: center;
+}
+
+#overlay .cube.indicator {
+    height: 60px;
+    width: 60px;
+    background-color: rgb(130, 21, 202);
+    color: white;
+    font-size: 40px;
+    line-height: 50px;
 }
 
 #overlay .red .lit.indicator {
@@ -258,299 +269,272 @@ body {
 #overlay #scoring-panel #match-panel #teams .red.alliance-number { right: 0; }
 #overlay #scoring-panel #match-panel #teams .blue.alliance-number { left: 0; }
 
-#overlay #scoring-panel .indicator-panel {
+/* Game pieces */
+
+#overlay .grid-panel {
+    width: 210px;
+}
+
+#overlay .grid-panel .grid {
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+#overlay .grid-panel .box {
+    display: flex;
     position: relative;
+    box-sizing: border-box;
+    height: 70px;
+    width: 70px;
+    align-items: center;
+    justify-content: center;
+}
+
+#overlay .box.step { border-top: 5px solid black; }
+#overlay .red .box.step { border-right: 5px solid black; }
+#overlay .blue .box.step { border-left: 5px solid black; }
+
+#overlay .box.step-corner::after {
+    content: '';
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    right: 0;
+    height: 5px;
+    width: 5px;
+    background-color: black;
+}
+#overlay .red .box.step-corner::after { right: 0; }
+#overlay .blue .box.step-corner::after { left: 0; }
+
+#overlay .box .link-icon {
+    position: absolute;
+    bottom: 2.5px;
+    background-color: white;
+    height: 55px;
+    width: 55px;
+    border-radius: 55px;
+
+    /* inverted mask */
+    -webkit-mask: url(../../images/link.svg), linear-gradient(#fff 0 0);
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-composite: destination-out;
+}
+#overlay .red .box .link-icon { left: 5px; }
+#overlay .blue .box .link-icon { left: 10px; }
+
+#overlay .box .link-bg {
+    position: absolute;
+    bottom: 2.5px;
+    height: 55px;
+    width: 130px;
+    border-radius: 55px;
+}
+#overlay .red .box .link-bg {
+    left: 0px;
+    background-color: rgb(233, 13, 13);
+}
+#overlay .blue .box .link-bg {
+    left: 5px;
+    background-color: rgb(62, 62, 255);
+}
+
+#overlay .box .link-border {
+    position: absolute;
+    bottom: 0;
+    box-sizing: border-box;
+    border: 5px solid black;
+    height: 60px;
+    width: 130px;
+    border-radius: 55px;
+}
+#overlay .red .box .link-border { left: 0px; }
+#overlay .blue .box .link-border { left: 5px; }
+
+#overlay .box .link-count {
+    position: absolute;
+    left: 65px;
+    font-family: "Roboto Slab";
+    color: white;
+    font-size: 32px;
+}
+#overlay .red .box .link-count { top: 17px; left: 65px; }
+#overlay .blue .box .link-count { top: 12px; left: 70px; }
+
+#overlay .box .coop-icon {
+    position: absolute;
+    height: 55px;
+    width: 55px;
+    border-radius: 55px;
+    background-image: url(../../images/handshake.svg);
+    background-position: center;
+    background-size: contain;
+}
+#overlay .red .box .coop-icon { background-color: rgb(233, 13, 13); }
+#overlay .blue .box .coop-icon { background-color: rgb(62, 62, 255); }
+
+#overlay .box .coop-border {
+    position: absolute;
+    box-sizing: border-box;
+    height: 60px;
+    width: 60px;
+    border: 5px solid black;
+    border-radius: 60px;
+}
+
+#overlay .column {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    width: 180px;
-    bottom: 0;
-    font-family: "Roboto Slab";
-    font-size: 30px;
-    font-weight: bold;
-    text-align: center;
 }
 
-.indicator-panel .breach {
-    position: relative;
-    width: 100%;
-    height: 50px;
-    margin-top: 5px;
-}
-
-.indicator-panel .capture {
-    position: relative;
-    width: 100%;
-    height: 50px;
-    margin-top: 5px;
-}
-
-.indicator-panel .auto {
-    position: relative;
-    width: 100%;
-}
-
-.indicator-panel .auto .indicators {
+#overlay .auto-panel {
+    height: 100px;
+    width: 360px;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 50px;
-    width: 100%;
+    flex-direction: column;
 }
 
-.indicator-panel .auto .indicator {
+#overlay .auto-panel .label {
+    text-align: left;
+    width: 80px;
+}
+
+#overlay .auto-panel .mobility {
     display: flex;
     align-content: center;
     justify-content: center;
     text-align: center;
-    height: 50px;
-    width: 50px;
-    line-height: 18px;
+    height: 60px;
+    width: 60px;
 }
-.indicator-panel .auto .cross {
+
+#overlay .auto-panel .cross {
     width: 100%;
     height: 100%;
-    font-size: 108px;
+    font-size: 135px;
     font-weight: 100;
+    line-height: 25px;
     color: black;
 }
-.indicator-panel .auto .cross:before {
+#overlay .auto-panel .cross:before {
     content: "";
     margin-left: -100%;
 }
-.indicator-panel .auto .cross:after {
+#overlay .auto-panel .cross:after {
     content: "";
     margin-right: -100%;
 }
 
-.endgame {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 180px;
+.auto-panel .charge {
+    width: 60px;
+    height: 60px;
+    background-image: url(../../images/charged-battery.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
-.endgame .indicators {
+.auto-panel .row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: 50px;
-    width: 100%;
 }
 
-.endgame .indicators .indicator {
-    height: 50px;
-    width: 50px;
-    line-height: 40px;
-}
-
-#overlay .defenses {
+#overlay .endgame-panel {
+    height: 90px;
+    width: 320px;
+    margin-top: 10px;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 150px;
+    flex-direction: row;
 }
 
-.defenses .defense {
+#overlay .endgame-panel .label {
+    position: absolute;
+}
+
+.endgame-panel .parking {
     position: relative;
-    height: 30px;
+    width: 170px;
 }
 
-.red.defenses .defense {
-    background-color: rgb(189, 134, 134) !important;
-}
-.blue.defenses .defense {
-    background-color: rgb(141, 134, 189) !important;
-}
-
-.defenses .bar {
-    position: absolute;
-    left: 0;
-    width: 0%;
-    height: 100%;
-    box-sizing: border-box;
-    transition: width 0.3s;
-}
-
-.red.defenses .bar {
-    background-color: rgb(21, 103, 255);
-    border: 3px solid rgb(0, 26, 219);
-}
-.blue.defenses .bar {
-    background-color: red;
-    border: 3px solid rgb(138, 0, 0);
-}
-
-#overlay .tower-panel {
-    display: flex;
-    position: relative;
+.endgame-panel .parking .platform {
+    height: 5px;
     width: 150px;
-}
-
-.tower-panel .capture-progress {
+    top: 92px;
     position: absolute;
-    height: 100%;
-    width: 20px;
-    background-color: grey;
-    box-sizing: border-box;
-    border: 5px solid black;
-}
-
-.red.tower-panel .capture-progress { left: -15px; }
-.blue.tower-panel .capture-progress { right: -15px; }
-
-.capture-progress .bar {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 0%;
-    box-sizing: border-box;
-    transition: height 0.3s;
-}
-
-.red .capture-progress .bar { background-color: blue; }
-.blue .capture-progress .bar { background-color: red; }
-
-@keyframes flash-red {
-    from { background-color: red; }
-    to { background-color: rgb(255, 100, 100); }
-}
-
-@keyframes flash-blue {
-    from { background-color: blue; }
-    to { background-color: rgb(100, 100, 255); }
-}
-
-.red .capture-progress .bar.flashing { animation: flash-blue 0.5s infinite linear alternate; }
-.blue .capture-progress .bar.flashing { animation: flash-red 0.5s infinite linear alternate; }
-
-.tower-panel .tower {
-    position: absolute;
-    inset: auto 0 0 0;
-    margin: 0 auto;
-    width: 90px;
-    height: 105px;
-    background-color: darkgrey;
-    box-sizing: border-box;
-    border: 5px black solid;
-    border-top: none;
-}
-
-.tower-panel .turret-bevel-outline {
-    position: absolute;
-    width: 90px;
-    height: 0px;
-    inset: 90px 0 auto 0;
-    margin: 0 auto;
-    border-top: 17px solid black;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-}
-
-.tower-panel .turret-bevel {
-    position: absolute;
-    width: 80px;
-    height: 0px;
-    inset: 90px 0 auto 0;
-    margin: 0 auto;
-    border-top: 15px solid grey;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-}
-
-.tower-panel .turret {
-    position: absolute;
-    width: 130px;
-    height: 75px;
-    inset: 15px 0 auto 0;
-    margin: 0 auto;
-    background-color: darkgrey;
-    box-sizing: border-box;
-    border: 5px solid black;
-    border-bottom: none;
-}
-
-.tower-panel .goal {
-    width: 50px;
-    height: 60px;
-    inset: auto 0;
-    margin: 0 auto; 
     background-color: black;
-    border-radius: 25px 25px 0 0;
-    font-family: "Roboto Slab";
-    color: white;
-    font-size: 40px;
-    text-align: center;
-    line-height: 60px;
 }
 
-.high.goal {
-    position: absolute;
-    top: 25px;
-}
-
-.low.goal {
-    position: absolute;
-    bottom: 10px;
-}
-
-.tower-panel .parapet {
-    position: absolute;
-    width: 40px;
-    height: 20px;
-    inset: -20px 0 auto 0;
-    margin: 0 auto;
-    background-color: darkgrey;
-    box-sizing: border-box;
-    border: 5px black solid;
-    border-bottom: none;
-}
-
-.parapet.left {
-    width: 30px;
-    margin-left: -5px;
-    margin-right: auto;
-}
-
-.parapet.right {
-    width: 30px;
-    margin-left: auto;
-    margin-right: -5px;
-}
-
-.tower-panel .challenge, .tower-panel .scale {
+.endgame-panel .park, .endgame-panel .dock {
     position: absolute;
     transform: scale(3);
     image-rendering: pixelated;
 }
-
-.left.challenge {
+.endgame-panel .left.park {
     bottom: 10px;
     left: 15px;
 }
-
-.mid.challenge {
+.endgame-panel .mid.park {
     transform: scale(-3, 3);
-    bottom: 15px;
+    bottom: 13px;
     right: 15px;
 }
-
-.right.challenge {
-    bottom: 2px;
-    right: 45px;
+.endgame-panel .right.park {
+    bottom: 12px;
+    right: 60px;
+}
+.endgame-panel .left.dock {
+    bottom: 42px;
+    left: 40px;
+}
+.endgame-panel .mid.dock {
+    transform: scale(-3, 3);
+    bottom: 45px;
+    right: 35px;
+}
+.endgame-panel .right.dock {
+    bottom: 44px;
+    right: 80px;
 }
 
-.left.scale {
-    top: -10px;
-    left: 27px;
+
+.endgame-panel .charge-station {
+    position: relative;
+    width: 230px;
 }
 
-.mid.scale {
-    top: -25px;
-    left: 70px;
+.endgame-panel .charge-station .border {
+    position: absolute;
+    width: 145px;
+    height: 0px;
+    inset: 60px 0 auto 0;
+    margin: 0 auto;
+    border-bottom: 37px solid black;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
 }
 
-.right.scale {
-    top: -15px;
-    right: 23px;
+.endgame-panel .charge-station .platform {
+    position: absolute;
+    width: 140px;
+    height: 0px;
+    inset: 65px 0 auto 0;
+    margin: 0 auto;
+    border-bottom: 32px solid rgb(170, 170, 170);
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+}
+
+.endgame-panel .charge-station .icon {
+    position: absolute;
+    width: 50px;
+    height: 40px;
+    inset: 60px 0 auto 0;
+    margin: 0 auto;
+    background-image: url(../../images/charged-battery.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
