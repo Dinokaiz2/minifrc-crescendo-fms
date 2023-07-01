@@ -118,7 +118,7 @@ const keyMap = {
     "KeyR": ["node", "red", 2, true, "ShiftLeft"],
     "KeyF": ["node", "red", 1, true, "ShiftLeft"],
     "KeyV": ["node", "red", 0, true, "ShiftLeft"],
-    "KeyE": ["link", "red", "ShiftLeft"],
+    "KeyC": ["link", "red", "ShiftLeft"],
     "KeyD": ["coopertition", "red", "ShiftLeft"],
 
     // Blue grid
@@ -128,7 +128,7 @@ const keyMap = {
     "KeyU": ["node", "blue", 2, true, "ShiftRight"],
     "KeyJ": ["node", "blue", 1, true, "ShiftRight"],
     "KeyM": ["node", "blue", 0, true, "ShiftRight"],
-    "KeyI": ["link", "blue", "ShiftRight"],
+    "Comma": ["link", "blue", "ShiftRight"],
     "KeyK": ["coopertition", "blue", "ShiftRight"],
 };
 
