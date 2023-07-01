@@ -371,9 +371,10 @@ body {
     background-image: url(../../images/handshake.svg);
     background-position: center;
     background-size: contain;
+    background-color: grey;
 }
-#overlay .red .box .coop-icon { background-color: rgb(233, 13, 13); }
-#overlay .blue .box .coop-icon { background-color: rgb(62, 62, 255); }
+#overlay .red .box .lit.coop-icon { background-color: rgb(233, 13, 13); }
+#overlay .blue .box .lit.coop-icon { background-color: rgb(62, 62, 255); }
 
 #overlay .box .coop-border {
     position: absolute;
@@ -430,11 +431,13 @@ body {
 .auto-panel .charge {
     width: 60px;
     height: 60px;
-    background-image: url(../../images/charged-battery.png);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
 }
+.auto-panel .charge.none { background-image: url(../../images/empty-battery.png); }
+.auto-panel .charge.dock { background-image: url(../../images/full-battery.png); }
+.auto-panel .charge.engage { background-image: url(../../images/charged-battery.png); }
 
 .auto-panel .row {
     display: flex;
@@ -467,44 +470,42 @@ body {
     background-color: black;
 }
 
-.endgame-panel .park, .endgame-panel .dock {
+.endgame-panel .robot.park, .endgame-panel .robot.dock {
     position: absolute;
     transform: scale(3);
     image-rendering: pixelated;
 }
-.endgame-panel .left.park {
+.endgame-panel .robot.left.park {
     bottom: 10px;
     left: 15px;
 }
-.endgame-panel .mid.park {
+.endgame-panel .robot.mid.park {
     transform: scale(-3, 3);
     bottom: 13px;
     right: 15px;
 }
-.endgame-panel .right.park {
+.endgame-panel .robot.right.park {
     bottom: 12px;
     right: 60px;
 }
-.endgame-panel .left.dock {
+.endgame-panel .robot.left.dock {
     bottom: 42px;
     left: 40px;
 }
-.endgame-panel .mid.dock {
+.endgame-panel .robot.mid.dock {
     transform: scale(-3, 3);
     bottom: 45px;
     right: 35px;
 }
-.endgame-panel .right.dock {
+.endgame-panel .robot.right.dock {
     bottom: 44px;
     right: 80px;
 }
-
 
 .endgame-panel .charge-station {
     position: relative;
     width: 230px;
 }
-
 .endgame-panel .charge-station .border {
     position: absolute;
     width: 145px;
@@ -515,7 +516,6 @@ body {
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
 }
-
 .endgame-panel .charge-station .platform {
     position: absolute;
     width: 140px;
@@ -533,8 +533,10 @@ body {
     height: 40px;
     inset: 60px 0 auto 0;
     margin: 0 auto;
-    background-image: url(../../images/charged-battery.png);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
 }
+.endgame-panel .charge-station .icon.none { background-image: url(../../images/empty-battery.png); }
+.endgame-panel .charge-station .icon.dock { background-image: url(../../images/full-battery.png); }
+.endgame-panel .charge-station .icon.engage { background-image: url(../../images/charged-battery.png); }

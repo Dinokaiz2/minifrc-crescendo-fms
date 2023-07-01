@@ -23,16 +23,12 @@ export function update() {
     updateTeams(...blue.teams, blue.number, match.isPlayoff(), Match.AllianceColor.BLUE);
     updateMatchPoints(red.matchPoints, Match.AllianceColor.RED);
     updateMatchPoints(blue.matchPoints, Match.AllianceColor.BLUE);
-    updateAutonomous(red.reaches, red.autoCrossings, Match.AllianceColor.RED);
-    updateAutonomous(blue.reaches, blue.autoCrossings, Match.AllianceColor.BLUE);
-    updateOpponentDefenses(red.defenseStrengths, Match.AllianceColor.RED);
-    updateOpponentDefenses(blue.defenseStrengths, Match.AllianceColor.BLUE);
-    updateOpponentTower(red.totalLowGoals, red.totalHighGoals, red.opponentTowerProgress, red.capturePossible, Match.AllianceColor.RED);
-    updateOpponentTower(blue.totalLowGoals, blue.totalHighGoals, blue.opponentTowerProgress, blue.capturePossible, Match.AllianceColor.BLUE);
+    updateAutonomous(red.mobility, red.autoCharge, red.totalAutoNodes, Match.AllianceColor.RED);
+    updateAutonomous(blue.mobility, blue.autoCharge, blue.totalAutoNodes, Match.AllianceColor.BLUE);
+    updateGrid(red.totalLowNodes, red.totalMidNodes, red.totalHighNodes, red.links, red.sustainabilityThreshold, red.coopertition, Match.AllianceColor.RED);
+    updateGrid(blue.totalLowNodes, blue.totalMidNodes, blue.totalHighNodes, blue.links, blue.sustainabilityThreshold, blue.coopertition, Match.AllianceColor.BLUE);
     updateEndgame(red.endgame, Match.AllianceColor.RED);
     updateEndgame(blue.endgame, Match.AllianceColor.BLUE);
-    updateRankingPoints(red.breach, red.capture, Match.AllianceColor.RED);
-    updateRankingPoints(blue.breach, blue.capture, Match.AllianceColor.BLUE);
 }
 
 function updateTimer() {
@@ -72,45 +68,53 @@ function updateMatchPoints(points, color) {
     $(`#match-view #match-panel #score-box ${getColorClass(color)}`).text(points);
 }
 
-function updateAutonomous(reaches, crossings, color) {
-    let indicators = $(`#match-view ${getColorClass(color)}.indicator-panel .auto .indicators`).children();
+function updateAutonomous(mobility, charge, autoNodes, color) {
+    let indicators = $(`#match-view ${getColorClass(color)}.auto-panel .mobility`);
     indicators.each((i, e) => {
-        i < reaches + crossings ? $(e).addClass("lit") : $(e).removeClass("lit");
-        i < crossings ? $(e).children().show() : $(e).children().hide();
+        if (i < mobility) {
+            $(e).addClass("lit")
+            $(e).children().show()
+        } else {
+           $(e).removeClass("lit");
+           $(e).children().hide();  
+        }
     });
+
+    $(`#match-view ${getColorClass(color)}.auto-panel .cube`).text(autoNodes);
+
+    let autoChargeIcon = $(`#match-view ${getColorClass(color)}.auto-panel .charge`);
+    autoChargeIcon.removeClass("none dock engage");
+    if (charge == 0) autoChargeIcon.addClass("none");
+    else if (charge == Match.PointValues.AUTO_DOCK) autoChargeIcon.addClass("dock")
+    else if (charge == Match.PointValues.AUTO_ENGAGE) autoChargeIcon.addClass("engage")
 }
 
-const STRENGTH_TO_WIDTH = { 0: "100%", 1: "50%", 2: "5%" }
-
-function updateOpponentDefenses(defenseStrengths, color) {
-    $(`#match-view ${getOpponentColorClass(color)} .defense .bar`).each((i, e) => $(e).css("width", STRENGTH_TO_WIDTH[defenseStrengths[i]]));
-}
-
-function updateOpponentTower(low, high, progress, capturePossible, color) {
-    $(`#match-view ${getOpponentColorClass(color)}.tower-panel .low.goal`).text(low);
-    $(`#match-view ${getOpponentColorClass(color)}.tower-panel .high.goal`).text(high);
-    $(`#match-view ${getOpponentColorClass(color)}.tower-panel .capture-progress .bar`).height(progress + "%");
-    let captureBar = $(`#match-view ${getOpponentColorClass(color)}.tower-panel .capture-progress .bar`);
-    if (capturePossible) captureBar.addClass("flashing");
-    else captureBar.removeClass("flashing");
+function updateGrid(lowNodes, midNodes, highNodes, links, threshold, coopertition, color) {
+    let nodeCounts = [highNodes, midNodes, lowNodes];
+    $(`#match-view ${getColorClass(color)}.grid-panel .cube`).each((i, e) => {
+        $(e).text(nodeCounts[i]);
+    });
+    $(`#match-view ${getColorClass(color)}.grid-panel .link-count`).text(`${links}/${threshold}`)
+    if (coopertition) $(`#match-view ${getColorClass(color)}.grid-panel .coop-icon`).addClass("lit");
+    else $(`#match-view ${getColorClass(color)}.grid-panel .coop-icon`).removeClass("lit");
+    
 }
 
 function updateEndgame(endgame, color) {
-    $(`#match-view ${getOpponentColorClass(color)}.tower-panel .scale`).each((i, e) => {
-        if (endgame[i] == Match.PointValues.SCALE) $(e).show();
+    $(`#match-view ${getColorClass(color)}.endgame-panel .robot.park`).each((i, e) => {
+        if (endgame[i] == Match.PointValues.PARK) $(e).show();
         else $(e).hide();
     });
-    $(`#match-view ${getOpponentColorClass(color)}.tower-panel .challenge`).each((i, e) => {
-        if (endgame[i] == Match.PointValues.CHALLENGE) $(e).show();
+    $(`#match-view ${getColorClass(color)}.endgame-panel .robot.dock`).each((i, e) => {
+        if (endgame[i] == Match.PointValues.DOCK || endgame[i] == Match.PointValues.ENGAGE) $(e).show();
         else $(e).hide();
     });
-}
 
-function updateRankingPoints(breach, capture, color) {
-    if (breach) $(`#match-view ${getColorClass(color)} .breach`).addClass("lit");
-    else $(`#match-view ${getColorClass(color)} .breach`).removeClass("lit");
-    if (capture) $(`#match-view ${getColorClass(color)} .capture`).addClass("lit");
-    else $(`#match-view ${getColorClass(color)} .capture`).removeClass("lit");
+    let chargeIcon = $(`#match-view ${getColorClass(color)}.endgame-panel .charge-station .icon`);
+    chargeIcon.removeClass("none dock engage");
+    if (endgame.includes(Match.PointValues.ENGAGE)) chargeIcon.addClass("engage");
+    else if (endgame.includes(Match.PointValues.DOCK)) chargeIcon.addClass("dock");
+    else chargeIcon.addClass("none");
 }
 
 function getColorClass(color) {

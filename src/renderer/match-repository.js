@@ -10,6 +10,9 @@ var db = window.db;
 
 // Put manual db generation here
 function generate() {
+    generateMatch(1, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6]);
+    generateMatch(2, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6]);
+    generateMatch(3, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6]);
 }
 
 $(generate);
@@ -34,34 +37,44 @@ export function generateMatch(number, set, type, redTeams, blueTeams, redAllianc
             disqualifications: [],
             surrogates: [],
             result: Match.Result.UNDETERMINED,
+
             redTeams: redTeams,
             redNumber: redAllianceNumber,
             redMatchPoints: 0,
-            redAutoMovement: [0, 0, 0],
-            redAutoLowGoals: 0,
-            redAutoHighGoals: 0,
-            redLowGoals: 0,
-            redHighGoals: 0,
-            redDefenseStrengths: [2, 2, 2, 2, 2],
+            redMobility: 0,
+            redAutoLowNodes: 0,
+            redAutoMidNodes: 0,
+            redAutoHighNodes: 0,
+            redAutoCharge: 0,
+            redLowNodes: 0,
+            redMidNodes: 0,
+            redHighNodes: 0,
+            redLinks: 0,
+            redCoopertition: false,
             redEndgame: [0, 0, 0],
             redFouls: 0,
             redTechFouls: 0,
-            redBreach: false,
-            redCapture: false,
+            redSustainability: false,
+            redActivation: false,
+
             blueTeams: blueTeams,
             blueNumber: blueAllianceNumber,
             blueMatchPoints: 0,
-            blueAutoMovement: [0, 0, 0],
-            blueAutoLowGoals: 0,
-            blueAutoHighGoals: 0,
-            blueLowGoals: 0,
-            blueHighGoals: 0,
-            blueDefenseStrengths: [2, 2, 2, 2, 2],
+            blueMobility: 0,
+            blueAutoLowNodes: 0,
+            blueAutoMidNodes: 0,
+            blueAutoHighNodes: 0,
+            blueAutoCharge: 0,
+            blueLowNodes: 0,
+            blueMidNodes: 0,
+            blueHighNodes: 0,
+            blueLinks: 0,
+            blueCoopertition: false,
             blueEndgame: [0, 0, 0],
             blueFouls: 0,
             blueTechFouls: 0,
-            blueBreach: false,
-            blueCapture: false,
+            blueSustainability: false,
+            blueActivation: false,
         });
     }
 }
@@ -165,58 +178,76 @@ export function setMatchPoints(points, number, set, type, color) {
     updateByAlliance("MatchPoints", points, color, number, set, type);
 }
 
-export function getAutoMovement(number, set, type, color) {
-    return lookupByAlliance("AutoMovement", color, number, set, type);
+export function getMobility(number, set, type, color) {
+    return lookupByAlliance("Mobility", color, number, set, type);
 }
 
-export function setAutoMovement(autoMovement, number, set, type, color) {
-    updateByAlliance("AutoMovement", autoMovement, color, number, set, type);
+export function setMobility(mobility, number, set, type, color) {
+    updateByAlliance("Mobility", mobility, color, number, set, type);
 }
 
-export function getAutoLowGoals(number, set, type, color) {
-    return lookupByAlliance("AutoLowGoals", color, number, set, type);
+export function getAutoLowNodes(number, set, type, color) {
+    return lookupByAlliance("AutoLowNodes", color, number, set, type);
+}
+export function setAutoLowNodes(autoLowNodes, number, set, type, color) {
+    updateByAlliance("AutoLowNodes", autoLowNodes, color, number, set, type);
+}
+export function getAutoMidNodes(number, set, type, color) {
+    return lookupByAlliance("AutoMidNodes", color, number, set, type);
+}
+export function setAutoMidNodes(autoMidNodes, number, set, type, color) {
+    updateByAlliance("AutoMidNodes", autoMidNodes, color, number, set, type);
+}
+export function getAutoHighNodes(number, set, type, color) {
+    return lookupByAlliance("AutoHighNodes", color, number, set, type);
+}
+export function setAutoHighNodes(autoHighNodes, number, set, type, color) {
+    updateByAlliance("AutoHighNodes", autoHighNodes, color, number, set, type);
 }
 
-export function setAutoLowGoals(goals, number, set, type, color) {
-    updateByAlliance("AutoLowGoals", goals, color, number, set, type);
+export function getAutoCharge(number, set, type, color) {
+    return lookupByAlliance("AutoCharge", color, number, set, type);
+}
+export function setAutoCharge(autoCharge, number, set, type, color) {
+    updateByAlliance("AutoCharge", autoCharge, color, number, set, type);
 }
 
-export function getAutoHighGoals(number, set, type, color) {
-    return lookupByAlliance("AutoHighGoals", color, number, set, type);
+export function getLowNodes(number, set, type, color) {
+    return lookupByAlliance("LowNodes", color, number, set, type);
+}
+export function setLowNodes(lowNodes, number, set, type, color) {
+    updateByAlliance("LowNodes", lowNodes, color, number, set, type);
+}
+export function getMidNodes(number, set, type, color) {
+    return lookupByAlliance("MidNodes", color, number, set, type);
+}
+export function setMidNodes(midNodes, number, set, type, color) {
+    updateByAlliance("MidNodes", midNodes, color, number, set, type);
+}
+export function getHighNodes(number, set, type, color) {
+    return lookupByAlliance("HighNodes", color, number, set, type);
+}
+export function setHighNodes(highNodes, number, set, type, color) {
+    updateByAlliance("HighNodes", highNodes, color, number, set, type);
 }
 
-export function setAutoHighGoals(goals, number, set, type, color) {
-    updateByAlliance("AutoHighGoals", goals, color, number, set, type);
+export function getLinks(number, set, type, color) {
+    return lookupByAlliance("Links", color, number, set, type);
+}
+export function setLinks(links, number, set, type, color) {
+    updateByAlliance("Links", links, color, number, set, type);
 }
 
-export function getLowGoals(number, set, type, color) {
-    return lookupByAlliance("LowGoals", color, number, set, type);
+export function getCoopertition(number, set, type, color) {
+    return lookupByAlliance("Coopertition", color, number, set, type);
 }
-
-export function setLowGoals(goals, number, set, type, color) {
-    updateByAlliance("LowGoals", goals, color, number, set, type);
-}
-
-export function getHighGoals(number, set, type, color) {
-    return lookupByAlliance("HighGoals", color, number, set, type);
-}
-
-export function setHighGoals(goals, number, set, type, color) {
-    updateByAlliance("HighGoals", goals, color, number, set, type);
-}
-
-export function getDefenseStrengths(number, set, type, color) {
-    return lookupByAlliance("DefenseStrengths", color, number, set, type);
-}
-
-export function setDefenseStrengths(strengths, number, set, type, color) {
-    updateByAlliance("DefenseStrengths", strengths, color, number, set, type);
+export function setCoopertition(coopertition, number, set, type, color) {
+    updateByAlliance("Coopertition", coopertition, color, number, set, type);
 }
 
 export function getEndgame(number, set, type, color) {
     return lookupByAlliance("Endgame", color, number, set, type);
 }
-
 export function setEndgame(endgame, number, set, type, color) {
     updateByAlliance("Endgame", endgame, color, number, set, type);
 }
@@ -246,18 +277,18 @@ export function setTechFouls(fouls, number, set, type, color) {
     return updateByAlliance("TechFouls", fouls, color, number, set, type);
 }
 
-export function getBreach(number, set, type, color) {
-    return lookupByAlliance("Breach", color, number, set, type);
+export function getSustainability(number, set, type, color) {
+    return lookupByAlliance("Sustainability", color, number, set, type);
 }
 
-export function setBreach(breach, number, set, type, color) {
-    return updateByAlliance("Breach", breach, color, number, set, type);
+export function setSustainability(breach, number, set, type, color) {
+    return updateByAlliance("Sustainability", breach, color, number, set, type);
 }
 
-export function getCapture(number, set, type, color) {
-    return lookupByAlliance("Capture", color, number, set, type);
+export function getActivation(number, set, type, color) {
+    return lookupByAlliance("Activation", color, number, set, type);
 }
 
-export function setCapture(capture, number, set, type, color) {
-    return updateByAlliance("Capture", capture, color, number, set, type);
+export function setActivation(capture, number, set, type, color) {
+    return updateByAlliance("Activation", capture, color, number, set, type);
 }

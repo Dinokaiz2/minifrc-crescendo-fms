@@ -77,29 +77,28 @@ $("#match button#next-match").on("click", () => ipc.send(CtrlMsg.NEXT_MATCH));
 $("#match button#previous-match").on("click", () => ipc.send(CtrlMsg.PREVIOUS_MATCH));
 
 // Points
-$(".auto button,.endgame button").on("click", e => {
+$(".mobility button, .auto-charge button,.endgame button").on("click", e => {
     $(e.target).addClass("selected");
     $(e.target).siblings().removeClass("selected");
     let red = $(e.target).hasClass("red");
-    let posMap = { "left": 0, "mid": 1, "right": 2 };
-    let pos = posMap[Object.keys(posMap).find(pos => $(e.target).hasClass(pos))];
-    if ($(e.target).parent().hasClass("endgame")) { // Endgame
-        let lvlMap = { "none": 0, "challenge": 1, "scale": 2 };
+    if ($(e.target).parent().hasClass("mobility")) { 
+        ipc.send(CtrlMsg.MOBILITY, { red: red, count: $(e.target).attr("value") });
+    } else if ($(e.target).parent().hasClass("auto-charge")) { 
+        ipc.send(CtrlMsg.AUTO_CHARGE, { red: red, level: $(e.target).attr("value") });
+    } else if ($(e.target).parent().hasClass("endgame")) { // Endgame
+        let posMap = { "left": 0, "mid": 1, "right": 2 };
+        let pos = posMap[Object.keys(posMap).find(pos => $(e.target).hasClass(pos))];
+        let lvlMap = { "none": 0, "park": 1, "dock": 2, "engage": 3 };
         let lvl = lvlMap[Object.keys(lvlMap).find(lvl => $(e.target).hasClass(lvl))];
         ipc.send(CtrlMsg.ENDGAME, { red: red, position: pos, level: lvl });
-    } else { // Auto
-        let lvlMap = { "none": 0, "reach": 1, "cross": 2 };
-        let lvl = lvlMap[Object.keys(lvlMap).find(lvl => $(e.target).hasClass(lvl))];
-        ipc.send(CtrlMsg.AUTO, { red: red, position: pos, level: lvl });
-    }
-});
+    }});
 
 // Fouls
 $("#fouls button").on("click", e => {
     let red = $(e.target).hasClass("blue"); // Award red fouls to blue and vice versa
     let tech = $(e.target).hasClass("tech");
     let undo = $(e.target).hasClass("remove");
-    ipc.send(CtrlMsg.FOUL, {red: red, tech: tech, undo: undo})
+    ipc.send(CtrlMsg.FOUL, { red: red, tech: tech, undo: undo });
 });
 
 let mods = {
@@ -112,38 +111,33 @@ $(document).on("keydown", e => { if (e.code in mods) mods[e.code] = true; });
 $(document).on("keyup", e => { if (e.code in mods) mods[e.code] = false; });
 
 const keyMap = {
-    // Blue defenses (crossed by red)
-    "Digit1": ["defense", "red", 4, "ShiftLeft"],
-    "Digit2": ["defense", "red", 3, "ShiftLeft"],
-    "Digit3": ["defense", "red", 2, "ShiftLeft"],
-    "Digit4": ["defense", "red", 1, "ShiftLeft"],
-    "Digit5": ["defense", "red", 0, "ShiftLeft"],
-    
-    // Red defenses (crossed by blue)
-    "KeyB": ["defense", "blue", 4, "ShiftRight"],
-    "KeyN": ["defense", "blue", 3, "ShiftRight"],
-    "KeyM": ["defense", "blue", 2, "ShiftRight"],
-    "Comma": ["defense", "blue", 1, "ShiftRight"],
-    "Period": ["defense", "blue", 0, "ShiftRight"],
+    // Red grid
+    "KeyW": ["node", "red", 2, false, "ShiftLeft"],
+    "KeyS": ["node", "red", 1, false, "ShiftLeft"],
+    "KeyX": ["node", "red", 0, false, "ShiftLeft"],
+    "KeyR": ["node", "red", 2, true, "ShiftLeft"],
+    "KeyF": ["node", "red", 1, true, "ShiftLeft"],
+    "KeyV": ["node", "red", 0, true, "ShiftLeft"],
+    "KeyE": ["link", "red", "ShiftLeft"],
+    "KeyD": ["coopertition", "red", "ShiftLeft"],
 
-    // Blue tower (scored by red)
-    "KeyS": ["boulder", "red", true, false, "ControlLeft"],
-    "KeyX": ["boulder", "red", false, false, "ControlLeft"],
-    "KeyF": ["boulder", "red", true, true, "ControlLeft"],
-    "KeyV": ["boulder", "red", false, true, "ControlLeft"],
-    
-    // Red tower (scored by blue)
-    "Digit0": ["boulder", "blue", true, false, "ControlRight"],
-    "KeyP": ["boulder", "blue", false, false, "ControlRight"],
-    "Digit8": ["boulder", "blue", true, true, "ControlRight"],
-    "KeyI": ["boulder", "blue", false, true,"ControlRight"],
+    // Blue grid
+    "KeyO": ["node", "blue", 2, false, "ShiftRight"],
+    "KeyL": ["node", "blue", 1, false, "ShiftRight"],
+    "Period": ["node", "blue", 0, false, "ShiftRight"],
+    "KeyU": ["node", "blue", 2, true, "ShiftRight"],
+    "KeyJ": ["node", "blue", 1, true, "ShiftRight"],
+    "KeyM": ["node", "blue", 0, true, "ShiftRight"],
+    "KeyI": ["link", "blue", "ShiftRight"],
+    "KeyK": ["coopertition", "blue", "ShiftRight"],
 };
 
 $(document).on("keydown", e => {
     let args = keyMap[e.code];
     if (!args) return;
-    if (args[0] == "defense") ipc.send(CtrlMsg.DEFENSE, { red: args[1] == "red", position: args[2], undo: mods[args[3]] });
-    else ipc.send(CtrlMsg.BOULDER, { red: args[1] == "red", high: args[2], auto: args[3], undo: mods[args[4]] });
+    if (args[0] == "node") ipc.send(CtrlMsg.NODE, { red: args[1] == "red", level: args[2], auto: args[3], undo: mods[args[4]] });
+    else if (args[0] == "link") ipc.send(CtrlMsg.LINK, { red: args[1] == "red", undo: mods[args[2]] });
+    else if (args[0] == "coopertition") ipc.send(CtrlMsg.COOPERTITION, { red: args[1] == "red", undo: mods[args[2]] });
 });
 
 ipc.on(RenderMsg.LOADED_UNDETERMINED_MATCH, () => currentMatchDetermined = false);
@@ -158,10 +152,22 @@ ipc.on(RenderMsg.MATCH_DATA, (event, data) => {
     $("#data .red .tech-fouls span").text(data.redTechFouls);
     $("#data .blue .fouls span").text(data.blueFouls);
     $("#data .blue .tech-fouls span").text(data.blueTechFouls);
-    $("#data .red .auto-low span").text(data.redAutoLowGoals);
-    $("#data .red .auto-high span").text(data.redAutoHighGoals);
-    $("#data .blue .auto-low span").text(data.blueAutoLowGoals);
-    $("#data .blue .auto-high span").text(data.blueAutoHighGoals);
+    $("#data .red .auto-low span").text(data.redAutoLowNodes);
+    $("#data .red .auto-mid span").text(data.redAutoMidNodes);
+    $("#data .red .auto-high span").text(data.redAutoHighNodes);
+    $("#data .blue .auto-low span").text(data.blueAutoLowNodes);
+    $("#data .blue .auto-mid span").text(data.blueAutoMidNodes);
+    $("#data .blue .auto-high span").text(data.blueAutoHighNodes);
+    $("#data .red .teleop-low span").text(data.redLowNodes);
+    $("#data .red .teleop-mid span").text(data.redMidNodes);
+    $("#data .red .teleop-high span").text(data.redHighNodes);
+    $("#data .blue .teleop-low span").text(data.blueLowNodes);
+    $("#data .blue .teleop-mid span").text(data.blueMidNodes);
+    $("#data .blue .teleop-high span").text(data.blueHighNodes);
+    $("#data .red .sustainability span").text(data.redSustainability);
+    $("#data .red .activation span").text(data.redActivation);
+    $("#data .blue .sustainability span").text(data.blueSustainability);
+    $("#data .blue .activation span").text(data.blueActivation);
 });
 
 function update() {

@@ -71,23 +71,23 @@ export class Match {
 
     static get PointValues() {
         return {
-            REACH: 2,
-            AUTO_CROSS: 10,
-            AUTO_LOW_GOAL: 5,
-            AUTO_HIGH_GOAL: 10,
-            CROSS: 5,
-            LOW_GOAL: 2,
-            HIGH_GOAL: 5,
-            CHALLENGE: 5,
-            SCALE: 15,
-            PLAYOFF_BREACH: 20,
-            PLAYOFF_CAPTURE: 25,
+            MOBILITY: 3,
+            AUTO_LOW_NODE: 3,
+            AUTO_MID_NODE: 4,
+            AUTO_HIGH_NODE: 6,
+            AUTO_DOCK: 8,
+            AUTO_ENGAGE: 12,
+            LOW_NODE: 2,
+            MID_NODE: 3,
+            HIGH_NODE: 5,
+            LINK: 5,
+            PARK: 2,
+            DOCK: 6,
+            ENGAGE: 10,
             FOUL: 5,
-            TECH_FOUL: 5 // Also increases opponent tower strength by one
+            TECH_FOUL: 12
         }
     }
-    
-    static MAX_TOWER_STRENGTH = 6;
     
     /**
      * Gets the number of this match (e.g. 9 for Qualification 9, 2 for Quarterfinal 3
@@ -114,10 +114,12 @@ export class Match {
         return this.#type;
     }
 
+    /** @type {Match.Alliance} */
     get red() {
         return this.#red;
     }
 
+    /** @type {Match.Alliance} */
     get blue() {
         return this.#blue;
     }
@@ -262,27 +264,37 @@ export class Match {
         #match;
         #number; // 0 in qualifications
 
-        /** @type {number[]} */ autoMovement = [0, 0, 0]; // Point values of auto reach and cross
-        /** @type {number} */   autoLowGoals;
-        /** @type {number} */   autoHighGoals;
-        /** @type {number} */   lowGoals; // Teleop only
-        /** @type {number} */   highGoals; // Teleop only
-        /** @type {number[]} */ defenseStrengths = [2, 2, 2, 2, 2];
+        /** @type {number} */   mobility = 0;
+        /** @type {number} */   autoLowNodes = 0;
+        /** @type {number} */   autoMidNodes = 0;
+        /** @type {number} */   autoHighNodes = 0;
+        /** @type {number} */   autoCharge = 0; // Point value of auto dock or engage
+        /** @type {number} */   lowNodes = 0; // Teleop only
+        /** @type {number} */   midNodes = 0; // Teleop only
+        /** @type {number} */   highNodes = 0; // Teleop only
+        /** @type {number} */   links = 0;
+        /** @type {boolean} */  coopertition = false;
         /** @type {number[]} */ endgame = [0, 0, 0]; // Point values of completed endgame tasks
-        /** @type {number} */   fouls; // Awarded to this alliance, committed by opponent
-        /** @type {number} */   techFouls; // Awarded to this alliance, committed by opponent
+        /** @type {number} */   fouls = 0; // Awarded to this alliance, committed by opponent
+        /** @type {number} */   techFouls = 0; // Awarded to this alliance, committed by opponent
 
-        setAutoMovement(pos, pts) { this.autoMovement[pos] = pts; }
-        addAutoLowGoal()          { this.autoLowGoals++; };
-        removeAutoLowGoal()       { if (this.autoLowGoals > 0) this.autoLowGoals--; };
-        addAutoHighGoal()         { this.autoHighGoals++; };
-        removeAutoHighGoal()      { if (this.autoHighGoals > 0) this.autoHighGoals--; };
-        addLowGoal()              { this.lowGoals++; };
-        removeLowGoal()           { if (this.lowGoals > 0) this.lowGoals--; };
-        addHighGoal()             { this.highGoals++; };
-        removeHighGoal()          { if (this.highGoals > 0) this.highGoals--; };
-        damageDefense(pos)        { if (this.defenseStrengths[pos] > 0) this.defenseStrengths[pos]--; };
-        undoDefenseDamage(pos)    { if (this.defenseStrengths[pos] < 2) this.defenseStrengths[pos]++; };
+        setMobility(count)        { this.mobility = count; }
+        addAutoLowNode()          { this.autoLowNodes++; };
+        removeAutoLowNode()       { if (this.autoLowNodes > 0) this.autoLowNodes--; };
+        addAutoMidNode()          { this.autoMidNodes++; };
+        removeAutoMidNode()       { if (this.autoMidNodes > 0) this.autoMidNodes--; };
+        addAutoHighNode()         { this.autoHighNodes++; };
+        removeAutoHighNode()      { if (this.autoHighNodes > 0) this.autoHighNodes--; };
+        setAutoCharge(pts)        { this.autoCharge = pts; }
+        addLowNode()              { this.lowNodes++; };
+        removeLowNode()           { if (this.lowNodes > 0) this.lowNodes--; };
+        addMidNode()              { this.midNodes++; };
+        removeMidNode()           { if (this.midNodes > 0) this.midNodes--; };
+        addHighNode()             { this.highNodes++; };
+        removeHighNode()          { if (this.highNodes > 0) this.highNodes--; };
+        addLink()                 { this.links++; };
+        removeLink()              { if (this.links > 0) this.links--; };
+        setCoopertition(bool)     { this.coopertition = bool; }
         setEndgame(pos, pts)      { this.endgame[pos] = pts; }
         addFoul()                 { this.fouls++; }
         removeFoul()              { if (this.fouls > 0) this.fouls--; }
@@ -295,35 +307,40 @@ export class Match {
         get number() { return this.#number; }
 
         get matchPoints() {
-            return this.reachPoints
-                 + this.defensePoints
-                 + this.boulderPoints
+            return this.autoPoints
+                 + this.gridPoints
                  + this.endgamePoints
-                 + this.penaltyPoints
-                 + (this.breach && this.#match.type != Match.Type.QUALIFICATION ? Match.PointValues.PLAYOFF_BREACH : 0)
-                 + (this.capture && this.#match.type != Match.Type.QUALIFICATION  ? Match.PointValues.PLAYOFF_CAPTURE : 0);
+                 + this.penaltyPoints;
         }
 
-        get reachPoints() {
-            return this.reaches * Match.PointValues.REACH;
+        get mobilityPoints() {
+            return this.mobility * Match.PointValues.MOBILITY;
+        }
+
+        get autoGridPoints() {
+            return this.autoLowNodes * Match.PointValues.AUTO_LOW_NODE
+                + this.autoMidNodes * Match.PointValues.AUTO_MID_NODE
+                + this.autoHighNodes * Match.PointValues.AUTO_HIGH_NODE;
         }
 
         get autoPoints() {
-            return this.autoMovement.reduce((sum, pts) => sum + pts, 0)
-                 + this.autoLowGoals * Match.PointValues.AUTO_LOW_GOAL
-                 + this.autoHighGoals * Match.PointValues.AUTO_HIGH_GOAL;
+            return this.mobilityPoints + this.autoCharge + this.autoGridPoints;
         }
 
-        get defensePoints() {
-            return (10 - this.defenseStrengths.reduce((sum, str) => sum + str, 0) - this.autoCrossings) * Match.PointValues.CROSS
-                 + this.autoCrossings * Match.PointValues.AUTO_CROSS;
+        get gridPoints() {
+            return this.autoGridPoints
+                + this.lowNodes * Match.PointValues.LOW_NODE
+                + this.midNodes * Match.PointValues.MID_NODE
+                + this.highNodes * Match.PointValues.HIGH_NODE;
         }
-
-        get boulderPoints() {
-            return this.autoLowGoals * Match.PointValues.AUTO_LOW_GOAL
-                 + this.autoHighGoals * Match.PointValues.AUTO_HIGH_GOAL
-                 + this.lowGoals * Match.PointValues.LOW_GOAL
-                 + this.highGoals * Match.PointValues.HIGH_GOAL;
+        
+        get chargeStationPoints() {
+            return this.autoCharge
+                + this.endgame.filter(e => e != Match.PointValues.PARK).reduce((sum, pts) => sum + pts, 0);
+        }
+        
+        get parkPoints() {
+            return this.endgame.filter(e => e == Match.PointValues.PARK).reduce((sum, pts) => sum + pts, 0);
         }
 
         get endgamePoints() {
@@ -335,35 +352,22 @@ export class Match {
                  + this.techFouls * Match.PointValues.TECH_FOUL;
         }
         
-        get opponentTowerStrength() {
-            return Match.MAX_TOWER_STRENGTH - (this.autoLowGoals + this.autoHighGoals + this.lowGoals + this.highGoals) + this.techFouls;
-        }
-
-        // Clamped percentage of strength depletion for UI
-        get opponentTowerProgress() {
-            let progress = Match.MAX_TOWER_STRENGTH - this.opponentTowerStrength;
-            return Math.min(100, Math.max(0, (progress / Match.MAX_TOWER_STRENGTH) * 100));
+        get sustainabilityThreshold() {
+            return this.#match.#red.coopertition && this.#match.#blue.coopertition ? 5 : 6;
         }
         
-        // Check if the tower is weakened but three robots have not yet completed endgame
-        get capturePossible() {
-            return this.opponentTowerStrength <= 0 && this.endgame.some(e => e == 0);
+        get sustainability() {
+            return this.links >= this.sustainabilityThreshold;
         }
 
-        get breach() {
-            return this.defenseStrengths.filter(str => str == 0).length >= 4;
-        }
-
-        // Note: Section 3.1.4 of the FRC Stronghold manual says each robot has to challenge/scale a UNIQUE tower face to capture.
-        // We've decided to ignore this for MiniFRC.
-        get capture() {
-            return this.opponentTowerStrength <= 0 && this.endgame.every(pts => pts != 0);
+        get activation() {
+            return this.chargeStationPoints >= 26;
         }
         
-        get reaches() { return this.autoMovement.filter(e => e == Match.PointValues.REACH).length; }
-        get autoCrossings() { return this.autoMovement.filter(e => e == Match.PointValues.AUTO_CROSS).length; }
-        get totalHighGoals() { return this.autoHighGoals + this.highGoals; }
-        get totalLowGoals() { return this.autoLowGoals + this.lowGoals; }
+        get totalAutoNodes() { return this.autoLowNodes + this.autoMidNodes + this.autoHighNodes }
+        get totalLowNodes() { return this.autoLowNodes + this.lowNodes; }
+        get totalMidNodes() { return this.autoMidNodes + this.midNodes; }
+        get totalHighNodes() { return this.autoHighNodes + this.highNodes; }
 
         /**
          * @param {number[]} teams 
@@ -378,12 +382,16 @@ export class Match {
             this.#teams = teamNumbers.map(number => new Team(number));
             if (match.isPlayoff()) this.#number = repository.getAllianceNumber(...this.#match.#id, this.color);
 
-            this.autoMovement     = repository.getAutoMovement(...this.#match.#id, this.color);
-            this.autoLowGoals     = repository.getAutoLowGoals(...this.#match.#id, this.color);
-            this.autoHighGoals    = repository.getAutoHighGoals(...this.#match.#id, this.color);
-            this.lowGoals         = repository.getLowGoals(...this.#match.#id, this.color);
-            this.highGoals        = repository.getHighGoals(...this.#match.#id, this.color);
-            this.defenseStrengths = repository.getDefenseStrengths(...this.#match.#id, this.color);
+            this.mobility         = repository.getMobility(...this.#match.#id, this.color);
+            this.autoLowNodes     = repository.getAutoLowNodes(...this.#match.#id, this.color);
+            this.autoMidNodes     = repository.getAutoMidNodes(...this.#match.#id, this.color);
+            this.autoHighNodes    = repository.getAutoHighNodes(...this.#match.#id, this.color);
+            this.autoCharge       = repository.getAutoCharge(...this.#match.#id, this.color);
+            this.lowNodes         = repository.getLowNodes(...this.#match.#id, this.color);
+            this.midNodes         = repository.getMidNodes(...this.#match.#id, this.color);
+            this.highNodes        = repository.getHighNodes(...this.#match.#id, this.color);
+            this.links            = repository.getLinks(...this.#match.#id, this.color);
+            this.coopertition     = repository.getCoopertition(...this.#match.#id, this.color);
             this.endgame          = repository.getEndgame(...this.#match.#id, this.color);
             this.fouls            = repository.getFouls(...this.#match.#id, this.color);
             this.techFouls        = repository.getTechFouls(...this.#match.#id, this.color);
@@ -391,26 +399,34 @@ export class Match {
 
         save() {
             repository.setMatchPoints(this.matchPoints, ...this.#match.#id, this.color);
-            repository.setAutoMovement(this.autoMovement, ...this.#match.#id, this.color);
-            repository.setAutoLowGoals(this.autoLowGoals, ...this.#match.#id, this.color);
-            repository.setAutoHighGoals(this.autoHighGoals, ...this.#match.#id, this.color);
-            repository.setLowGoals(this.lowGoals, ...this.#match.#id, this.color);
-            repository.setHighGoals(this.highGoals, ...this.#match.#id, this.color);
-            repository.setDefenseStrengths(this.defenseStrengths, ...this.#match.#id, this.color);
+            repository.setMobility(this.mobility, ...this.#match.#id, this.color);
+            repository.setAutoLowNodes(this.autoLowNodes, ...this.#match.#id, this.color);
+            repository.setAutoMidNodes(this.autoMidNodes, ...this.#match.#id, this.color);
+            repository.setAutoHighNodes(this.autoHighNodes, ...this.#match.#id, this.color);
+            repository.setAutoCharge(this.autoCharge, ...this.#match.#id, this.color);
+            repository.setLowNodes(this.lowNodes, ...this.#match.#id, this.color);
+            repository.setMidNodes(this.midNodes, ...this.#match.#id, this.color);
+            repository.setHighNodes(this.highNodes, ...this.#match.#id, this.color);
+            repository.setLinks(this.links, ...this.#match.#id, this.color);
+            repository.setCoopertition(this.coopertition, ...this.#match.#id, this.color);
             repository.setEndgame(this.endgame, ...this.#match.#id, this.color);
             repository.setFouls(this.fouls, ...this.#match.#id, this.color);
             repository.setTechFouls(this.techFouls, ...this.#match.#id, this.color);
-            repository.setBreach(this.breach, ...this.#match.#id, this.color);
-            repository.setCapture(this.capture, ...this.#match.#id, this.color);
+            repository.setSustainability(this.sustainability, ...this.#match.#id, this.color);
+            repository.setActivation(this.activation, ...this.#match.#id, this.color);
         }
         
         clear() {
-            this.autoMovement = [0, 0, 0];
-            this.autoLowGoals = 0;
-            this.autoHighGoals = 0;
-            this.lowGoals = 0;
-            this.highGoals = 0;
-            this.defenseStrengths = [2, 2, 2, 2, 2];
+            this.mobility = 0;
+            this.autoLowNodes = 0;
+            this.autoMidNodes = 0;
+            this.autoHighNodes = 0;
+            this.autoCharge = 0;
+            this.lowNodes = 0;
+            this.midNodes = 0;
+            this.highNodes = 0;
+            this.links = 0;
+            this.coopertition = false;
             this.endgame = [0, 0, 0];
             this.fouls = 0;
             this.techFouls = 0;

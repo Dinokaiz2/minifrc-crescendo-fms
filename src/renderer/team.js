@@ -14,9 +14,8 @@ export class Team {
 
     #rankingPoints;
     #autoPoints;
-    #endgamePoints;
-    #boulderPoints;
-    #defensePoints;
+    #chargeParkPoints;
+    #gridPoints;
     #wins;
     #ties;
     #losses;
@@ -42,9 +41,8 @@ export class Team {
         matches = matches.filter(match => match.teamNumbers.includes(this.number) && !match.isSurrogate(this.number));
         this.#rankingPoints = 0;
         this.#autoPoints = 0;
-        this.#endgamePoints = 0;
-        this.#boulderPoints = 0;
-        this.#defensePoints = 0;
+        this.#chargeParkPoints = 0;
+        this.#gridPoints = 0;
         this.#wins = 0;
         this.#ties = 0;
         this.#losses = 0;
@@ -63,12 +61,12 @@ export class Team {
                     } else {
                         this.#losses++;
                     }
-                    if (match.red.rocketComplete) this.#rankingPoints += 1;
-                    if (match.red.docked) this.#rankingPoints += 1;
+                    if (match.red.sustainability) this.#rankingPoints += 1;
+                    if (match.red.activation) this.#rankingPoints += 1;
                     this.#autoPoints += match.red.autoPoints;
-                    this.#endgamePoints += match.red.endgamePoints;
-                    this.#boulderPoints += match.red.boulderPoints;
-                    this.#defensePoints += match.red.defensePoints;
+                    this.#chargeParkPoints += match.red.chargeStationPoints;
+                    this.#chargeParkPoints += match.red.parkPoints;
+                    this.#gridPoints += match.red.gridPoints;
                 } else if (match.blue.teamNumbers.includes(this.number)) {
                     if (match.result == Match.Result.BLUE_WIN) {
                         this.#rankingPoints += 2;
@@ -79,12 +77,12 @@ export class Team {
                     } else {
                         this.#losses++;
                     }
-                    if (match.blue.rocketComplete) this.#rankingPoints += 1;
-                    if (match.blue.docked) this.#rankingPoints += 1;
-                    this.#autoPoints += match.red.autoPoints;
-                    this.#endgamePoints += match.red.endgamePoints;
-                    this.#boulderPoints += match.red.boulderPoints;
-                    this.#defensePoints += match.red.defensePoints;
+                    if (match.blue.sustainability) this.#rankingPoints += 1;
+                    if (match.blue.activation) this.#rankingPoints += 1;
+                    this.#autoPoints += match.blue.autoPoints;
+                    this.#chargeParkPoints += match.blue.chargeStationPoints;
+                    this.#chargeParkPoints += match.blue.parkPoints;
+                    this.#gridPoints += match.blue.gridPoints;
                 }
             }
         });
@@ -102,17 +100,11 @@ export class Team {
     get autoPoints() {
         return this.#autoPoints;
     }
-
-    get endgamePoints() {
-        return this.#endgamePoints;
+    get chargeParkPoints() {
+        return this.#chargeParkPoints;
     }
-
-    get boulderPoints() {
-        return this.#boulderPoints;
-    }
-
-    get defensePoints() {
-        return this.#defensePoints;
+    get gridPoints() {
+        return this.#gridPoints;
     }
 
     get wins() {

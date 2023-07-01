@@ -73,15 +73,14 @@ function updateScorePanel(alliance) {
 }
 
 function updateRpPanel(alliance) {
-    let breach = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .breach");
-    let capture = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .capture");
+    let sustainability = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .sustainability");
+    let activation = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .activation");
     let win = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .win");
-    let rp = (alliance.breach ? 1 : 0) + (alliance.capture ? 1 : 0);
-    let pts = (alliance.breach ? Match.PointValues.PLAYOFF_BREACH : 0) + (alliance.capture ? Match.PointValues.PLAYOFF_CAPTURE : 0);
-    if (alliance.breach) breach.addClass("lit");
-    else breach.removeClass("lit");
-    if (alliance.capture) capture.addClass("lit");
-    else capture.removeClass("lit");
+    let rp = (alliance.sustainability ? 1 : 0) + (alliance.activation ? 1 : 0);
+    if (alliance.sustainability) sustainability.addClass("lit");
+    else sustainability.removeClass("lit");
+    if (alliance.activation) activation.addClass("lit");
+    else activation.removeClass("lit");
     if ((alliance.color == Match.AllianceColor.RED && Competition.results.result == Match.Result.RED_WIN)
             || (alliance.color == Match.AllianceColor.BLUE && Competition.results.result == Match.Result.BLUE_WIN)) {
         rp += 2;
@@ -96,13 +95,12 @@ function updateRpPanel(alliance) {
         win.children("#win").show();
         win.children("#tie").hide();
     }
-    if (Competition.results.isPlayoff()) $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .count").text(pts + " Points");
-    else $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .count").text(rp + " RP");
+    $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .count").text(rp + " RP");
 }
 
 function updateCategoryPanel(alliance) {
     let categories = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .category-panel .category .points");
-    [alliance.reachPoints, alliance.defensePoints, alliance.boulderPoints, alliance.endgamePoints, alliance.penaltyPoints].forEach(
+    [alliance.mobilityPoints, alliance.gridPoints, alliance.chargeStationPoints, alliance.parkPoints, alliance.penaltyPoints].forEach(
         (e, i) => categories.eq(i).text(e)
     );
 }

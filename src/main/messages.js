@@ -12,11 +12,13 @@ let CtrlMsg = {
     NEXT_MATCH:                 "next-match",
     PREVIOUS_MATCH:             "previous-match",
 
-    AUTO:                       "auto",    // Params: { red: bool, position: (0-2), level: (0-2) = (none, reach, cross) }
-    DEFENSE:                    "defense", // Params: { red: bool, position: (0-4), undo: bool }
-    BOULDER:                    "boulder", // Params: { red: bool, high: bool, auto: bool, undo: bool }
-    ENDGAME:                    "endgame", // Params: { red: bool, position: (0-2), level: (0-2) = (none, challenge, scale) }
-    FOUL:                       "foul",    // Params: { red: bool, tech: bool, undo: bool }
+    MOBILITY:                   "mobility",     // Params: { red: bool, count: 0-3 }
+    AUTO_CHARGE:                "auto-charge",  // Params: { red: bool, level: (0-2) = (none, dock, engage) }
+    NODE:                       "node",         // Params: { red: bool, level: (0-2) = (low, mid, high), auto: bool, undo: bool }
+    LINK:                       "link",         // Params: { red: bool, undo: bool }
+    COOPERTITION:               "coopertition", // Params: { red: bool, undo: bool }
+    ENDGAME:                    "endgame",      // Params: { red: bool, position: 0-2, level: (0-3) = (none, park, dock, engage) }
+    FOUL:                       "foul",         // Params: { red: bool, tech: bool, undo: bool }
 }
 
 let RenderMsg = {

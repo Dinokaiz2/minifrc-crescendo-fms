@@ -202,12 +202,14 @@
     box-sizing: border-box;
 }
 
-.rp-panel .breach.indicator img { content: url(../../images/breach-icon-grey.png); }
-.rp-panel .lit.breach.indicator img { content: url(../../images/breach-icon.png); }
-.rp-panel .capture.indicator img { content: url(../../images/capture-icon-grey.png); }
-.rp-panel .lit.capture.indicator img { content: url(../../images/capture-icon.png); }
-.rp-panel .win.indicator img { content: url(../../images/win-icon-grey.png); }
-.rp-panel .lit.win.indicator img { content: url(../../images/win-icon.png); }
+.alliance-panel .details .rp-panel .indicator img { height: 60px; }
+
+.rp-panel .sustainability.indicator img { content: url(../../images/grey-link.png); }
+.rp-panel .lit.sustainability.indicator img { content: url(../../images/lit-link.png); }
+.rp-panel .activation.indicator img { content: url(../../images/grey-battery.png); transform: scale(0.7); }
+.rp-panel .lit.activation.indicator img { content: url(../../images/lit-battery.png); transform: scale(0.7); }
+.rp-panel .win.indicator img { content: url(../../images/win-icon-grey.png); transform: scale(0.7); }
+.rp-panel .lit.win.indicator img { content: url(../../images/win-icon.png); transform: scale(0.7); }
 
 .alliance-panel .details .category-panel {
     display: flex;
