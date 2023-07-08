@@ -308,7 +308,7 @@ export class Match {
 
         get matchPoints() {
             return this.autoPoints
-                 + this.gridPoints
+                 + this.teleopGridPoints
                  + this.endgamePoints
                  + this.penaltyPoints;
         }
@@ -329,6 +329,14 @@ export class Match {
 
         get gridPoints() {
             return this.autoGridPoints
+                + this.links * Match.PointValues.LINK
+                + this.lowNodes * Match.PointValues.LOW_NODE
+                + this.midNodes * Match.PointValues.MID_NODE
+                + this.highNodes * Match.PointValues.HIGH_NODE;
+        }
+
+        get teleopGridPoints() {
+            return this.links * Match.PointValues.LINK
                 + this.lowNodes * Match.PointValues.LOW_NODE
                 + this.midNodes * Match.PointValues.MID_NODE
                 + this.highNodes * Match.PointValues.HIGH_NODE;

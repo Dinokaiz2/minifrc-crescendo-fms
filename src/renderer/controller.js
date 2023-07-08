@@ -281,5 +281,3 @@ setInterval(() => Competition.update(), 100);
 // Wait before loading match so control window is ready
 setTimeout(() => Competition.loadNextMatch(), 1000);
 console.log("Controller started.");
-
-matchRepository.generateMatch(1, 0, Match.Type.QUALIFICATION, [1, 2, 3], [4, 5, 6])
