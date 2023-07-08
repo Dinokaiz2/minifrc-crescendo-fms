@@ -42,16 +42,16 @@
             <span>Mobility</span>
             <div class="row">
                 <div class="mobility small column" style="width: 40px">
-                    <button class="blue" value="3">3</button>
-                    <button class="blue" value="2">2</button>
-                    <button class="blue" value="1">1</button>
-                    <button class="blue selected" value="0">0</button>
-                </div>
-                <div class="mobility small column" style="width: 40px">
                     <button class="red" value="3">3</button>
                     <button class="red" value="2">2</button>
                     <button class="red" value="1">1</button>
                     <button class="red selected" value="0">0</button>
+                </div>
+                <div class="mobility small column" style="width: 40px">
+                    <button class="blue" value="3">3</button>
+                    <button class="blue" value="2">2</button>
+                    <button class="blue" value="1">1</button>
+                    <button class="blue selected" value="0">0</button>
                 </div>
             </div>
         </div>
@@ -60,38 +60,14 @@
             <span>Auto Charge</span>
             <div class="row">
                 <div class="auto-charge small column">
-                    <button class="blue engage" value="2">Engage</button>
-                    <button class="blue dock" value="1">Dock</button>
-                    <button class="blue none selected" value="0">None</button>
-                </div>
-                <div class="auto-charge small column">
                     <button class="red engage" value="2">Engage</button>
                     <button class="red dock" value="1">Dock</button>
                     <button class="red none selected" value="0">None</button>
                 </div>
-            </div>
-        </div>
-        <div style="padding: 0 10px"></div>
-        <div class="column">
-            <span>Blue Endgame</span>
-            <div class="row">
-                <div class="endgame small column">
-                    <button class="blue left engage" value="3">Engage</button>
-                    <button class="blue left dock" value="2">Dock</button>
-                    <button class="blue left park" value="1">Park</button>
-                    <button class="blue left none selected" value="0">None</button>
-                </div>
-                <div class="endgame small column">
-                    <button class="blue mid engage" value="3">Engage</button>
-                    <button class="blue mid dock" value="2">Dock</button>
-                    <button class="blue mid park" value="1">Park</button>
-                    <button class="blue mid none selected" value="0">None</button>
-                </div>
-                <div class="endgame small column">
-                    <button class="blue right engage" value="3">Engage</button>
-                    <button class="blue right dock" value="2">Dock</button>
-                    <button class="blue right park" value="1">Park</button>
-                    <button class="blue right none selected" value="0">None</button>
+                <div class="auto-charge small column">
+                    <button class="blue engage" value="2">Engage</button>
+                    <button class="blue dock" value="1">Dock</button>
+                    <button class="blue none selected" value="0">None</button>
                 </div>
             </div>
         </div>
@@ -119,19 +95,34 @@
                 </div>
             </div>
         </div>
+        <div style="padding: 0 10px"></div>
+        <div class="column">
+            <span>Blue Endgame</span>
+            <div class="row">
+                <div class="endgame small column">
+                    <button class="blue left engage" value="3">Engage</button>
+                    <button class="blue left dock" value="2">Dock</button>
+                    <button class="blue left park" value="1">Park</button>
+                    <button class="blue left none selected" value="0">None</button>
+                </div>
+                <div class="endgame small column">
+                    <button class="blue mid engage" value="3">Engage</button>
+                    <button class="blue mid dock" value="2">Dock</button>
+                    <button class="blue mid park" value="1">Park</button>
+                    <button class="blue mid none selected" value="0">None</button>
+                </div>
+                <div class="endgame small column">
+                    <button class="blue right engage" value="3">Engage</button>
+                    <button class="blue right dock" value="2">Dock</button>
+                    <button class="blue right park" value="1">Park</button>
+                    <button class="blue right none selected" value="0">None</button>
+                </div>
+            </div>
+        </div>
     </div>
     
     <div class="label">Fouls</div>
     <div id="fouls" class="row">
-        <div class="foul column">
-            <button class="red add">+ Foul</button>
-            <button class="red remove"> - Foul</button>
-        </div>
-        <div class="tech-foul column">
-            <button class="red tech add">+ Tech Foul</button>
-            <button class="red tech remove">- Tech Foul</button>
-        </div>
-        <div style="padding: 0 10px"></div>
         <div class="foul column">
             <button class="blue add">+ Foul</button>
             <button class="blue remove">- Foul</button>
@@ -140,23 +131,20 @@
             <button class="blue tech add">+ Tech Foul</button>
             <button class="blue tech remove">- Tech Foul</button>
         </div>
+        <div style="padding: 0 10px"></div>
+        <div class="foul column">
+            <button class="red add">+ Foul</button>
+            <button class="red remove"> - Foul</button>
+        </div>
+        <div class="tech-foul column">
+            <button class="red tech add">+ Tech Foul</button>
+            <button class="red tech remove">- Tech Foul</button>
+        </div>
     </div>
 
     <div class="label">Data</div>
     <div id="data">
         <div style="padding: 0 10px"></div>
-        <div class="blue info-column">
-            <div class="fouls">Blue fouls: <span></span></div>
-            <div class="tech-fouls">Blue tech fouls: <span></span></div>
-            <div class="auto-low">Blue auto low: <span></span></div>
-            <div class="auto-mid">Blue auto mid: <span></span></div>
-            <div class="auto-high">Blue auto high: <span></span></div>
-            <div class="teleop-low">Blue teleop low: <span></span></div>
-            <div class="teleop-mid">Blue teleop mid: <span></span></div>
-            <div class="teleop-high">Blue teleop high: <span></span></div>
-            <div class="sustainability">Blue Link RP: <span></span></div>
-            <div class="activation">Blue Charge RP: <span></span></div>
-        </div>
         <div class="red info-column">
             <div class="fouls">Red fouls: <span></span></div>
             <div class="tech-fouls">Red tech fouls: <span></span></div>
@@ -168,6 +156,18 @@
             <div class="teleop-high">Red teleop high: <span></span></div>
             <div class="sustainability">Red Link RP: <span></span></div>
             <div class="activation">Red Charge RP: <span></span></div>
+        </div>
+        <div class="blue info-column">
+            <div class="fouls">Blue fouls: <span></span></div>
+            <div class="tech-fouls">Blue tech fouls: <span></span></div>
+            <div class="auto-low">Blue auto low: <span></span></div>
+            <div class="auto-mid">Blue auto mid: <span></span></div>
+            <div class="auto-high">Blue auto high: <span></span></div>
+            <div class="teleop-low">Blue teleop low: <span></span></div>
+            <div class="teleop-mid">Blue teleop mid: <span></span></div>
+            <div class="teleop-high">Blue teleop high: <span></span></div>
+            <div class="sustainability">Blue Link RP: <span></span></div>
+            <div class="activation">Blue Charge RP: <span></span></div>
         </div>
     </div>
 
