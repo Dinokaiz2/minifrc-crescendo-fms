@@ -10,6 +10,10 @@ var db = window.db;
 
 // Put manual db generation here
 function generate() {
+    // generateMatch(1, 0, Match.Type.PLAYOFF, [], [], 1, 8);
+    // generateMatch(2, 0, Match.Type.PLAYOFF, [], [], 4, 5);
+    // generateMatch(3, 0, Match.Type.PLAYOFF, [], [], 3, 6);
+    // generateMatch(4, 0, Match.Type.PLAYOFF, [], [], 2, 7);
 }
 
 $(generate);

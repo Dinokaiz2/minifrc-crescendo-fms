@@ -207,9 +207,47 @@ export class Match {
      * @return {Match} the next match
      */
     static getNextMatch() {
-        // TODO: Bo3 played all at once or one match at a time?
+
+        const PLAYOFF_STRUCTURE = {
+            5: ["L", 1, "L", 2, Match.Type.PLAYOFF, 5],
+            6: ["L", 3, "L", 4, Match.Type.PLAYOFF, 6],
+            7: ["W", 1, "W", 2, Match.Type.PLAYOFF, 7],
+            8: ["W", 3, "W", 4, Match.Type.PLAYOFF, 8],
+            9: ["L", 7, "W", 6, Match.Type.PLAYOFF, 9],
+            10: ["L", 8, "W", 5, Match.Type.PLAYOFF, 10],
+            11: ["W", 10, "W", 9, Match.Type.PLAYOFF, 11],
+            12: ["W", 7, "W", 8, Match.Type.PLAYOFF, 12],
+            13: ["L", 12, "W", 11, Match.Type.PLAYOFF, 13],
+            14: ["W", 12, "W", 13, Match.Type.FINAL, 1],
+        };
+
         let matches = this.getSortedMatches();
         let match = matches.find(match => match.result == Match.Result.UNDETERMINED);
+        if (!match && matches[matches.length - 1].type == Match.Type.PLAYOFF) {
+
+            function getAlliance(number, result) {
+                let match = matches.find(match => match.isPlayoff() && match.number == number);
+                if (result == "W" && match.result == Match.Result.RED_WIN
+                    || result == "L" && match.result == Match.Result.BLUE_WIN) return match.red;
+                else if (result == "W" && match.result == Match.Result.BLUE_WIN
+                    || result == "L" && match.result == Match.Result.RED_WIN) return match.blue;
+                else return false;
+            }
+
+            let matchData = PLAYOFF_STRUCTURE[matches[matches.length - 1].number + 1];
+            if (!matchData) return matches[matches.length - 1];
+            let redAlliance = getAlliance(matchData[1], matchData[0]);
+            let blueAlliance = getAlliance(matchData[3], matchData[2]);
+            if (!redAlliance || !blueAlliance) return matches[matches.length - 1]; // Give up for ties
+
+            repository.generateMatch(matchData[5], 0, matchData[4], redAlliance.teamNumbers, blueAlliance.teamNumbers, redAlliance.number, blueAlliance.number);
+            if (matchData[4] == Match.Type.FINAL) {
+                repository.generateMatch(2, 0, matchData[4], redAlliance.teamNumbers, blueAlliance.teamNumbers, redAlliance.number, blueAlliance.number);
+                repository.generateMatch(3, 0, matchData[4], redAlliance.teamNumbers, blueAlliance.teamNumbers, redAlliance.number, blueAlliance.number);
+            }
+            matches = this.getSortedMatches();
+            match = matches.find(match => match.result == Match.Result.UNDETERMINED);
+        }
         return match ? match : matches[matches.length - 1] // If matches have been played, just return the last one
     }
 
@@ -232,23 +270,6 @@ export class Match {
             return 0; // Both matches are finals with the same set and match, shouldn't ever happen
         });
         return matches;
-    }
-
-    /**
-     * Puts a new playoff match in the schedule.
-     * @param {string} name 
-     * @param {Team[]} redTeams 
-     * @param {string} redAllianceName 
-     * @param {Team[]} blueTeams 
-     * @param {string} blueAllianceName 
-     */
-    static generatePlayoffMatch(name, redTeams, redAllianceName, blueTeams, blueAllianceName) {
-        // TODO: Should we persist playoff alliances separately?
-        // Plan without persisting playoff alliances:
-        //  Add alliance name fields to Alliance, only included in playoffs
-        //  Manually enter the 8 guaranteed quarterfinal matches into the db after alliance selections
-        //  From there, generate tiebreaker matches as needed and semifinal and final matches as they're determined
-        // If we persisted playoff alliances we could generate the initial quarterfinal matches automatically too
     }
 
     /**
