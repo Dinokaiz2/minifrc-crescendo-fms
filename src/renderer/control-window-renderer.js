@@ -52,8 +52,8 @@ $("#phase button#ready-for-match").on("click", () => {
 $("#phase button#start-match").on("click", () => {
     phase = Phase.IN_MATCH;
     ipc.send(CtrlMsg.START_MATCH);
-    $(".auto button,.endgame button").removeClass("selected");
-    $(".auto button.none,.endgame button.none").addClass("selected");
+    $(".mobility button, .auto-charge button, .endgame button").removeClass("selected");
+    $(".mobility button.none, .auto-charge button.none, .endgame button.none").addClass("selected");
 });
 
 // Match
