@@ -21,3 +21,7 @@ export function fieldFault() {
 export function showResults() {
     $("#sound #show-results").get(0).play();
 }
+
+export function resultsVideo() {
+    $("#sound #results-video").get(0).play();
+}

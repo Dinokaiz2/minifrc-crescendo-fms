@@ -1,14 +1,28 @@
 import { Competition } from "./controller.js";
 import { Match } from "./match.js"
 import { Team } from "./team.js"
+import * as sound from "./sound.js";
 
 export function show() {
     $("#results-view").addClass("fade-in");
+    if (Competition.results.result == Match.Result.RED_WIN) {
+        $("#results-view video source").attr("src", "../../videos/red-win.mp4");
+    } else if (Competition.results.result == Match.Result.BLUE_WIN) {
+        $("#results-view video source").attr("src", "../../videos/blue-win.mp4");
+    } else if (Competition.results.result == Match.Result.TIE) {
+        $("#results-view video source").attr("src", "../../videos/tie.mp4");
+    }
+    $("#results-view video")[0].load();
+    $("#results-view video")[0].play();
+    sound.resultsVideo();
     updateRanks();
 }
 
 export function hide() {
     $("#results-view").removeClass("fade-in");
+    $("#results-view video source").attr("src", "");
+    $("#results-view video")[0].load();
+    $("#results-view video").css("opacity", "100%");
 }
 
 export function update() {
@@ -109,3 +123,8 @@ function getAllianceClass(alliance) {
     if (alliance.color == Match.AllianceColor.RED) return ".red";
     else if (alliance.color == Match.AllianceColor.BLUE) return ".blue";
 }
+
+// Set video to fade out on end
+$("#results-view video").on("ended", () => {
+    $("#results-view video").css("opacity", "0%");
+});
