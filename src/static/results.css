@@ -112,11 +112,11 @@
     font-family: "Roboto Mono";
 }
 
-/* .alliance-panel .overview .teams .team .avatar {
+.alliance-panel .overview .teams .team .avatar {
     height: 50px; width: 50px;
     margin-left: 10px;
     background-color: limegreen;
-} */
+}
 
 .alliance-panel .overview .teams .team .number {
     margin-left: 20px;
