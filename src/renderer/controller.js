@@ -11,12 +11,14 @@ import * as sound from "./sound.js";
 
 // Pre-match initialization: If qualifications, pull from schedule. For playoffs, generate the next match.
 
-const TELEOP_START = 15;
-const ENDGAME_START = 120;
-const MATCH_END = 150;
+const DEBUG_FAST_MATCH = 0.03; // Match length multiplier for fast debugging
 
-const AUTO_LENGTH = 15;
-const TELEOP_LENGTH = 135;
+const TELEOP_START = 15 * DEBUG_FAST_MATCH;
+const ENDGAME_START = 120 * DEBUG_FAST_MATCH;
+const MATCH_END = 150 * DEBUG_FAST_MATCH;
+
+const AUTO_LENGTH = 15 * DEBUG_FAST_MATCH;
+const TELEOP_LENGTH = 135 * DEBUG_FAST_MATCH;
 
 // TODO: add a postMatch variable, true if we finished a match but haven't announced it?
 
