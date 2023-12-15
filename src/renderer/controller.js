@@ -26,7 +26,8 @@ export class Competition {
     static #view = Competition.View.MATCH;
     static #fieldPhase = Competition.FieldPhase.NO_ENTRY;
     static #inMatch = false;
-    static #matchOver = false;
+    static #matchOver = false; // True if match has ended
+    static #resultsShown = false; // True if match has already shown results
     static #match;
     static #results;
     static #previousRankings;
@@ -72,6 +73,13 @@ export class Competition {
         return this.#results;
     }
 
+    static begin() {
+        setInterval(() => Competition.update(), 100);
+        // Wait before loading match so control window is ready
+        setTimeout(() => Competition.loadNextMatch(), 1000);
+        console.log("Controller started.");
+    }
+
     /**
      * Refreshes the state of the field. Should be called as often as communication with the
      * FMS electronics should happen.
@@ -86,9 +94,11 @@ export class Competition {
         if (this.#match.result == Match.Result.UNDETERMINED) {
             userInput.loadedUndeterminedMatch();
             this.#matchOver = false;
+            this.#resultsShown = false;
         } else {
             userInput.loadedDeterminedMatch();
             this.#matchOver = true;
+            this.#resultsShown = true;
         }
     }
 
@@ -149,6 +159,7 @@ export class Competition {
         FmsFirmware.acceptingInput = false;
         this.#inMatch = false;
         this.#matchOver = true;
+        this.#resultsShown = true;
         clearTimeout(Competition.#startTeleopHandle);
         clearTimeout(Competition.#startEndgameHandle);
         clearTimeout(Competition.#endMatchHandle);
@@ -157,6 +168,7 @@ export class Competition {
 
     static replayMatch() {
         this.#matchOver = false;
+        this.#resultsShown = false;
         this.match.clear();
         this.readyForMatch();
     }
@@ -177,6 +189,7 @@ export class Competition {
         this.#view = Competition.View.RESULTS;
         this.loadNextMatch();
         sound.showResults();
+        this.#resultsShown = true;
     }
 
     static showRankings() {
@@ -249,6 +262,13 @@ export class Competition {
         return this.#matchOver;
     }
 
+    /**
+     * True if match has ended but results have not yet been shown.
+     */
+    static get postMatch() {
+        return this.#matchOver && !this.#resultsShown;
+    }
+
     static get inAuto() {
         return Competition.fieldPhase == Competition.FieldPhase.AUTO;
     }
@@ -276,10 +296,3 @@ export class Competition {
         return Competition.#view;
     }
 }
-
-// Check FMS firmware stream 50 times per second, starting when this module is imported
-// TODO: make sure this doesn't get called more than once when imported multiple times?
-setInterval(() => Competition.update(), 100);
-// Wait before loading match so control window is ready
-setTimeout(() => Competition.loadNextMatch(), 1000);
-console.log("Controller started.");

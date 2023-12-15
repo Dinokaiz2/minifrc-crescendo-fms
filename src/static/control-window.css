@@ -15,10 +15,15 @@
 
 body {
     background-color: #666;
-    padding: 50px;
     color: white;
     font-family: "Roboto Slab";
     font-size: 30px;
+    margin: 0;
+}
+
+.frame {
+    padding: 50px;
+    height: 100%; width: 100%;
 }
 
 button {

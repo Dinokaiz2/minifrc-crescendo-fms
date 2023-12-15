@@ -36,3 +36,6 @@ function update() {
 // Refresh the display 50 times per second
 // TODO: make sure this doesn't get called more than once
 $(() => setInterval(update, 20));
+
+matchRenderer.startVideo();
+Competition.begin();

@@ -15,20 +15,41 @@ export function hide() {
 export function update() {
     let match = Competition.match;
     if (!match) return;
-    let red = match.red;
-    let blue = match.blue;
     updateTimer();
-    updateMatchName(match.friendlyName);
-    updateTeams(...red.teams, red.number, match.isPlayoff(), Match.AllianceColor.RED);
-    updateTeams(...blue.teams, blue.number, match.isPlayoff(), Match.AllianceColor.BLUE);
-    updateMatchPoints(red.matchPoints, Match.AllianceColor.RED);
-    updateMatchPoints(blue.matchPoints, Match.AllianceColor.BLUE);
-    updateAutonomous(red.mobility, red.autoCharge, red.totalAutoNodes, Match.AllianceColor.RED);
-    updateAutonomous(blue.mobility, blue.autoCharge, blue.totalAutoNodes, Match.AllianceColor.BLUE);
-    updateGrid(red.totalLowNodes, red.totalMidNodes, red.totalHighNodes, red.links, red.sustainabilityThreshold, red.coopertition, Match.AllianceColor.RED);
-    updateGrid(blue.totalLowNodes, blue.totalMidNodes, blue.totalHighNodes, blue.links, blue.sustainabilityThreshold, blue.coopertition, Match.AllianceColor.BLUE);
-    updateEndgame(red.endgame, Match.AllianceColor.RED);
-    updateEndgame(blue.endgame, Match.AllianceColor.BLUE);
+    if (!Competition.postMatch) { // Don't update live scores after match before showing results
+        [match.red, match.blue].forEach(alliance =>
+            updateMatchPanel(
+                match.friendlyName, alliance.teamNumbers, alliance.number, match.isPlayoff(),
+                alliance.matchPoints, alliance.mobility, alliance.autoCharge,
+                alliance.autoNodes, [alliance.totalLowNodes, alliance.totalMidNodes, alliance.totalHighNodes],
+                alliance.links, alliance.sustainabilityThreshold, alliance.coopertition, alliance.endgame, alliance.color
+            )
+        );
+    }
+}
+
+// Separated to allow rendering match panel in control window
+export function updateMatchPanel(
+    matchName, teams, number, isPlayoff,
+    matchPoints, mobility, autoCharge, autoNodes,
+    nodeTotals, links, linkThreshold, coopertition, endgame, color
+) {
+    updateMatchName(matchName);
+    updateTeams(...teams, number, isPlayoff, color);
+    updateMatchPoints(matchPoints, color);
+    updateAutonomous(mobility, autoCharge, autoNodes, color);
+    updateGrid(nodeTotals[0], nodeTotals[1], nodeTotals[2], links, linkThreshold, coopertition, color);
+    updateEndgame(endgame, color);
+}
+
+export function startVideo() {
+    console.log("Media devices:", navigator.mediaDevices.enumerateDevices());
+    let video = document.querySelector("#stream video");
+    if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { width: { exact: 1920 }, height: { exact: 1080 } } }).then(stream => {
+            video.srcObject = stream;
+        }).catch((e) => console.log("Could not find camera.", e));
+    }
 }
 
 function updateTimer() {
@@ -54,7 +75,7 @@ function updateMatchName(name) {
 
 function updateTeams(team1, team2, team3, number, isPlayoff, color) {
     let teams = $(`#match-view #match-panel #teams ${getColorClass(color)}`).children();
-    [team1, team2, team3].forEach((e, i) => teams.eq(i).text(e.number));
+    [team1, team2, team3].forEach((teamNum, i) => teams.eq(i).text(teamNum));
     let allianceNumElement = $(`#match-view #match-panel #teams ${getColorClass(color)}.alliance-number`);
     if (isPlayoff) {
         allianceNumElement.text(number);
@@ -127,13 +148,4 @@ function getOpponentColorClass(color) {
     if (color == Match.AllianceColor.RED) return ".blue";
     else if (color == Match.AllianceColor.BLUE) return ".red";
     else throw "Color must be a Match.AllianceColor";
-}
-
-// Set up video stream
-console.log("Media devices:", navigator.mediaDevices.enumerateDevices());
-let video = document.querySelector("#stream video");
-if (navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ video: { width: { exact: 1920 }, height: { exact: 1080 } } }).then(stream => {
-        video.srcObject = stream;
-    }).catch((e) => console.log("Could not find camera.", e));
 }

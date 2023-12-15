@@ -88,26 +88,31 @@ export function loadedDeterminedMatch() {
 }
 
 export function sendMatchData() {
-    ipc.send("match-data", {
-        redFouls: Competition.match.blue.fouls,
-        blueFouls: Competition.match.red.fouls,
-        redTechFouls: Competition.match.blue.techFouls,
-        blueTechFouls: Competition.match.red.techFouls,
-        redAutoLowNodes: Competition.match.red.autoLowNodes,
-        blueAutoLowNodes: Competition.match.blue.autoLowNodes,
-        redAutoMidNodes: Competition.match.red.autoMidNodes,
-        blueAutoMidNodes: Competition.match.blue.autoMidNodes,
-        redAutoHighNodes: Competition.match.red.autoHighNodes,
-        blueAutoHighNodes: Competition.match.blue.autoHighNodes,
-        redLowNodes: Competition.match.red.lowNodes,
-        blueLowNodes: Competition.match.blue.lowNodes,
-        redMidNodes: Competition.match.red.midNodes,
-        blueMidNodes: Competition.match.blue.midNodes,
-        redHighNodes: Competition.match.red.highNodes,
-        blueHighNodes: Competition.match.blue.highNodes,
-        redSustainability: Competition.match.red.sustainability,
-        blueSustainability: Competition.match.blue.sustainability,
-        redActivation: Competition.match.red.activation,
-        blueActivation: Competition.match.blue.activation,
+    let data = {
+        matchName: Competition.match.friendlyName,
+        isPlayoff: Competition.match.isPlayoff()
+    };
+    [["red", Competition.match.red], ["blue", Competition.match.blue]].forEach(arr => {
+        let [key, alliance] = arr;
+        data[key] = {
+            teams: alliance.teamNumbers,
+            number: alliance.number,
+            matchPoints: alliance.matchPoints,
+            mobility: alliance.mobility,
+            autoCharge: alliance.autoCharge,
+            autoNodeTotals: [alliance.autoLowNodes, alliance.autoMidNodes, alliance.autoHighNodes],
+            autoNodes: alliance.autoNodes,
+            nodeTotals: [alliance.totalLowNodes, alliance.totalMidNodes, alliance.totalHighNodes],
+            links: alliance.links,
+            sustainabilityThreshold: alliance.sustainabilityThreshold,
+            coopertition: alliance.coopertition,
+            endgame: alliance.endgame,
+            fouls: alliance.fouls,
+            techFouls: alliance.techFouls,
+            sustainability: alliance.sustainability,
+            activation: alliance.activation,
+            color: alliance.color
+        }
     });
+    ipc.send("match-data", data);
 }

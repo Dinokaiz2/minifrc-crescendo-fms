@@ -1,3 +1,5 @@
+import { updateMatchPanel } from "./match-renderer.js";
+
 const ipc = window.ipc;
 const CtrlMsg = window.ipc.CtrlMsg;
 const RenderMsg = window.ipc.RenderMsg;
@@ -148,26 +150,31 @@ ipc.on(RenderMsg.MATCH_ENDED, () => {
     matchResultsValid = false;
 });
 ipc.on(RenderMsg.MATCH_DATA, (event, data) => {
-    $("#data .red .fouls span").text(data.redFouls);
-    $("#data .red .tech-fouls span").text(data.redTechFouls);
-    $("#data .blue .fouls span").text(data.blueFouls);
-    $("#data .blue .tech-fouls span").text(data.blueTechFouls);
-    $("#data .red .auto-low span").text(data.redAutoLowNodes);
-    $("#data .red .auto-mid span").text(data.redAutoMidNodes);
-    $("#data .red .auto-high span").text(data.redAutoHighNodes);
-    $("#data .blue .auto-low span").text(data.blueAutoLowNodes);
-    $("#data .blue .auto-mid span").text(data.blueAutoMidNodes);
-    $("#data .blue .auto-high span").text(data.blueAutoHighNodes);
-    $("#data .red .teleop-low span").text(data.redLowNodes);
-    $("#data .red .teleop-mid span").text(data.redMidNodes);
-    $("#data .red .teleop-high span").text(data.redHighNodes);
-    $("#data .blue .teleop-low span").text(data.blueLowNodes);
-    $("#data .blue .teleop-mid span").text(data.blueMidNodes);
-    $("#data .blue .teleop-high span").text(data.blueHighNodes);
-    $("#data .red .sustainability span").text(data.redSustainability);
-    $("#data .red .activation span").text(data.redActivation);
-    $("#data .blue .sustainability span").text(data.blueSustainability);
-    $("#data .blue .activation span").text(data.blueActivation);
+    // Flip fouls to the alliance that caused them
+    $("#data .red .fouls span").text(data.blue.fouls);
+    $("#data .red .tech-fouls span").text(data.blue.techFouls);
+    $("#data .blue .fouls span").text(data.red.fouls);
+    $("#data .blue .tech-fouls span").text(data.red.techFouls);
+
+    $("#data .red .auto-low span").text(data.red.autoNodeTotals[0]);
+    $("#data .red .auto-mid span").text(data.red.autoNodeTotals[1]);
+    $("#data .red .auto-high span").text(data.red.autoNodeTotals[2]);
+    $("#data .blue .auto-low span").text(data.blue.autoNodeTotals[0]);
+    $("#data .blue .auto-mid span").text(data.blue.autoNodeTotals[1]);
+    $("#data .blue .auto-high span").text(data.blue.autoNodeTotals[2]);
+    $("#data .red .sustainability span").text(data.red.sustainability);
+    $("#data .red .activation span").text(data.red.activation);
+    $("#data .blue .sustainability span").text(data.blue.sustainability);
+    $("#data .blue .activation span").text(data.blue.activation);
+
+    [data.red, data.blue].forEach(alliance => updateMatchPanel
+        (
+            data.matchName, alliance.teams, alliance.number, data.isPlayoff,
+            alliance.matchPoints, alliance.mobility, alliance.autoCharge,
+            alliance.autoNodes, alliance.nodeTotals,
+            alliance.links, alliance.sustainabilityThreshold, alliance.coopertition, alliance.endgame, alliance.color
+        )
+    );
 });
 
 function update() {
