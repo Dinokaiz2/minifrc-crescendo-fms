@@ -174,9 +174,9 @@ export class Competition {
     }
 
     static saveResults() {
+        this.#previousRankings = this.rankings;
         this.#match.determineResult();
         this.#match.save();
-        this.#previousRankings = this.#rankings;
         this.#rankings = this.calculateRankings();
         this.#results = this.#match;
     }
@@ -193,14 +193,17 @@ export class Competition {
     }
 
     static showRankings() {
-        if (!this.#rankings) this.#rankings = this.calculateRankings();
         this.#view = Competition.View.RANKINGS;
     }
 
     static calculateRankings() {
         let teams = teamRepository.getAllTeams();
-        teams.forEach(team => team.calculateFields())
+        teams.forEach(team => team.calculateFields());
         teams.sort((t1, t2) => {
+            // Stable sort for NaN ranking scores
+            if (isNaN(t1.rankingScore) && !isNaN(t2.rankingScore)) return 1;
+            if (!isNaN(t1.rankingScore) && isNaN(t2.rankingScore)) return -1;
+            if (isNaN(t1.rankingScore) && isNaN(t2.rankingScore)) return t1.number - t2.number; // Use lower team number for stable sort if ranking score NaN
             if (t1.rankingScore != t2.rankingScore) return t2.rankingScore - t1.rankingScore;
             if (t1.autoPoints != t2.autoPoints) return t2.autoPoints - t1.autoPoints;
             if (t1.chargeParkPoints != t2.chargeParkPoints) return t2.chargeParkPoints - t1.chargeParkPoints;
@@ -223,6 +226,7 @@ export class Competition {
     }
 
     static get rankings() {
+        if (!this.#rankings) this.#rankings = this.calculateRankings();
         return this.#rankings;
     }
 

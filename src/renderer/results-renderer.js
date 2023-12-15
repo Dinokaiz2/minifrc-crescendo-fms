@@ -54,14 +54,14 @@ function updateRanks() {
         $("#results-view .rank").show();
         let prevRankings = Competition.previousRankings;
         let rankings = Competition.rankings;
-
+        
         function updateRank(teamNumber, index, alliance) {
-            let rankFields = $("#resulsts-view " + getAllianceClass(alliance) + ".alliance-panel .teams .team .rank");
-            if (prevRankings) var prevRank = prevRankings.find(team => team.number == teamNumber);
-            else var prevRank = 0;
+            let rankFields = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .teams .team .rank");
+            if (prevRankings) var prevRank = prevRankings.findIndex(team => team.number == teamNumber) + 1;
+            else var prevRank = 999;
             let rank = rankings.findIndex(team => team.number == teamNumber) + 1;
-            if (rank > prevRank) rankFields.eq(index).text(rank + "▲");
-            else if (rank < prevRank) rankFields.eq(index).text(rank + "▼");
+            if (rank < prevRank) rankFields.eq(index).text(rank + "▲");
+            else if (rank > prevRank) rankFields.eq(index).text(rank + "▼");
             else rankFields.eq(index).text(rank);
         }
 
