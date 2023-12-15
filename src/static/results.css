@@ -108,8 +108,12 @@
 .alliance-panel .overview .labels {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    align-items: flex-start;
     width: 270px;
+}
+
+.alliance-panel .overview .labels .rank-label {
+    margin-left: 80px;
 }
 
 .alliance-panel .overview .teams .team {
@@ -122,19 +126,17 @@
 
 .alliance-panel .overview .teams .team .avatar {
     height: 50px; width: 50px;
-    margin-left: 10px;
-    background-color: limegreen;
 }
 
 .alliance-panel .overview .teams .team .number {
-    margin-left: 20px;
-    margin-right: 120px;
+    margin-left: 5px;
+    width: 60px;
     vertical-align: text-bottom;
 }
 
 .alliance-panel .overview .teams .team .rank {
     align-self: flex-end;
-    margin-left: 20px;
+    margin-left: 75px;
     vertical-align: text-bottom;
 }
 

@@ -46,6 +46,8 @@ function updateMatchName() {
 function updateTeams(alliance) {
     let teams = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .teams .team .number");
     alliance.teams.forEach((e, i) => teams.eq(i).text(e.number));
+    let avatars = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .team .avatar");
+    alliance.teams.forEach((e, i) => avatars.eq(i).css("background-image", `url(../../images/avatars/${e.number}.png`)); // Generates a file not found error if avatar doesn't exist
 }
 
 function updateRanks() {
