@@ -382,7 +382,7 @@ export class Match {
         }
         
         get sustainabilityThreshold() {
-            return this.#match.#red.coopertition && this.#match.#blue.coopertition ? 5 : 6;
+            return this.#match.#red.coopertition && this.#match.#blue.coopertition ? 3 : 4;
         }
         
         get sustainability() {
