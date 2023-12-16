@@ -11,7 +11,7 @@ import * as sound from "./sound.js";
 
 // Pre-match initialization: If qualifications, pull from schedule. For playoffs, generate the next match.
 
-const DEBUG_FAST_MATCH = 0.03; // Match length multiplier for fast debugging
+const DEBUG_FAST_MATCH = 1; // Match length multiplier for fast debugging
 
 const TELEOP_START = 15 * DEBUG_FAST_MATCH;
 const ENDGAME_START = 120 * DEBUG_FAST_MATCH;
@@ -187,9 +187,9 @@ export class Competition {
 
     static showResults() {
         this.#view = Competition.View.RESULTS;
+        this.#resultsShown = true;
         this.loadNextMatch();
         sound.showResults();
-        this.#resultsShown = true;
     }
 
     static showRankings() {
