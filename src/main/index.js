@@ -10,7 +10,7 @@ function createWindows() {
     const mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
-        title: "MiniFRC Charged Up FMS",
+        title: "MiniFRC Crescendo FMS",
         webPreferences: {
             preload: path.join(__dirname, "preload.js")
         }
