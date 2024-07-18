@@ -40,84 +40,112 @@
 
         <div class="label">Points</div>
         <div id="points" class="row">
+
             <div class="column">
-                <span>Mobility</span>
+                <span>Leave</span>
                 <div class="row">
-                    <div class="mobility small column" style="width: 40px">
+                    <div class="leave small column" style="width: 40px">
                         <button class="red" value="3">3</button>
                         <button class="red" value="2">2</button>
                         <button class="red" value="1">1</button>
-                        <button class="red selected" value="0">0</button>
+                        <button class="red none selected" value="0">0</button>
                     </div>
-                    <div class="mobility small column" style="width: 40px">
+                    <div class="leave small column" style="width: 40px">
                         <button class="blue" value="3">3</button>
                         <button class="blue" value="2">2</button>
                         <button class="blue" value="1">1</button>
-                        <button class="blue selected" value="0">0</button>
+                        <button class="blue none selected" value="0">0</button>
                     </div>
                 </div>
             </div>
+
             <div style="padding: 0 10px"></div>
             <div class="column">
-                <span>Auto Charge</span>
+                <span>Red Stage</span>
                 <div class="row">
-                    <div class="auto-charge small column">
-                        <button class="red engage" value="2">Engage</button>
-                        <button class="red dock" value="1">Dock</button>
-                        <button class="red none selected" value="0">None</button>
-                    </div>
-                    <div class="auto-charge small column">
-                        <button class="blue engage" value="2">Engage</button>
-                        <button class="blue dock" value="1">Dock</button>
-                        <button class="blue none selected" value="0">None</button>
-                    </div>
-                </div>
-            </div>
-            <div style="padding: 0 10px"></div>
-            <div class="column">
-                <span>Red Endgame</span>
-                <div class="row">
-                    <div class="endgame small column">
-                        <button class="red left engage" value="3">Engage</button>
-                        <button class="red left dock" value="2">Dock</button>
+                    <div class="stage small column">
+                        <button class="red left onstage" value="2">Onstage</button>
                         <button class="red left park" value="1">Park</button>
                         <button class="red left none selected" value="0">None</button>
+                        <div style="padding: 5px 0"></div>
+                        <div class="trap small column">
+                            <button class="red left trap" value="1">Trap</button>
+                            <button class="red left none selected" value="0">No trap</button>
+                        </div>
                     </div>
-                    <div class="endgame small column">
-                        <button class="red mid engage" value="3">Engage</button>
-                        <button class="red mid dock" value="2">Dock</button>
+                    <div class="stage small column">
+                        <button class="red mid onstage" value="2">Onstage</button>
                         <button class="red mid park" value="1">Park</button>
                         <button class="red mid none selected" value="0">None</button>
+                        <div style="padding: 5px 0"></div>
+                        <div class="trap small column">
+                            <button class="red mid trap" value="1">Trap</button>
+                            <button class="red mid none selected" value="0">No trap</button>
+                        </div>
                     </div>
-                    <div class="endgame small column">
-                        <button class="red right engage" value="3">Engage</button>
-                        <button class="red right dock" value="2">Dock</button>
+                    <div class="stage small column">
+                        <button class="red right onstage" value="2">Onstage</button>
                         <button class="red right park" value="1">Park</button>
                         <button class="red right none selected" value="0">None</button>
+                        <div style="padding: 5px 0"></div>
+                        <div class="trap small column">
+                            <button class="red right trap" value="1">Trap</button>
+                            <button class="red right none selected" value="0">No trap</button>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div style="padding: 0 10px"></div>
             <div class="column">
-                <span>Blue Endgame</span>
+                <span>Blue Stage</span>
                 <div class="row">
-                    <div class="endgame small column">
-                        <button class="blue left engage" value="3">Engage</button>
-                        <button class="blue left dock" value="2">Dock</button>
+                    <div class="stage small column">
+                        <button class="blue left onstage" value="2">Onstage</button>
                         <button class="blue left park" value="1">Park</button>
                         <button class="blue left none selected" value="0">None</button>
+                        <div style="padding: 5px 0"></div>
+                        <div class="trap small column">
+                            <button class="blue left trap" value="1">Trap</button>
+                            <button class="blue left none selected" value="0">No trap</button>
+                        </div>
                     </div>
-                    <div class="endgame small column">
-                        <button class="blue mid engage" value="3">Engage</button>
-                        <button class="blue mid dock" value="2">Dock</button>
+                    <div class="stage small column">
+                        <button class="blue mid onstage" value="2">Onstage</button>
                         <button class="blue mid park" value="1">Park</button>
                         <button class="blue mid none selected" value="0">None</button>
+                        <div style="padding: 5px 0"></div>
+                        <div class="trap small column">
+                            <button class="blue mid trap" value="1">Trap</button>
+                            <button class="blue mid none selected" value="0">No trap</button>
+                        </div>
                     </div>
-                    <div class="endgame small column">
-                        <button class="blue right engage" value="3">Engage</button>
-                        <button class="blue right dock" value="2">Dock</button>
+                    <div class="stage small column">
+                        <button class="blue right dock" value="2">Onstage</button>
                         <button class="blue right park" value="1">Park</button>
                         <button class="blue right none selected" value="0">None</button>
+                        <div style="padding: 5px 0"></div>
+                        <div class="trap small column">
+                            <button class="blue right trap" value="1">Trap</button>
+                            <button class="blue right none selected" value="0">No trap</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="padding: 0 10px"></div>
+            <div class="column">
+                <span>Harmony</span>
+                <div class="row">
+                    <div class="harmony small column" style="width: 40px">
+                        <button class="red" value="2">2</button>
+                        <button class="red" value="1">1</button>
+                        <button class="red none selected" value="0">0</button>
+                    </div>
+                    <div class="harmony small column" style="width: 40px">
+                        <button class="blue" value="2">2</button>
+                        <button class="blue" value="1">1</button>
+                        <button class="blue none selected" value="0">0</button>
                     </div>
                 </div>
             </div>
@@ -150,20 +178,24 @@
             <div class="red info-column">
                 <div class="fouls">Red fouls: <span></span></div>
                 <div class="tech-fouls">Red tech fouls: <span></span></div>
-                <div class="auto-high">Red auto high: <span></span></div>
-                <div class="auto-mid">Red auto mid: <span></span></div>
-                <div class="auto-low">Red auto low: <span></span></div>
-                <div class="sustainability">Red Link RP: <span></span></div>
-                <div class="activation">Red Charge RP: <span></span></div>
+                <div class="auto-amp">Red auto amp: <span></span></div>
+                <div class="auto-speaker">Red auto speaker: <span></span></div>
+                <div class="teleop-amp">Red teleop amp: <span></span></div>
+                <div class="unamped-speaker">Red unamped speaker: <span></span></div>
+                <div class="amped-speaker">Red amped speaker: <span></span></div>
+                <div class="melody">Red melody RP: <span></span></div>
+                <div class="ensemble">Red ensemble RP: <span></span></div>
             </div>
             <div class="blue info-column">
                 <div class="fouls">Blue fouls: <span></span></div>
                 <div class="tech-fouls">Blue tech fouls: <span></span></div>
-                <div class="auto-high">Blue auto high: <span></span></div>
-                <div class="auto-mid">Blue auto mid: <span></span></div>
-                <div class="auto-low">Blue auto low: <span></span></div>
-                <div class="sustainability">Blue Link RP: <span></span></div>
-                <div class="activation">Blue Charge RP: <span></span></div>
+                <div class="auto-amp">Blue auto amp: <span></span></div>
+                <div class="auto-speaker">Blue auto speaker: <span></span></div>
+                <div class="teleop-amp">Blue teleop amp: <span></span></div>
+                <div class="unamped-speaker">Blue unamped speaker: <span></span></div>
+                <div class="amped-speaker">Blue amped speaker: <span></span></div>
+                <div class="melody">Blue melody RP: <span></span></div>
+                <div class="ensemble">Blue ensemble RP: <span></span></div>
             </div>
         </div>
     </div>
@@ -174,47 +206,33 @@
     <div id="overlay">
     <div id="scoring-panel">
 
-        <div class="blue grid-panel">
-            <div class="grid">
-                <div class="box"><div class="cube indicator">0</div></div>
-                <div class="box"></div>
-                <div class="box"></div>
-
-                <div class="box step"><div class="coop-icon"></div><div class="coop-border"></div></div>
-                <div class="box"><div class="cube indicator">0</div></div>
-                <div class="box"></div>
-
-                <div class="box step-corner"><div class="link-bg"></div><div class="link-icon"></div><div class="link-border"></div><div class="link-count">4/4</div></div>
-                <div class="box step"></div>
-                <div class="box"><div class="cube indicator">0</div></div>
-            </div>
-        </div>
-        <div class="blue column">
-            <div class="blue auto-panel">
-                <div class="label">Auto</div>
-                <div class="row">
-                    <div class="mobility indicator"><div hidden class="cross">⨯</div></div>
-                    <div class="mobility indicator" style="margin-left: -15px"><div hidden class="cross">⨯</div></div>
-                    <div class="mobility indicator" style="margin-left: -15px"><div hidden class="cross">⨯</div></div>
-                    <div class="cube indicator">0</div>
-                    <div class="charge none"></div>
+        <div class="column">
+            <div class="blue note-panel row">
+                <div class="note-border">
+                    <div class="note-icon"></div>
+                    <div class="note-count">4/4</div>
                 </div>
+                <div class="coop-indicator"></div>
+                <div class="amp-charge"></div>
+                <div class="amp-charge"></div>
+                <div class="amp-timer"></div>
             </div>
-            <div class="blue endgame-panel">
-                <div class="parking">
-                    <div class="label">Endgame</div>
-                    <div class="platform"></div>
-                    <img hidden class="robot left park" src="../../images/endgame-blue-1.png"/>
-                    <img hidden class="robot mid park" src="../../images/endgame-blue-2.png"/>
-                    <img hidden class="robot right park" src="../../images/endgame-blue-3.png"/>
+
+            <div class="row">
+                <div class="blue auto-panel">
+                    <div class="row">
+                        <div class="leave indicator"></div>
+                        <div class="leave indicator"></div>
+                        <div class="leave indicator"></div>
+                    </div>
                 </div>
-                <div class="charge-station">
-                    <div class="border"></div>
-                    <div class="platform"></div>
-                    <div class="icon none"></div>
-                    <img hidden class="robot left dock" src="../../images/endgame-blue-1.png"/>
-                    <img hidden class="robot mid dock" src="../../images/endgame-blue-2.png"/>
-                    <img hidden class="robot right dock" src="../../images/endgame-blue-3.png"/>
+                <div style="width: 40px"></div>
+                <div class="blue row stage-panel">
+                    <div class="stage left"><div class="border"></div><div class="platform"></div><div class="trap"></div><img class="robot left onstage" src="../../images/endgame-blue-1.png"/></div>
+                    <div class="stage mid"><div class="border"></div><div class="platform"></div><div class="trap"></div><img class="robot mid onstage" src="../../images/endgame-blue-2.png"/></div>
+                    <div class="stage right"><div class="border"></div><div class="platform"></div><div class="trap"></div><img class="robot right onstage" src="../../images/endgame-blue-3.png"/></div>
+                    <div hidden class="harmony left"></div>
+                    <div hidden class="harmony right"></div>
                 </div>
             </div>
         </div>
@@ -245,48 +263,34 @@
             </div>
         </div>
 
-        <div class="red column">
-            <div class="red auto-panel">
-                <div class="label">Auto</div>
-                <div class="row">
-                    <div class="mobility indicator"><div hidden class="cross">⨯</div></div>
-                    <div class="mobility indicator" style="margin-left: -15px"><div hidden class="cross">⨯</div></div>
-                    <div class="mobility indicator" style="margin-left: -15px"><div hidden class="cross">⨯</div></div>
-                    <div class="cube indicator">0</div>
-                    <div class="charge none"></div>
+        <div class="column">
+            <div class="red note-panel">
+                <div class="note-border">
+                    <div class="note-icon"></div>
+                    <div class="note-count">11/15</div>
                 </div>
+                <div class="coop-indicator"></div>
+                <div class="amp-charge"></div>
+                <div class="amp-charge"></div>
+                <div class="amp-timer"></div>
             </div>
-            <div class="red endgame-panel">
-                <div class="parking">
-                    <div class="label">Endgame</div>
-                    <div class="platform"></div>
-                    <img hidden class="robot left park" src="../../images/endgame-red-1.png"/>
-                    <img hidden class="robot mid park" src="../../images/endgame-red-2.png"/>
-                    <img hidden class="robot right park" src="../../images/endgame-red-3.png"/>
-                </div>
-                <div class="charge-station">
-                    <div class="border"></div>
-                    <div class="platform"></div>
-                    <div class="icon none"></div>
-                    <img hidden class="robot left dock" src="../../images/endgame-red-1.png"/>
-                    <img hidden class="robot mid dock" src="../../images/endgame-red-2.png"/>
-                    <img hidden class="robot right dock" src="../../images/endgame-red-3.png"/>
-                </div>
-            </div>
-        </div>
-        <div class="red grid-panel">
-            <div class="grid">
-                <div class="box"></div>
-                <div class="box"></div>
-                <div class="box"><div class="cube indicator">0</div></div>
 
-                <div class="box"></div>
-                <div class="box"><div class="cube indicator">0</div></div>
-                <div class="box step"><div class="coop-icon"></div><div class="coop-border"></div></div>
-
-                <div class="box"><div class="cube indicator">0</div></div>
-                <div class="box step"><div class="link-bg"></div><div class="link-icon"></div><div class="link-border"></div><div class="link-count">4/4</div></div>
-                <div class="box step-corner"></div>
+            <div class="red row">
+                <div class="red auto-panel">
+                    <div class="red row">
+                        <div class="leave indicator"></div>
+                        <div class="leave indicator"></div>
+                        <div class="leave indicator"></div>
+                    </div>
+                </div>
+                <div style="width: 30px"></div>
+                <div class="red row stage-panel">
+                    <div class="stage left"><div class="border"></div><div class="platform"></div><div class="trap"></div><img class="robot left park" src="../../images/endgame-red-1.png"/></div>
+                    <div class="stage mid"><div class="border"></div><div class="platform"></div><div class="trap"></div><img class="robot mid park" src="../../images/endgame-red-2.png"/></div>
+                    <div class="stage right"><div class="border"></div><div class="platform"></div><div class="trap"></div><img class="robot right onstage" src="../../images/endgame-red-3.png"/></div>
+                    <div hidden class="harmony left"></div>
+                    <div hidden class="harmony right"></div>
+                </div>
             </div>
         </div>
 

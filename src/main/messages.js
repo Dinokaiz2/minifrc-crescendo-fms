@@ -12,12 +12,14 @@ let CtrlMsg = {
     NEXT_MATCH:                 "next-match",
     PREVIOUS_MATCH:             "previous-match",
 
-    MOBILITY:                   "mobility",     // Params: { red: bool, count: 0-3 }
-    AUTO_CHARGE:                "auto-charge",  // Params: { red: bool, level: (0-2) = (none, dock, engage) }
-    NODE:                       "node",         // Params: { red: bool, level: (0-2) = (low, mid, high), auto: bool, undo: bool }
-    LINK:                       "link",         // Params: { red: bool, undo: bool }
-    COOPERTITION:               "coopertition", // Params: { red: bool, undo: bool }
-    ENDGAME:                    "endgame",      // Params: { red: bool, position: 0-2, level: (0-3) = (none, park, dock, engage) }
+    LEAVE:                      "leave",        // Params: { red: bool, count: 0-3 }
+    HARMONY:                    "harmony",      // Params: { red: bool, count: 0-2 }
+    STAGE:                      "stage",        // Params: { red: bool, position: 0-2, level: 0-2 = (none, park, onstage) }
+    TRAP:                       "trap",         // Params: { red: bool, position: 0-2, undo: bool }
+    SPEAKER:                    "speaker",      // Params: { red: bool, type: string (context, auto, amped, unamped), undo: bool }
+    AMP:                        "amp",          // Params: { red: bool, type: string (context, auto), undo: bool }
+    AMPLIFY:                    "amplify",      // Params: { red: bool }
+    COOP:                       "coop",         // Params: { red: bool, force: bool, undo: bool }
     FOUL:                       "foul",         // Params: { red: bool, tech: bool, undo: bool }
 }
 

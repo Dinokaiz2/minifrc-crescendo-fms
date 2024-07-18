@@ -54,8 +54,8 @@ $("#phase button#ready-for-match").on("click", () => {
 $("#phase button#start-match").on("click", () => {
     phase = Phase.IN_MATCH;
     ipc.send(CtrlMsg.START_MATCH);
-    $(".mobility button, .auto-charge button, .endgame button").removeClass("selected");
-    $(".mobility button.none, .auto-charge button.none, .endgame button.none").addClass("selected");
+    $(".leave button, .stage button, .harmony button").removeClass("selected");
+    $(".leave button.none, .stage button.none, .harmony button.none").addClass("selected");
 });
 
 // Match
@@ -79,20 +79,24 @@ $("#match button#next-match").on("click", () => ipc.send(CtrlMsg.NEXT_MATCH));
 $("#match button#previous-match").on("click", () => ipc.send(CtrlMsg.PREVIOUS_MATCH));
 
 // Points
-$(".mobility button, .auto-charge button,.endgame button").on("click", e => {
+$(".leave button, .stage button, .harmony button").on("click", e => {
     $(e.target).addClass("selected");
     $(e.target).siblings().removeClass("selected");
     let red = $(e.target).hasClass("red");
-    if ($(e.target).parent().hasClass("mobility")) { 
-        ipc.send(CtrlMsg.MOBILITY, { red: red, count: $(e.target).attr("value") });
-    } else if ($(e.target).parent().hasClass("auto-charge")) { 
-        ipc.send(CtrlMsg.AUTO_CHARGE, { red: red, level: $(e.target).attr("value") });
-    } else if ($(e.target).parent().hasClass("endgame")) { // Endgame
+    if ($(e.target).parent().hasClass("leave")) { 
+        ipc.send(CtrlMsg.LEAVE, { red: red, count: $(e.target).attr("value") });
+    } else if ($(e.target).parent().hasClass("harmony")) { 
+        ipc.send(CtrlMsg.HARMONY, { red: red, count: $(e.target).attr("value") });
+    } else if ($(e.target).parent().hasClass("trap")) { 
         let posMap = { "left": 0, "mid": 1, "right": 2 };
         let pos = posMap[Object.keys(posMap).find(pos => $(e.target).hasClass(pos))];
-        let lvlMap = { "none": 0, "park": 1, "dock": 2, "engage": 3 };
+        ipc.send(CtrlMsg.TRAP, { red: red, position: pos, undo: $(e.target).attr("value") == 0 });
+    } else if ($(e.target).parent().hasClass("stage")) {
+        let posMap = { "left": 0, "mid": 1, "right": 2 };
+        let pos = posMap[Object.keys(posMap).find(pos => $(e.target).hasClass(pos))];
+        let lvlMap = { "none": 0, "park": 1, "onstage": 2 };
         let lvl = lvlMap[Object.keys(lvlMap).find(lvl => $(e.target).hasClass(lvl))];
-        ipc.send(CtrlMsg.ENDGAME, { red: red, position: pos, level: lvl });
+        ipc.send(CtrlMsg.STAGE, { red: red, position: pos, level: lvl });
     }});
 
 // Fouls
@@ -113,33 +117,38 @@ $(document).on("keydown", e => { if (e.code in mods) mods[e.code] = true; });
 $(document).on("keyup", e => { if (e.code in mods) mods[e.code] = false; });
 
 const keyMap = {
-    // Red grid
-    "KeyW": ["node", "red", 2, false, "ShiftLeft"],
-    "KeyS": ["node", "red", 1, false, "ShiftLeft"],
-    "KeyX": ["node", "red", 0, false, "ShiftLeft"],
-    "KeyR": ["node", "red", 2, true, "ShiftLeft"],
-    "KeyF": ["node", "red", 1, true, "ShiftLeft"],
-    "KeyV": ["node", "red", 0, true, "ShiftLeft"],
-    "KeyC": ["link", "red", "ShiftLeft"],
-    "KeyD": ["coopertition", "red", "ShiftLeft"],
+    // Red
+    "KeyS": ["speaker", "red", "context", "ShiftLeft"],
+    "KeyX": ["amp",     "red", "context", "ShiftLeft"],
+    "KeyF": ["amplify", "red"],
+    "KeyG": ["coop",    "red", false, "ShiftLeft"],
 
-    // Blue grid
-    "KeyO": ["node", "blue", 2, false, "ShiftRight"],
-    "KeyL": ["node", "blue", 1, false, "ShiftRight"],
-    "Period": ["node", "blue", 0, false, "ShiftRight"],
-    "KeyU": ["node", "blue", 2, true, "ShiftRight"],
-    "KeyJ": ["node", "blue", 1, true, "ShiftRight"],
-    "KeyM": ["node", "blue", 0, true, "ShiftRight"],
-    "Comma": ["link", "blue", "ShiftRight"],
-    "KeyK": ["coopertition", "blue", "ShiftRight"],
+    "Digit1": ["amp",     "red", "auto",    "ShiftLeft"],
+    "Digit2": ["speaker", "red", "auto",    "ShiftLeft"],
+    "Digit3": ["speaker", "red", "unamped", "ShiftLeft"],
+    "Digit4": ["speaker", "red", "amped",   "ShiftLeft"],
+    "Digit5": ["coop",    "red", true,      "ShiftLeft"],
+
+    // Blue
+    "KeyJ":      ["speaker", "blue", "context", "ShiftRight"],
+    "KeyM":      ["amp",     "blue", "context", "ShiftRight"],
+    "KeyL":      ["amplify", "blue"],
+    "Semicolon": ["coop",    "blue", false,     "ShiftRight"],
+
+    "Digit6": ["amp",     "blue", "auto",    "ShiftRight"],
+    "Digit7": ["speaker", "blue", "auto",    "ShiftRight"],
+    "Digit8": ["speaker", "blue", "unamped", "ShiftRight"],
+    "Digit9": ["speaker", "blue", "amped",   "ShiftRight"],
+    "Digit0": ["coop",    "blue", true,      "ShiftRight"],
 };
 
 $(document).on("keydown", e => {
     let args = keyMap[e.code];
     if (!args) return;
-    if (args[0] == "node") ipc.send(CtrlMsg.NODE, { red: args[1] == "red", level: args[2], auto: args[3], undo: mods[args[4]] });
-    else if (args[0] == "link") ipc.send(CtrlMsg.LINK, { red: args[1] == "red", undo: mods[args[2]] });
-    else if (args[0] == "coopertition") ipc.send(CtrlMsg.COOPERTITION, { red: args[1] == "red", undo: mods[args[2]] });
+    if (args[0] == "speaker") ipc.send(CtrlMsg.SPEAKER, { red: args[1] == "red", type: args[2], undo: mods[args[3]] });
+    else if (args[0] == "amp") ipc.send(CtrlMsg.AMP, { red: args[1] == "red", type: args[2], undo: mods[args[3]] });
+    else if (args[0] == "amplify") ipc.send(CtrlMsg.AMPLIFY, { red: args[1] == "red", undo: mods[args[2]] });
+    else if (args[0] == "coop") ipc.send(CtrlMsg.COOP, { red: args[1] == "red", force: args[2], undo: mods[args[3]] });
 });
 
 ipc.on(RenderMsg.LOADED_UNDETERMINED_MATCH, () => currentMatchDetermined = false);
@@ -156,16 +165,21 @@ ipc.on(RenderMsg.MATCH_DATA, (event, data) => {
     $("#data .blue .fouls span").text(data.red.fouls);
     $("#data .blue .tech-fouls span").text(data.red.techFouls);
 
-    $("#data .red .auto-low span").text(data.red.autoNodeTotals[0]);
-    $("#data .red .auto-mid span").text(data.red.autoNodeTotals[1]);
-    $("#data .red .auto-high span").text(data.red.autoNodeTotals[2]);
-    $("#data .blue .auto-low span").text(data.blue.autoNodeTotals[0]);
-    $("#data .blue .auto-mid span").text(data.blue.autoNodeTotals[1]);
-    $("#data .blue .auto-high span").text(data.blue.autoNodeTotals[2]);
-    $("#data .red .sustainability span").text(data.red.sustainability);
-    $("#data .red .activation span").text(data.red.activation);
-    $("#data .blue .sustainability span").text(data.blue.sustainability);
-    $("#data .blue .activation span").text(data.blue.activation);
+    $("#data .red .auto-amp span").text(data.red.autoAmp);
+    $("#data .red .auto-speaker span").text(data.red.autoSpeaker);
+    $("#data .red .teleop-amp span").text(data.red.teleopAmp);
+    $("#data .red .unamped-speaker span").text(data.red.unampedSpeaker);
+    $("#data .red .amped-speaker span").text(data.red.ampedSpeaker);
+    $("#data .red .melody span").text(data.red.melody);
+    $("#data .red .ensemble span").text(data.red.ensemble);
+
+    $("#data .blue .auto-amp span").text(data.blue.autoAmp);
+    $("#data .blue .auto-speaker span").text(data.blue.autoSpeaker);
+    $("#data .blue .teleop-amp span").text(data.blue.teleopAmp);
+    $("#data .blue .unamped-speaker span").text(data.blue.unampedSpeaker);
+    $("#data .blue .amped-speaker span").text(data.blue.ampedSpeaker);
+    $("#data .blue .melody span").text(data.blue.melody);
+    $("#data .blue .ensemble span").text(data.blue.ensemble);
 
     [data.red, data.blue].forEach(alliance => updateMatchPanel
         (
