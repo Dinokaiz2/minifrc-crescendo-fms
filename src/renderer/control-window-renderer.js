@@ -113,9 +113,10 @@ let mods = {
     "ControlLeft": false,
     "ControlRight": false
 }
-$(document).on("keydown", e => { if (e.code in mods) {console.log(e.code); mods[e.code] = true;} });
-$(document).on("keyup", e => { if (e.code in mods) {console.log(e.code); mods[e.code] = false;} });
+$(document).on("keydown", e => { if (e.code in mods) mods[e.code] = true; });
+$(document).on("keyup", e => { if (e.code in mods) mods[e.code] = false; });
 
+// TODO: Using control instead of shift because of weird shift keyup behavior, see https://stackoverflow.com/questions/62683548/why-does-shiftleft-not-trigger-a-keyup-event-while-shiftright-is-held-and-vi
 const keyMap = {
     // Red
     "KeyS": ["speaker", "red", "context", "ControlLeft"],
@@ -185,9 +186,9 @@ ipc.on(RenderMsg.MATCH_DATA, (event, data) => {
     [data.red, data.blue].forEach(alliance => updateMatchPanel
         (
             data.matchName, alliance.teams, alliance.number, data.isPlayoff,
-            alliance.matchPoints, alliance.mobility, alliance.autoCharge,
-            alliance.autoNodes, alliance.nodeTotals,
-            alliance.links, alliance.sustainabilityThreshold, alliance.coopertition, alliance.endgame, alliance.color
+            alliance.matchPoints, alliance.leaves,
+            alliance.notes, alliance.melodyThreshold, alliance.ampCharge, alliance.ampDurationRemaining, alliance.coopertition,
+            alliance.stage, alliance.trapNotes, alliance.harmony, alliance.color
         )
     );
 });
