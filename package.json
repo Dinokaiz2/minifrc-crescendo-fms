@@ -1,7 +1,7 @@
 {
-  "name": "minifrc-deep-space-fms-v2",
+  "name": "minifrc-crescendo-fms",
   "version": "1.0.0",
-  "description": "Field Management System for MiniFRC: Stronghold",
+  "description": "Field Management System for MiniFRC: Crescendo",
   "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
