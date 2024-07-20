@@ -20,9 +20,9 @@ export function update() {
         [match.red, match.blue].forEach(alliance =>
             updateMatchPanel(
                 match.friendlyName, alliance.teamNumbers, alliance.number, match.isPlayoff(),
-                alliance.matchPoints, alliance.mobility, alliance.autoCharge,
-                alliance.autoNodes, [alliance.totalLowNodes, alliance.totalMidNodes, alliance.totalHighNodes],
-                alliance.links, alliance.sustainabilityThreshold, alliance.coopertition, alliance.endgame, alliance.color
+                alliance.matchPoints, alliance.leaves,
+                alliance.notes, alliance.melodyThreshold, alliance.ampCharge, alliance.ampDurationRemaining, alliance.coopertition,
+                alliance.stage, alliance.trapNotes, alliance.harmony, alliance.color
             )
         );
     }
@@ -31,15 +31,16 @@ export function update() {
 // Separated to allow rendering match panel in control window
 export function updateMatchPanel(
     matchName, teams, number, isPlayoff,
-    matchPoints, mobility, autoCharge, autoNodes,
-    nodeTotals, links, linkThreshold, coopertition, endgame, color
+    matchPoints, leaves,
+    notes, melodyThreshold, ampCharge, ampDurationRemaining, coopertition,
+    stage, trapNotes, harmony, color
 ) {
     updateMatchName(matchName);
     updateTeams(...teams, number, isPlayoff, color);
     updateMatchPoints(matchPoints, color);
-    updateAutonomous(mobility, autoCharge, autoNodes, color);
-    updateGrid(nodeTotals[0], nodeTotals[1], nodeTotals[2], links, linkThreshold, coopertition, color);
-    updateEndgame(endgame, color);
+    updateAutonomous(leaves, color);
+    updateNotes(notes, melodyThreshold, coopertition, ampCharge, ampDurationRemaining, color);
+    updateStage(stage, trapNotes, harmony, color);
 }
 
 export function startVideo() {
@@ -89,53 +90,40 @@ function updateMatchPoints(points, color) {
     $(`#match-view #match-panel #score-box ${getColorClass(color)}`).text(points);
 }
 
-function updateAutonomous(mobility, charge, autoNodes, color) {
-    let indicators = $(`#match-view ${getColorClass(color)}.auto-panel .mobility`);
+function updateAutonomous(leaves, color) {
+    let indicators = $(`#match-view ${getColorClass(color)}.auto-panel .leave`);
     indicators.each((i, e) => {
-        if (i < mobility) {
-            $(e).addClass("lit")
-            $(e).children().show()
-        } else {
-           $(e).removeClass("lit");
-           $(e).children().hide();  
-        }
+        if (i < leaves) $(e).addClass("lit");
+        else $(e).removeClass("lit");
     });
-
-    $(`#match-view ${getColorClass(color)}.auto-panel .cube`).text(autoNodes);
-
-    let autoChargeIcon = $(`#match-view ${getColorClass(color)}.auto-panel .charge`);
-    autoChargeIcon.removeClass("none dock engage");
-    if (charge == 0) autoChargeIcon.addClass("none");
-    else if (charge == Match.PointValues.AUTO_DOCK) autoChargeIcon.addClass("dock")
-    else if (charge == Match.PointValues.AUTO_ENGAGE) autoChargeIcon.addClass("engage")
 }
 
-function updateGrid(lowNodes, midNodes, highNodes, links, threshold, coopertition, color) {
-    let nodeCounts = [highNodes, midNodes, lowNodes];
-    $(`#match-view ${getColorClass(color)}.grid-panel .cube`).each((i, e) => {
-        $(e).text(nodeCounts[i]);
-    });
-    $(`#match-view ${getColorClass(color)}.grid-panel .link-count`).text(`${links}/${threshold}`)
-    if (coopertition) $(`#match-view ${getColorClass(color)}.grid-panel .coop-icon`).addClass("lit");
-    else $(`#match-view ${getColorClass(color)}.grid-panel .coop-icon`).removeClass("lit");
+function updateNotes(notes, melodyThreshold, coopertition, ampCharge, ampDurationRemaining, color) {
+    $(`#match-view ${getColorClass(color)}.note-panel .note-count`).text(`${notes}/${melodyThreshold}`);
+    if (coopertition) $(`#match-view ${getColorClass(color)}.note-panel .coop-indicator`).addClass("lit");
+    else $(`#match-view ${getColorClass(color)}.note-panel .coop-indicator`).removeClass("lit");
     
+    $(`#match-view ${getColorClass(color)}.note-panel .amp-charge`).each((i, e) => {
+        if (i < ampCharge) $(e).addClass("lit");
+        else $(e).removeClass("lit");
+    });
+    $(`#match-view ${getColorClass(color)}.note-panel .amp-timer .bar`).width(`${ampDurationRemaining * 100}%`)
 }
 
-function updateEndgame(endgame, color) {
-    $(`#match-view ${getColorClass(color)}.endgame-panel .robot.park`).each((i, e) => {
-        if (endgame[i] == Match.PointValues.PARK) $(e).show();
+function updateStage(stage, trapNotes, harmony, color) {
+    $(`#match-view ${getColorClass(color)}.stage-panel .robot`).each((i, e) => {
+        $(e).removeClass("park onstage");
+        if (stage[i] == Match.PointValues.PARK) $(e).addClass("park");
+        else if (stage[i] == Match.PointValues.ONSTAGE) $(e).addClass("onstage");
+    });
+    $(`#match-view ${getColorClass(color)}.stage-panel .trap`).each((i, e) => {
+        if (trapNotes[i]) $(e).show();
         else $(e).hide();
     });
-    $(`#match-view ${getColorClass(color)}.endgame-panel .robot.dock`).each((i, e) => {
-        if (endgame[i] == Match.PointValues.DOCK || endgame[i] == Match.PointValues.ENGAGE) $(e).show();
+    $(`#match-view ${getColorClass(color)}.stage-panel .harmony`).each((i, e) => {
+        if (i < harmony) $(e).show();
         else $(e).hide();
     });
-
-    let chargeIcon = $(`#match-view ${getColorClass(color)}.endgame-panel .charge-station .icon`);
-    chargeIcon.removeClass("none dock engage");
-    if (endgame.includes(Match.PointValues.ENGAGE)) chargeIcon.addClass("engage");
-    else if (endgame.includes(Match.PointValues.DOCK)) chargeIcon.addClass("dock");
-    else chargeIcon.addClass("none");
 }
 
 function getColorClass(color) {

@@ -113,36 +113,37 @@ let mods = {
     "ControlLeft": false,
     "ControlRight": false
 }
-$(document).on("keydown", e => { if (e.code in mods) mods[e.code] = true; });
-$(document).on("keyup", e => { if (e.code in mods) mods[e.code] = false; });
+$(document).on("keydown", e => { if (e.code in mods) {console.log(e.code); mods[e.code] = true;} });
+$(document).on("keyup", e => { if (e.code in mods) {console.log(e.code); mods[e.code] = false;} });
 
 const keyMap = {
     // Red
-    "KeyS": ["speaker", "red", "context", "ShiftLeft"],
-    "KeyX": ["amp",     "red", "context", "ShiftLeft"],
+    "KeyS": ["speaker", "red", "context", "ControlLeft"],
+    "KeyX": ["amp",     "red", "context", "ControlLeft"],
     "KeyF": ["amplify", "red"],
-    "KeyG": ["coop",    "red", false, "ShiftLeft"],
+    "KeyG": ["coop",    "red", false, "ControlLeft"],
 
-    "Digit1": ["amp",     "red", "auto",    "ShiftLeft"],
-    "Digit2": ["speaker", "red", "auto",    "ShiftLeft"],
-    "Digit3": ["speaker", "red", "unamped", "ShiftLeft"],
-    "Digit4": ["speaker", "red", "amped",   "ShiftLeft"],
-    "Digit5": ["coop",    "red", true,      "ShiftLeft"],
+    "Digit1": ["amp",     "red", "auto",    "ControlLeft"],
+    "Digit2": ["speaker", "red", "auto",    "ControlLeft"],
+    "Digit3": ["speaker", "red", "unamped", "ControlLeft"],
+    "Digit4": ["speaker", "red", "amped",   "ControlLeft"],
+    "Digit5": ["coop",    "red", true,      "ControlLeft"],
 
     // Blue
-    "KeyJ":      ["speaker", "blue", "context", "ShiftRight"],
-    "KeyM":      ["amp",     "blue", "context", "ShiftRight"],
+    "KeyJ":      ["speaker", "blue", "context", "ControlRight"],
+    "KeyM":      ["amp",     "blue", "context", "ControlRight"],
     "KeyL":      ["amplify", "blue"],
-    "Semicolon": ["coop",    "blue", false,     "ShiftRight"],
+    "Semicolon": ["coop",    "blue", false,     "ControlRight"],
 
-    "Digit6": ["amp",     "blue", "auto",    "ShiftRight"],
-    "Digit7": ["speaker", "blue", "auto",    "ShiftRight"],
-    "Digit8": ["speaker", "blue", "unamped", "ShiftRight"],
-    "Digit9": ["speaker", "blue", "amped",   "ShiftRight"],
-    "Digit0": ["coop",    "blue", true,      "ShiftRight"],
+    "Digit6": ["amp",     "blue", "auto",    "ControlRight"],
+    "Digit7": ["speaker", "blue", "auto",    "ControlRight"],
+    "Digit8": ["speaker", "blue", "unamped", "ControlRight"],
+    "Digit9": ["speaker", "blue", "amped",   "ControlRight"],
+    "Digit0": ["coop",    "blue", true,      "ControlRight"],
 };
 
 $(document).on("keydown", e => {
+    if (e.ctrlKey && e.code === "KeyA") e.preventDefault(); // Eat Ctrl+A select all shortcut
     let args = keyMap[e.code];
     if (!args) return;
     if (args[0] == "speaker") ipc.send(CtrlMsg.SPEAKER, { red: args[1] == "red", type: args[2], undo: mods[args[3]] });

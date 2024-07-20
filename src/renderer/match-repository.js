@@ -42,40 +42,38 @@ export function generateMatch(number, set, type, redTeams, blueTeams, redAllianc
             redTeams: redTeams,
             redNumber: redAllianceNumber,
             redMatchPoints: 0,
-            redMobility: 0,
-            redAutoLowNodes: 0,
-            redAutoMidNodes: 0,
-            redAutoHighNodes: 0,
-            redAutoCharge: 0,
-            redLowNodes: 0,
-            redMidNodes: 0,
-            redHighNodes: 0,
-            redLinks: 0,
+            redLeaves: 0,
+            redAutoAmpNotes: 0,
+            redAutoSpeakerNotes: 0,
+            redAmpNotes: 0,
+            redSpeakerNotes: 0,
+            redAmpedSpeakerNotes: 0,
             redCoopertition: false,
-            redEndgame: [0, 0, 0],
+            redStage: [0, 0, 0],
+            redTrapNotes: [false, false, false],
+            redHarmony: 0,
             redFouls: 0,
             redTechFouls: 0,
-            redSustainability: false,
-            redActivation: false,
+            redMelody: false,
+            redEnsemble: false,
 
             blueTeams: blueTeams,
             blueNumber: blueAllianceNumber,
             blueMatchPoints: 0,
-            blueMobility: 0,
-            blueAutoLowNodes: 0,
-            blueAutoMidNodes: 0,
-            blueAutoHighNodes: 0,
-            blueAutoCharge: 0,
-            blueLowNodes: 0,
-            blueMidNodes: 0,
-            blueHighNodes: 0,
-            blueLinks: 0,
+            blueLeaves: 0,
+            blueAutoAmpNotes: 0,
+            blueAutoSpeakerNotes: 0,
+            blueAmpNotes: 0,
+            blueSpeakerNotes: 0,
+            blueAmpedSpeakerNotes: 0,
             blueCoopertition: false,
-            blueEndgame: [0, 0, 0],
+            blueStage: [0, 0, 0],
+            blueTrapNotes: [false, false, false],
+            blueHarmony: 0,
             blueFouls: 0,
             blueTechFouls: 0,
-            blueSustainability: false,
-            blueActivation: false,
+            blueMelody: false,
+            blueEnsemble: false,
         });
     }
 }
@@ -124,21 +122,10 @@ function updateByAlliance(keyName, value, allianceColor, matchNumber, matchSet, 
  * @param {Match.AllianceColor} color the color of the alliance
  * @return {number[]} an array of three red team numbers
  */
-export function getAllianceTeams(number, set, type, color) {
-    return lookupByAlliance("Teams", color, number, set, type);
-}
-
-export function getAllianceNumber(number, set, type, color) {
-    return lookupByAlliance("Number", color, number, set, type);
-}
-
-export function getResult(number, set, type) {
-    return getMatchData(number, set, type).result;
-}
-
-export function setResult(result, number, set, type) {
-    updateDb("result", result, number, set, type);
-}
+export function getAllianceTeams(number, set, type, color) { return lookupByAlliance("Teams", color, number, set, type); }
+export function getAllianceNumber(number, set, type, color) { return lookupByAlliance("Number", color, number, set, type); }
+export function getResult(number, set, type) { return getMatchData(number, set, type).result; }
+export function setResult(result, number, set, type) { updateDb("result", result, number, set, type); }
 
 /**
  * Checks if the specified team was disqualified from this match.
@@ -148,9 +135,7 @@ export function setResult(result, number, set, type) {
  * @param {Match.Type} type the match type
  * @return {boolean} whether the team was disqualified from this match
  */
-export function isDisqualified(teamNumber, matchNumber, set, type) {
-    return getMatchData(matchNumber, set, type).disqualifications.includes(teamNumber);
-}
+export function isDisqualified(teamNumber, matchNumber, set, type) { return getMatchData(matchNumber, set, type).disqualifications.includes(teamNumber); }
 
 /**
  * Checks if the specified team is a surrogate in this match.
@@ -159,9 +144,7 @@ export function isDisqualified(teamNumber, matchNumber, set, type) {
  * @param {number} set the set the match is apart of
  * @param {Match.Type} type the match type
  */
-export function isSurrogate(teamNumber, matchNumber, set, type) {
-    return getMatchData(matchNumber, set, type).surrogates.includes(teamNumber);
-}
+export function isSurrogate(teamNumber, matchNumber, set, type) { return getMatchData(matchNumber, set, type).surrogates.includes(teamNumber); }
 
 /**
  * Gets the number of match points scored by the specified alliance in the match.
@@ -171,87 +154,33 @@ export function isSurrogate(teamNumber, matchNumber, set, type) {
  * @param {Match.AllianceColor} color the alliance to get the value for
  * @return {number} the number of match points for this match
  */
-export function getMatchPoints(number, set, type, color) {
-    return lookupByAlliance("MatchPoints", color, number, set, type);
-}
+export function getMatchPoints(number, set, type, color) { return lookupByAlliance("MatchPoints", color, number, set, type); }
+export function setMatchPoints(points, number, set, type, color) { updateByAlliance("MatchPoints", points, color, number, set, type); }
 
-export function setMatchPoints(points, number, set, type, color) {
-    updateByAlliance("MatchPoints", points, color, number, set, type);
-}
+export function getLeaves(number, set, type, color) { return lookupByAlliance("Leaves", color, number, set, type); }
+export function setLeaves(mobility, number, set, type, color) { updateByAlliance("Leaves", mobility, color, number, set, type); }
 
-export function getMobility(number, set, type, color) {
-    return lookupByAlliance("Mobility", color, number, set, type);
-}
+export function getAutoAmpNotes(number, set, type, color) { return lookupByAlliance("AutoAmpNotes", color, number, set, type); }
+export function setAutoAmpNotes(autoAmpNotes, number, set, type, color) { updateByAlliance("AutoAmpNotes", autoAmpNotes, color, number, set, type); }
+export function getAutoSpeakerNotes(number, set, type, color) { return lookupByAlliance("AutoSpeakerNotes", color, number, set, type); }
+export function setAutoSpeakerNotes(autoSpeakerNotes, number, set, type, color) { updateByAlliance("AutoSpeakerNotes", autoSpeakerNotes, color, number, set, type); }
 
-export function setMobility(mobility, number, set, type, color) {
-    updateByAlliance("Mobility", mobility, color, number, set, type);
-}
+export function getAmpNotes(number, set, type, color) { return lookupByAlliance("AmpNotes", color, number, set, type); }
+export function setAmpNotes(ampNotes, number, set, type, color) { updateByAlliance("AmpNotes", ampNotes, color, number, set, type); }
+export function getSpeakerNotes(number, set, type, color) { return lookupByAlliance("SpeakerNotes", color, number, set, type); }
+export function setSpeakerNotes(speakerNotes, number, set, type, color) { updateByAlliance("SpeakerNotes", speakerNotes, color, number, set, type); }
+export function getAmpedSpeakerNotes(number, set, type, color) { return lookupByAlliance("AmpedSpeakerNotes", color, number, set, type); }
+export function setAmpedSpeakerNotes(ampedSpeakerNotes, number, set, type, color) { updateByAlliance("AmpedSpeakerNotes", ampedSpeakerNotes, color, number, set, type); }
 
-export function getAutoLowNodes(number, set, type, color) {
-    return lookupByAlliance("AutoLowNodes", color, number, set, type);
-}
-export function setAutoLowNodes(autoLowNodes, number, set, type, color) {
-    updateByAlliance("AutoLowNodes", autoLowNodes, color, number, set, type);
-}
-export function getAutoMidNodes(number, set, type, color) {
-    return lookupByAlliance("AutoMidNodes", color, number, set, type);
-}
-export function setAutoMidNodes(autoMidNodes, number, set, type, color) {
-    updateByAlliance("AutoMidNodes", autoMidNodes, color, number, set, type);
-}
-export function getAutoHighNodes(number, set, type, color) {
-    return lookupByAlliance("AutoHighNodes", color, number, set, type);
-}
-export function setAutoHighNodes(autoHighNodes, number, set, type, color) {
-    updateByAlliance("AutoHighNodes", autoHighNodes, color, number, set, type);
-}
+export function getCoopertition(number, set, type, color) { return lookupByAlliance("Coopertition", color, number, set, type); }
+export function setCoopertition(coopertition, number, set, type, color) { updateByAlliance("Coopertition", coopertition, color, number, set, type); }
 
-export function getAutoCharge(number, set, type, color) {
-    return lookupByAlliance("AutoCharge", color, number, set, type);
-}
-export function setAutoCharge(autoCharge, number, set, type, color) {
-    updateByAlliance("AutoCharge", autoCharge, color, number, set, type);
-}
-
-export function getLowNodes(number, set, type, color) {
-    return lookupByAlliance("LowNodes", color, number, set, type);
-}
-export function setLowNodes(lowNodes, number, set, type, color) {
-    updateByAlliance("LowNodes", lowNodes, color, number, set, type);
-}
-export function getMidNodes(number, set, type, color) {
-    return lookupByAlliance("MidNodes", color, number, set, type);
-}
-export function setMidNodes(midNodes, number, set, type, color) {
-    updateByAlliance("MidNodes", midNodes, color, number, set, type);
-}
-export function getHighNodes(number, set, type, color) {
-    return lookupByAlliance("HighNodes", color, number, set, type);
-}
-export function setHighNodes(highNodes, number, set, type, color) {
-    updateByAlliance("HighNodes", highNodes, color, number, set, type);
-}
-
-export function getLinks(number, set, type, color) {
-    return lookupByAlliance("Links", color, number, set, type);
-}
-export function setLinks(links, number, set, type, color) {
-    updateByAlliance("Links", links, color, number, set, type);
-}
-
-export function getCoopertition(number, set, type, color) {
-    return lookupByAlliance("Coopertition", color, number, set, type);
-}
-export function setCoopertition(coopertition, number, set, type, color) {
-    updateByAlliance("Coopertition", coopertition, color, number, set, type);
-}
-
-export function getEndgame(number, set, type, color) {
-    return lookupByAlliance("Endgame", color, number, set, type);
-}
-export function setEndgame(endgame, number, set, type, color) {
-    updateByAlliance("Endgame", endgame, color, number, set, type);
-}
+export function getStage(number, set, type, color) { return lookupByAlliance("Stage", color, number, set, type); }
+export function setStage(stage, number, set, type, color) { updateByAlliance("Stage", stage, color, number, set, type); }
+export function getTrapNotes(number, set, type, color) { return lookupByAlliance("TrapNotes", color, number, set, type); }
+export function setTrapNotes(trapNotes, number, set, type, color) { updateByAlliance("TrapNotes", trapNotes, color, number, set, type); }
+export function getHarmony(number, set, type, color) { return lookupByAlliance("Harmony", color, number, set, type); }
+export function setHarmony(harmony, number, set, type, color) { updateByAlliance("Harmony", harmony, color, number, set, type); }
 
 /**
  * Gets the number of regular fouls awarded to the specified alliance as a result
@@ -262,34 +191,12 @@ export function setEndgame(endgame, number, set, type, color) {
  * @param {Match.AllianceColor} color the alliance to get the value for
  * @return {number} the number of regular fouls awarded in this match
  */
-export function getFouls(number, set, type, color) {
-    return lookupByAlliance("Fouls", color, number, set, type);
-}
+export function getFouls(number, set, type, color) { return lookupByAlliance("Fouls", color, number, set, type); }
+export function setFouls(fouls, number, set, type, color) { return updateByAlliance("Fouls", fouls, color, number, set, type); }
+export function getTechFouls(number, set, type, color) { return lookupByAlliance("TechFouls", color, number, set, type); }
+export function setTechFouls(fouls, number, set, type, color) { return updateByAlliance("TechFouls", fouls, color, number, set, type); }
 
-export function setFouls(fouls, number, set, type, color) {
-    return updateByAlliance("Fouls", fouls, color, number, set, type);
-}
-
-export function getTechFouls(number, set, type, color) {
-    return lookupByAlliance("TechFouls", color, number, set, type);
-}
-
-export function setTechFouls(fouls, number, set, type, color) {
-    return updateByAlliance("TechFouls", fouls, color, number, set, type);
-}
-
-export function getSustainability(number, set, type, color) {
-    return lookupByAlliance("Sustainability", color, number, set, type);
-}
-
-export function setSustainability(breach, number, set, type, color) {
-    return updateByAlliance("Sustainability", breach, color, number, set, type);
-}
-
-export function getActivation(number, set, type, color) {
-    return lookupByAlliance("Activation", color, number, set, type);
-}
-
-export function setActivation(capture, number, set, type, color) {
-    return updateByAlliance("Activation", capture, color, number, set, type);
-}
+export function getMelody(number, set, type, color) { return lookupByAlliance("Melody", color, number, set, type); }
+export function setMelody(melody, number, set, type, color) { return updateByAlliance("Melody", melody, color, number, set, type); }
+export function getEnsemble(number, set, type, color) { return lookupByAlliance("Ensemble", color, number, set, type); }
+export function setEnsemble(ensemble, number, set, type, color) { return updateByAlliance("Ensemble", ensemble, color, number, set, type); }

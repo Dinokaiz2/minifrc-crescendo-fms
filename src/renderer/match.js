@@ -1,5 +1,8 @@
 import { Team } from "./team.js"
-import * as repository from "./match-repository.js"
+import * as repository from "./match-repository.js" // TODO: Causes control window to import match-repository, which fails on running generate()
+import * as sound from "./sound.js";
+
+import { Competition } from "./controller.js" // Needed for match time-based scoring. TODO: Maybe match time should be tracked in Match instead of Competition.
 
 /**
  * Holds match data. Uniquely identified by `match`, `set`, and `type`. Roughly keeps track of the
@@ -71,21 +74,18 @@ export class Match {
 
     static get PointValues() {
         return {
-            MOBILITY: 3,
-            AUTO_LOW_NODE: 3,
-            AUTO_MID_NODE: 4,
-            AUTO_HIGH_NODE: 6,
-            AUTO_DOCK: 8,
-            AUTO_ENGAGE: 12,
-            LOW_NODE: 2,
-            MID_NODE: 3,
-            HIGH_NODE: 5,
-            LINK: 5,
-            PARK: 2,
-            DOCK: 6,
-            ENGAGE: 10,
-            FOUL: 5,
-            TECH_FOUL: 12
+            LEAVE: 2,
+            AUTO_AMP: 2,
+            AUTO_SPEAKER: 5,
+            AMP: 1,
+            SPEAKER: 2,
+            AMPED_SPEAKER: 5,
+            PARK: 1,
+            ONSTAGE: 3,
+            TRAP: 5,
+            HARMONY: 2,
+            FOUL: 2,
+            TECH_FOUL: 5
         }
     }
     
@@ -285,38 +285,89 @@ export class Match {
         #match;
         #number; // 0 in qualifications
 
-        /** @type {number} */   mobility = 0;
-        /** @type {number} */   autoLowNodes = 0;
-        /** @type {number} */   autoMidNodes = 0;
-        /** @type {number} */   autoHighNodes = 0;
-        /** @type {number} */   autoCharge = 0; // Point value of auto dock or engage
-        /** @type {number} */   lowNodes = 0; // Teleop only
-        /** @type {number} */   midNodes = 0; // Teleop only
-        /** @type {number} */   highNodes = 0; // Teleop only
-        /** @type {number} */   links = 0;
-        /** @type {boolean} */  coopertition = false;
-        /** @type {number[]} */ endgame = [0, 0, 0]; // Point values of completed endgame tasks
-        /** @type {number} */   fouls = 0; // Awarded to this alliance, committed by opponent
-        /** @type {number} */   techFouls = 0; // Awarded to this alliance, committed by opponent
+        /** @type {number} */    leaves = 0;
+        /** @type {number} */    autoAmpNotes = 0;
+        /** @type {number} */    autoSpeakerNotes = 0;
+        /** @type {number} */    ampNotes = 0; // Teleop only
+        /** @type {number} */    ampCharge = 0; // Capped at 2, but keep track past that to allow amp undo
+        /** @type {number} */    speakerNotes = 0; // Teleop only
+        /** @type {number} */    ampedSpeakerNotes = 0; // Teleop only
+        /** @type {number} */    notesToAmpExpiry = 4; // 4 amped speaker notes end amplification
+        /** @type {boolean} */   coopertition = false;
+        /** @type {number[]} */  stage = [0, 0, 0]; // Point values of completed endgame tasks
+        /** @type {boolean[]} */ trapNotes = [false, false, false];
+        /** @type {number} */    harmony = 0; // Number of instances of harmony, up to 2
+        /** @type {number} */    fouls = 0; // Awarded to this alliance, committed by opponent
+        /** @type {number} */    techFouls = 0; // Awarded to this alliance, committed by opponent
 
-        setMobility(count)        { this.mobility = count; }
-        addAutoLowNode()          { this.autoLowNodes++; };
-        removeAutoLowNode()       { if (this.autoLowNodes > 0) this.autoLowNodes--; };
-        addAutoMidNode()          { this.autoMidNodes++; };
-        removeAutoMidNode()       { if (this.autoMidNodes > 0) this.autoMidNodes--; };
-        addAutoHighNode()         { this.autoHighNodes++; };
-        removeAutoHighNode()      { if (this.autoHighNodes > 0) this.autoHighNodes--; };
-        setAutoCharge(pts)        { this.autoCharge = pts; }
-        addLowNode()              { this.lowNodes++; };
-        removeLowNode()           { if (this.lowNodes > 0) this.lowNodes--; };
-        addMidNode()              { this.midNodes++; };
-        removeMidNode()           { if (this.midNodes > 0) this.midNodes--; };
-        addHighNode()             { this.highNodes++; };
-        removeHighNode()          { if (this.highNodes > 0) this.highNodes--; };
-        addLink()                 { this.links++; };
-        removeLink()              { if (this.links > 0) this.links--; };
-        setCoopertition(bool)     { this.coopertition = bool; }
-        setEndgame(pos, pts)      { this.endgame[pos] = pts; }
+        amplificationTimeoutId = 0;
+        amplificationTimestamp = -1;
+
+
+        setLeaves(count) { this.leaves = count; }
+
+        addAmpCharge()        { if (!this.isAmplified) this.ampCharge++; };
+        removeAmpCharge()     { if (this.ampCharge > 0) this.ampCharge--; };
+        useAmpCharge()        { if (this.ampCharge > 0) this.ampCharge = Math.min(this.ampCharge, 2) - 1; };
+        addAutoAmpNote()      { this.autoAmpNotes++; this.addAmpCharge(); };
+        removeAutoAmpNote()   { if (this.autoAmpNotes > 0) { this.autoAmpNotes--; this.removeAmpCharge(); } };
+        addTeleopAmpNote()    { this.ampNotes++; this.addAmpCharge(); };
+        removeTeleopAmpNote() { if (this.ampNotes > 0) { this.ampNotes--; this.removeAmpCharge(); } };
+        addAmpNote()          { if (Competition.inAuto) this.addAutoAmpNote(); else this.addTeleopAmpNote(); };
+        removeAmpNote()       { if (Competition.inAuto) this.removeAutoAmpNote(); else this.removeTeleopAmpNote(); };
+
+        addAutoSpeakerNote()      { this.autoSpeakerNotes++; };
+        removeAutoSpeakerNote()   { if (this.autoSpeakerNotes > 0) this.autoSpeakerNotes--; };
+        addTeleopSpeakerNote()    { this.speakerNotes++; };
+        removeTeleopSpeakerNote() { if (this.speakerNotes > 0) this.speakerNotes--; };
+        addAmpedSpeakerNote()     { this.ampedSpeakerNotes++; if (--this.notesToAmpExpiry == 0) this.endAmplification(); };
+        removeAmpedSpeakerNote()  { if (this.ampedSpeakerNotes > 0 && this.notesToAmpExpiry < 4) { this.ampedSpeakerNotes--; this.notesToAmpExpiry++; } };
+        addSpeakerNote() {
+            if (Competition.inAuto) this.addAutoSpeakerNote();
+            else if (this.isAmplified) this.addAmpedSpeakerNote(); 
+            else this.addTeleopSpeakerNote();
+        };
+        removeSpeakerNote()        {
+            if (Competition.inAuto) this.removeAutoSpeakerNote();
+            else if (this.isAmplified) this.removeAmpedSpeakerNote(); 
+            else this.removeTeleopSpeakerNote();
+        }
+
+        endAmplification() {
+            this.ampCharge = 0;
+            this.notesToAmpExpiry = 4;
+            clearTimeout(this.amplificationTimeoutId);
+            this.amplificationTimestamp = -1;
+            sound.endAmplification();
+        }
+        startAmplification() {
+            if (this.ampCharge < 2) return;
+            this.ampCharge = 0;
+            this.notesToAmpExpiry = 4;
+            this.amplificationTimeoutId = setTimeout(this.endAmplification.bind(this), 10000);
+            this.amplificationTimestamp = Date.now();
+            sound.startAmplification();
+        }
+        get isAmplified() {
+            return this.amplificationTimestamp >= 0;
+        }
+        /** Percentage of duration remaining, from 0 to 1.  */
+        get ampDurationRemaining () {
+            return 1 - Math.max(0, Math.min(1, (Date.now() - this.amplificationTimestamp) / 10000));
+        }
+
+        setStage(pos, pts) { this.stage[pos] = pts; }
+        setTrapNote(pos, bool) { this.trapNotes[pos] = bool; }
+        setHarmony(count) { this.harmony = count; }
+
+        setCoopertition() {
+            if (Competition.inMatch && Competition.matchMillisElapsed < 45000 && this.ampCharge >= 1 && !this.coopertition) {
+                this.coopertition = true;
+                this.useAmpCharge();
+            }
+        }
+        setCoopertitionForce(bool) { this.coopertition = bool; }
+        
         addFoul()                 { this.fouls++; }
         removeFoul()              { if (this.fouls > 0) this.fouls--; }
         addTechFoul()             { this.techFouls++; }
@@ -328,75 +379,61 @@ export class Match {
         get number() { return this.#number; }
 
         get matchPoints() {
-            return this.autoPoints
-                 + this.teleopGridPoints
-                 + this.endgamePoints
-                 + this.penaltyPoints;
+            return this.leavePoints
+                + this.ampPoints
+                + this.speakerPoints
+                + this.stagePoints
+                + this.penaltyPoints;
         }
 
-        get mobilityPoints() {
-            return this.mobility * Match.PointValues.MOBILITY;
+        get leavePoints() {
+            return this.leaves * Match.PointValues.LEAVE;
         }
-
-        get autoGridPoints() {
-            return this.autoLowNodes * Match.PointValues.AUTO_LOW_NODE
-                + this.autoMidNodes * Match.PointValues.AUTO_MID_NODE
-                + this.autoHighNodes * Match.PointValues.AUTO_HIGH_NODE;
+        get autoNotePoints() {
+            return this.autoAmpNotes * Match.PointValues.AUTO_AMP
+                + this.autoSpeakerNotes * Match.PointValues.AUTO_SPEAKER;
         }
-
         get autoPoints() {
-            return this.mobilityPoints + this.autoCharge + this.autoGridPoints;
+            return this.leavePoints + this.autoNotePoints;
         }
 
-        get gridPoints() {
-            return this.autoGridPoints
-                + this.links * Match.PointValues.LINK
-                + this.lowNodes * Match.PointValues.LOW_NODE
-                + this.midNodes * Match.PointValues.MID_NODE
-                + this.highNodes * Match.PointValues.HIGH_NODE;
+        get ampPoints() {
+            return this.autoAmpNotes * Match.PointValues.AUTO_AMP
+                + this.ampNotes * Match.PointValues.AMP;
+        }
+        get speakerPoints() {
+            return this.autoSpeakerNotes * Match.PointValues.AUTO_SPEAKER
+                + this.speakerNotes * Match.PointValues.SPEAKER
+                + this.ampedSpeakerNotes * Match.PointValues.AMPED_SPEAKER;
         }
 
-        get teleopGridPoints() {
-            return this.links * Match.PointValues.LINK
-                + this.lowNodes * Match.PointValues.LOW_NODE
-                + this.midNodes * Match.PointValues.MID_NODE
-                + this.highNodes * Match.PointValues.HIGH_NODE;
-        }
-        
-        get chargeStationPoints() {
-            return this.autoCharge
-                + this.endgame.filter(e => e != Match.PointValues.PARK).reduce((sum, pts) => sum + pts, 0);
-        }
-        
-        get parkPoints() {
-            return this.endgame.filter(e => e == Match.PointValues.PARK).reduce((sum, pts) => sum + pts, 0);
-        }
-
-        get endgamePoints() {
-            return this.endgame.reduce((sum, pts) => sum + pts, 0);
+        get stagePoints() {
+            return this.stage.reduce((sum, pts) => sum + pts, 0)
+                + this.trapNotes.reduce((sum, pts) => sum + pts, 0) * Match.PointValues.TRAP
+                + this.harmony * Match.PointValues.HARMONY;
         }
 
         get penaltyPoints() {
             return this.fouls * Match.PointValues.FOUL
-                 + this.techFouls * Match.PointValues.TECH_FOUL;
-        }
-        
-        get sustainabilityThreshold() {
-            return this.#match.#red.coopertition && this.#match.#blue.coopertition ? 3 : 4;
-        }
-        
-        get sustainability() {
-            return this.links >= this.sustainabilityThreshold;
+                + this.techFouls * Match.PointValues.TECH_FOUL;
         }
 
+        get notes() {
+            return this.autoAmpNotes + this.autoSpeakerNotes
+                + this.ampNotes + this.speakerNotes + this.ampedSpeakerNotes;
+        }
+        get coopBonus() {
+            return this.#match.#red.coopertition && this.#match.#blue.coopertition;
+        }
+        get melodyThreshold() {
+            return this.coopBonus ? 12 : 15;
+        }
+        get melody() {
+            return this.notes >= this.sustainabilityThreshold;
+        }
         get activation() {
             return this.chargeStationPoints >= 26;
         }
-        
-        get totalAutoNodes() { return this.autoLowNodes + this.autoMidNodes + this.autoHighNodes }
-        get totalLowNodes() { return this.autoLowNodes + this.lowNodes; }
-        get totalMidNodes() { return this.autoMidNodes + this.midNodes; }
-        get totalHighNodes() { return this.autoHighNodes + this.highNodes; }
 
         /**
          * @param {number[]} teams 
@@ -411,54 +448,53 @@ export class Match {
             this.#teams = teamNumbers.map(number => new Team(number));
             if (match.isPlayoff()) this.#number = repository.getAllianceNumber(...this.#match.#id, this.color);
 
-            this.mobility         = repository.getMobility(...this.#match.#id, this.color);
-            this.autoLowNodes     = repository.getAutoLowNodes(...this.#match.#id, this.color);
-            this.autoMidNodes     = repository.getAutoMidNodes(...this.#match.#id, this.color);
-            this.autoHighNodes    = repository.getAutoHighNodes(...this.#match.#id, this.color);
-            this.autoCharge       = repository.getAutoCharge(...this.#match.#id, this.color);
-            this.lowNodes         = repository.getLowNodes(...this.#match.#id, this.color);
-            this.midNodes         = repository.getMidNodes(...this.#match.#id, this.color);
-            this.highNodes        = repository.getHighNodes(...this.#match.#id, this.color);
-            this.links            = repository.getLinks(...this.#match.#id, this.color);
-            this.coopertition     = repository.getCoopertition(...this.#match.#id, this.color);
-            this.endgame          = repository.getEndgame(...this.#match.#id, this.color);
-            this.fouls            = repository.getFouls(...this.#match.#id, this.color);
-            this.techFouls        = repository.getTechFouls(...this.#match.#id, this.color);
+            this.leaves            = repository.getLeaves(...this.#match.#id, this.color);
+            this.autoAmpNotes      = repository.getAutoAmpNotes(...this.#match.#id, this.color);
+            this.autoSpeakerNotes  = repository.getAutoSpeakerNotes(...this.#match.#id, this.color);
+            this.ampNotes          = repository.getAmpNotes(...this.#match.#id, this.color);
+            this.speakerNotes      = repository.getSpeakerNotes(...this.#match.#id, this.color);
+            this.ampedSpeakerNotes = repository.getAmpedSpeakerNotes(...this.#match.#id, this.color);
+            this.coopertition      = repository.getCoopertition(...this.#match.#id, this.color);
+            this.stage             = repository.getStage(...this.#match.#id, this.color);
+            this.trapNotes         = repository.getTrapNotes(...this.#match.#id, this.color);
+            this.harmony           = repository.getHarmony(...this.#match.#id, this.color);
+            this.fouls             = repository.getFouls(...this.#match.#id, this.color);
+            this.techFouls         = repository.getTechFouls(...this.#match.#id, this.color);
         }
 
         save() {
             repository.setMatchPoints(this.matchPoints, ...this.#match.#id, this.color);
-            repository.setMobility(this.mobility, ...this.#match.#id, this.color);
-            repository.setAutoLowNodes(this.autoLowNodes, ...this.#match.#id, this.color);
-            repository.setAutoMidNodes(this.autoMidNodes, ...this.#match.#id, this.color);
-            repository.setAutoHighNodes(this.autoHighNodes, ...this.#match.#id, this.color);
-            repository.setAutoCharge(this.autoCharge, ...this.#match.#id, this.color);
-            repository.setLowNodes(this.lowNodes, ...this.#match.#id, this.color);
-            repository.setMidNodes(this.midNodes, ...this.#match.#id, this.color);
-            repository.setHighNodes(this.highNodes, ...this.#match.#id, this.color);
-            repository.setLinks(this.links, ...this.#match.#id, this.color);
+            repository.setLeaves(this.leaves, ...this.#match.#id, this.color);
+            repository.setAutoAmpNotes(this.autoAmpNotes, ...this.#match.#id, this.color);
+            repository.setAutoSpeakerNotes(this.autoSpeakerNotes, ...this.#match.#id, this.color);
+            repository.setAmpNotes(this.ampNotes, ...this.#match.#id, this.color);
+            repository.setSpeakerNotes(this.speakerNotes, ...this.#match.#id, this.color);
+            repository.setAmpedSpeakerNotes(this.ampedSpeakerNotes, ...this.#match.#id, this.color);
             repository.setCoopertition(this.coopertition, ...this.#match.#id, this.color);
-            repository.setEndgame(this.endgame, ...this.#match.#id, this.color);
+            repository.setStage(this.stage, ...this.#match.#id, this.color);
+            repository.setTrapNotes(this.trapNotes, ...this.#match.#id, this.color);
+            repository.setHarmony(this.harmony, ...this.#match.#id, this.color);
             repository.setFouls(this.fouls, ...this.#match.#id, this.color);
             repository.setTechFouls(this.techFouls, ...this.#match.#id, this.color);
-            repository.setSustainability(this.sustainability, ...this.#match.#id, this.color);
-            repository.setActivation(this.activation, ...this.#match.#id, this.color);
+            repository.setMelody(this.melody, ...this.#match.#id, this.color);
+            repository.setEnsemble(this.ensemble, ...this.#match.#id, this.color);
         }
         
         clear() {
-            this.mobility = 0;
-            this.autoLowNodes = 0;
-            this.autoMidNodes = 0;
-            this.autoHighNodes = 0;
-            this.autoCharge = 0;
-            this.lowNodes = 0;
-            this.midNodes = 0;
-            this.highNodes = 0;
-            this.links = 0;
-            this.coopertition = false;
-            this.endgame = [0, 0, 0];
-            this.fouls = 0;
-            this.techFouls = 0;
+            leaves = 0;
+            autoAmpNotes = 0;
+            autoSpeakerNotes = 0;
+            ampNotes = 0;
+            ampCharge = 0;
+            speakerNotes = 0;
+            ampedSpeakerNotes = 0;
+            notesToAmpExpiry = 4;
+            coopertition = false;
+            stage = [0, 0, 0];
+            trapNotes = [false, false, false];
+            harmony = 0;
+            fouls = 0;
+            techFouls = 0;
         }
     }
 }

@@ -313,7 +313,7 @@
     left: 55px;
     right: 0px;
     margin: auto;
-    width: 60px;
+    width: 90px;
     top: 2px;
     text-align: center;
     font-family: "Roboto Slab";
@@ -333,8 +333,7 @@
     border: 5px solid black;
     border-radius: 60px;
 }
-#overlay .red .lit.coop-indicator { background-color: rgb(233, 13, 13); }
-#overlay .blue .lit.coop-indicator { background-color: rgb(62, 62, 255); }
+#overlay .lit.coop-indicator { background-color: goldenrod; }
 
 #overlay .amp-charge {
     width: 40px; height: 40px;
@@ -348,12 +347,18 @@
 
 #overlay .amp-timer {
     position: absolute;
-    top: 0px;
+    top: 0;
     width: 550px; height: 30px;
     background-color: white;
     box-sizing: border-box;
     border: 5px solid black;
 }
+#overlay .amp-timer .bar {
+    position: absolute;
+    width: 0; height: 100%;
+}
+#overlay .red .amp-timer .bar { background-color: rgb(233, 13, 13); right: 0; }
+#overlay .blue .amp-timer .bar { background-color: rgb(62, 62, 255); left: 0; }
 
 /* Auto */
 #overlay .auto-panel {
@@ -408,7 +413,7 @@
     border-top: 5px solid black;
 }
 .stage-panel .harmony.left { left: 80px; }
-.stage-panel .harmony.right { left: 185px; }
+.stage-panel .harmony.right { left: 190px; }
 
 .stage-panel .stage .trap {
     position: absolute;
@@ -420,18 +425,20 @@
 }
 
 .stage-panel .robot {
+    display: none;
     position: absolute;
     z-index: 2;
     transform: scale(3);
     image-rendering: pixelated;
 }
 .stage-panel .robot.park {
+    display: block;
     transform-origin: bottom left;
     bottom: -10px;
     left: -10px;
 }
-
 .stage-panel .robot.onstage {
+    display: block;
     transform-origin: bottom center;
     bottom: 35px;
     left: 46px;

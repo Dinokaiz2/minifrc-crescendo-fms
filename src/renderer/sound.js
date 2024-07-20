@@ -6,6 +6,13 @@ export function startTeleop() {
     $("#sound #start-teleop").get(0).play();
 }
 
+export function startAmplification() {
+    $("#sound #start-amplification").get(0).play();
+}
+export function endAmplification() {
+    $("#sound #end-amplification").get(0).play();
+}
+
 export function startEndgame() {
     $("#sound #start-endgame").get(0).play();
 }

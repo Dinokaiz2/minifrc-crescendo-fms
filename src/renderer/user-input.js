@@ -21,50 +21,60 @@ ipc.on("next-match", () => Competition.nextMatch());
 ipc.on("previous-match", () => Competition.previousMatch());
 
 // Points
-ipc.on(CtrlMsg.MOBILITY, (_, data) => {
-    if (data.red) Competition.match.red.setMobility(data.count);
-    else Competition.match.blue.setMobility(data.count);
-});
-const autoChargeMap = { 0: 0, 1: Match.PointValues.AUTO_DOCK, 2: Match.PointValues.AUTO_ENGAGE };
-ipc.on(CtrlMsg.AUTO_CHARGE, (_, data) => {
-    if (data.red) Competition.match.red.setAutoCharge(autoChargeMap[data.level]);
-    else Competition.match.blue.setAutoCharge(autoChargeMap[data.level]);
-});
-const endgameMap = { 0: 0, 1: Match.PointValues.PARK, 2: Match.PointValues.DOCK, 3: Match.PointValues.ENGAGE };
-ipc.on(CtrlMsg.ENDGAME, (_, data) => {
-    if (data.red) Competition.match.red.setEndgame(data.position, endgameMap[data.level]);
-    else Competition.match.blue.setEndgame(data.position, endgameMap[data.level]);
+ipc.on(CtrlMsg.LEAVE, (_, data) => {
+    if (data.red) Competition.match.red.setLeaves(data.count);
+    else Competition.match.blue.setLeaves(data.count);
 });
 
-ipc.on(CtrlMsg.NODE, (_, data) => {
+ipc.on(CtrlMsg.AMP, (_, data) => {
     let alliance = data.red ? Competition.match.red : Competition.match.blue;
-
-    if      (data.level == 0 && data.auto && !data.undo) alliance.addAutoLowNode();
-    else if (data.level == 0 && data.auto && data.undo) alliance.removeAutoLowNode();
-    else if (data.level == 0 && !data.auto && !data.undo) alliance.addLowNode();
-    else if (data.level == 0 && !data.auto && data.undo) alliance.removeLowNode();
-
-    else if (data.level == 1 && data.auto && !data.undo) alliance.addAutoMidNode();
-    else if (data.level == 1 && data.auto && data.undo) alliance.removeAutoMidNode();
-    else if (data.level == 1 && !data.auto && !data.undo) alliance.addMidNode();
-    else if (data.level == 1 && !data.auto && data.undo) alliance.removeMidNode();
-
-    else if (data.level == 2 && data.auto && !data.undo) alliance.addAutoHighNode();
-    else if (data.level == 2 && data.auto && data.undo) alliance.removeAutoHighNode();
-    else if (data.level == 2 && !data.auto && !data.undo) alliance.addHighNode();
-    else if (data.level == 2 && !data.auto && data.undo) alliance.removeHighNode();
+    if (data.type == "auto") {
+        if (data.undo) alliance.removeAutoAmpNote();
+        else alliance.addAutoAmpNote();
+    } else if (data.type == "context") {
+        if (data.undo) alliance.removeAmpNote();
+        else alliance.addAmpNote();
+    }
+});
+ipc.on(CtrlMsg.SPEAKER, (_, data) => {
+    let alliance = data.red ? Competition.match.red : Competition.match.blue;
+    if (data.type == "auto") {
+        if (data.undo) alliance.removeAutoSpeakerNote();
+        else alliance.addAutoSpeakerNote();
+    } else if (data.type == "unamped") {
+        if (data.undo) alliance.addTeleopSpeakerNote();
+        else alliance.addTeleopSpeakerNote();
+    } else if (data.type == "amped") {
+        if (data.undo) alliance.removeAmpedSpeakerNote();
+        else alliance.addAmpedSpeakerNote();
+    } else if (data.type == "context") {
+        if (data.undo) alliance.removeSpeakerNote();
+        else alliance.addSpeakerNote();
+    }
 });
 
-ipc.on(CtrlMsg.LINK, (_, data) => {
+ipc.on(CtrlMsg.AMPLIFY, (_, data) => {
+    if (data.red) Competition.match.red.startAmplification();
+    else Competition.match.blue.startAmplification();
+});
+ipc.on(CtrlMsg.COOP, (_, data) => {
     let alliance = data.red ? Competition.match.red : Competition.match.blue;
-    if (data.undo) alliance.removeLink();
-    else alliance.addLink();
+    if (data.force) alliance.setCoopertitionForce(!data.undo);
+    else alliance.setCoopertition();
 });
 
-ipc.on(CtrlMsg.COOPERTITION, (_, data) => {
-    let alliance = data.red ? Competition.match.red : Competition.match.blue;
-    if (data.undo) alliance.setCoopertition(false);
-    else alliance.setCoopertition(true);
+const stageMap = { 0: 0, 1: Match.PointValues.PARK, 2: Match.PointValues.ONSTAGE };
+ipc.on(CtrlMsg.STAGE, (_, data) => {
+    if (data.red) Competition.match.red.setStage(data.position, stageMap[data.level]);
+    else Competition.match.blue.setStage(data.position, stageMap[data.level]);
+});
+ipc.on(CtrlMsg.TRAP, (_, data) => {
+    if (data.red) Competition.match.red.setTrapNote(data.position, !data.undo);
+    else Competition.match.blue.setTrapNote(data.position, !data.undo);
+});
+ipc.on(CtrlMsg.HARMONY, (_, data) => {
+    if (data.red) Competition.match.red.setHarmony(data.count);
+    else Competition.match.blue.setHarmony(data.count);
 });
 
 ipc.on(CtrlMsg.FOUL, (_, data) => {
