@@ -2,7 +2,7 @@ const { app, BrowserWindow, Menu, ipcMain } = require("electron");
 const path = require("path");
 const { CtrlMsg, RenderMsg } = require("./messages.js");
 
-const debug = true;
+const debug = false;
 
 app.allowRendererProcessReuse = false; // Deprecated, but required by Node Serialport
 

@@ -429,10 +429,10 @@ export class Match {
             return this.coopBonus ? 12 : 15;
         }
         get melody() {
-            return this.notes >= this.sustainabilityThreshold;
+            return this.notes >= this.melodyThreshold;
         }
-        get activation() {
-            return this.chargeStationPoints >= 26;
+        get ensemble() {
+            return this.stagePoints >= 9;
         }
 
         /**

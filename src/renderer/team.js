@@ -14,8 +14,7 @@ export class Team {
 
     #rankingPoints;
     #autoPoints;
-    #chargeParkPoints;
-    #gridPoints;
+    #stagePoints;
     #wins;
     #ties;
     #losses;
@@ -41,8 +40,7 @@ export class Team {
         matches = matches.filter(match => match.teamNumbers.includes(this.number) && !match.isSurrogate(this.number));
         this.#rankingPoints = 0;
         this.#autoPoints = 0;
-        this.#chargeParkPoints = 0;
-        this.#gridPoints = 0;
+        this.#stagePoints = 0;
         this.#wins = 0;
         this.#ties = 0;
         this.#losses = 0;
@@ -64,9 +62,7 @@ export class Team {
                     if (match.red.sustainability) this.#rankingPoints += 1;
                     if (match.red.activation) this.#rankingPoints += 1;
                     this.#autoPoints += match.red.autoPoints;
-                    this.#chargeParkPoints += match.red.chargeStationPoints;
-                    this.#chargeParkPoints += match.red.parkPoints;
-                    this.#gridPoints += match.red.gridPoints;
+                    this.#stagePoints += match.red.stagePoints;
                 } else if (match.blue.teamNumbers.includes(this.number)) {
                     if (match.result == Match.Result.BLUE_WIN) {
                         this.#rankingPoints += 2;
@@ -80,9 +76,7 @@ export class Team {
                     if (match.blue.sustainability) this.#rankingPoints += 1;
                     if (match.blue.activation) this.#rankingPoints += 1;
                     this.#autoPoints += match.blue.autoPoints;
-                    this.#chargeParkPoints += match.blue.chargeStationPoints;
-                    this.#chargeParkPoints += match.blue.parkPoints;
-                    this.#gridPoints += match.blue.gridPoints;
+                    this.#stagePoints += match.blue.stagePoints;
                 }
             }
         });
@@ -100,11 +94,8 @@ export class Team {
     get autoPoints() {
         return this.#autoPoints;
     }
-    get chargeParkPoints() {
-        return this.#chargeParkPoints;
-    }
-    get gridPoints() {
-        return this.#gridPoints;
+    get stagePoints() {
+        return this.#stagePoints;
     }
 
     get wins() {

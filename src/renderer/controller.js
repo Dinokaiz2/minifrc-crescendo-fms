@@ -206,8 +206,7 @@ export class Competition {
             if (isNaN(t1.rankingScore) && isNaN(t2.rankingScore)) return t1.number - t2.number; // Use lower team number for stable sort if ranking score NaN
             if (t1.rankingScore != t2.rankingScore) return t2.rankingScore - t1.rankingScore;
             if (t1.autoPoints != t2.autoPoints) return t2.autoPoints - t1.autoPoints;
-            if (t1.chargeParkPoints != t2.chargeParkPoints) return t2.chargeParkPoints - t1.chargeParkPoints;
-            return t2.gridPoints - t1.gridPoints;
+            return t2.stagePoints - t1.stagePoints;
         });
         return teams;
     }

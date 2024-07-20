@@ -14,6 +14,7 @@
 }
 
 #results-view {
+    z-index: 2; /* robot art is z-index 1 and this needs to be higher */
     background-color: rgb(53, 53, 53);
     position: absolute;
     width: 100%; height: 100%;
@@ -214,10 +215,10 @@
 
 .alliance-panel .details .rp-panel .indicator img { height: 60px; }
 
-.rp-panel .sustainability.indicator img { content: url(../../images/grey-link.png); }
-.rp-panel .lit.sustainability.indicator img { content: url(../../images/lit-link.png); }
-.rp-panel .activation.indicator img { content: url(../../images/grey-battery.png); transform: scale(0.7); }
-.rp-panel .lit.activation.indicator img { content: url(../../images/lit-battery.png); transform: scale(0.7); }
+.rp-panel .melody.indicator img { content: url(../../images/grey-melody.png); transform: scale(0.7); }
+.rp-panel .lit.melody.indicator img { content: url(../../images/lit-melody.png); transform: scale(0.7);  }
+.rp-panel .ensemble.indicator img { content: url(../../images/grey-ensemble.png); transform: scale(0.8); }
+.rp-panel .lit.ensemble.indicator img { content: url(../../images/lit-ensemble.png); transform: scale(0.8); }
 .rp-panel .win.indicator img { content: url(../../images/win-icon-grey.png); transform: scale(0.7); }
 .rp-panel .lit.win.indicator img { content: url(../../images/win-icon.png); transform: scale(0.7); }
 

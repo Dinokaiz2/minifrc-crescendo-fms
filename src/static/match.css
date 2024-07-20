@@ -426,8 +426,8 @@
 
 .stage-panel .robot {
     display: none;
+    z-index: 1;
     position: absolute;
-    z-index: 2;
     transform: scale(3);
     image-rendering: pixelated;
 }

@@ -89,14 +89,14 @@ function updateScorePanel(alliance) {
 }
 
 function updateRpPanel(alliance) {
-    let sustainability = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .sustainability");
-    let activation = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .activation");
+    let melody = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .melody");
+    let ensemble = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .ensemble");
     let win = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .rp-panel .win");
-    let rp = (alliance.sustainability ? 1 : 0) + (alliance.activation ? 1 : 0);
-    if (alliance.sustainability) sustainability.addClass("lit");
-    else sustainability.removeClass("lit");
-    if (alliance.activation) activation.addClass("lit");
-    else activation.removeClass("lit");
+    let rp = (alliance.melody ? 1 : 0) + (alliance.ensemble ? 1 : 0);
+    if (alliance.melody) melody.addClass("lit");
+    else melody.removeClass("lit");
+    if (alliance.ensemble) ensemble.addClass("lit");
+    else ensemble.removeClass("lit");
     if ((alliance.color == Match.AllianceColor.RED && Competition.results.result == Match.Result.RED_WIN)
             || (alliance.color == Match.AllianceColor.BLUE && Competition.results.result == Match.Result.BLUE_WIN)) {
         rp += 2;
@@ -116,7 +116,7 @@ function updateRpPanel(alliance) {
 
 function updateCategoryPanel(alliance) {
     let categories = $("#results-view " + getAllianceClass(alliance) + ".alliance-panel .category-panel .category .points");
-    [alliance.mobilityPoints, alliance.gridPoints, alliance.chargeStationPoints, alliance.parkPoints, alliance.penaltyPoints].forEach(
+    [alliance.leavePoints, alliance.ampPoints, alliance.speakerPoints, alliance.stagePoints, alliance.penaltyPoints].forEach(
         (e, i) => categories.eq(i).text(e)
     );
 }
