@@ -42,7 +42,7 @@ ipc.on(CtrlMsg.SPEAKER, (_, data) => {
         if (data.undo) alliance.removeAutoSpeakerNote();
         else alliance.addAutoSpeakerNote();
     } else if (data.type == "unamped") {
-        if (data.undo) alliance.addTeleopSpeakerNote();
+        if (data.undo) alliance.removeTeleopSpeakerNote();
         else alliance.addTeleopSpeakerNote();
     } else if (data.type == "amped") {
         if (data.undo) alliance.removeAmpedSpeakerNote();

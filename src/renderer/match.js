@@ -321,7 +321,7 @@ export class Match {
         addTeleopSpeakerNote()    { this.speakerNotes++; };
         removeTeleopSpeakerNote() { if (this.speakerNotes > 0) this.speakerNotes--; };
         addAmpedSpeakerNote()     { this.ampedSpeakerNotes++; if (--this.notesToAmpExpiry == 0) this.endAmplification(); };
-        removeAmpedSpeakerNote()  { if (this.ampedSpeakerNotes > 0 && this.notesToAmpExpiry < 4) { this.ampedSpeakerNotes--; this.notesToAmpExpiry++; } };
+        removeAmpedSpeakerNote()  { if (this.ampedSpeakerNotes > 0) { this.ampedSpeakerNotes--; this.notesToAmpExpiry++; } };
         addSpeakerNote() {
             if (Competition.inAuto) this.addAutoSpeakerNote();
             else if (this.isAmplified) this.addAmpedSpeakerNote(); 
