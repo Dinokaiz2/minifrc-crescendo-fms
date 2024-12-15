@@ -59,8 +59,8 @@ export class Team {
                     } else {
                         this.#losses++;
                     }
-                    if (match.red.sustainability) this.#rankingPoints += 1;
-                    if (match.red.activation) this.#rankingPoints += 1;
+                    if (match.red.ensemble) this.#rankingPoints += 1;
+                    if (match.red.melody) this.#rankingPoints += 1;
                     this.#autoPoints += match.red.autoPoints;
                     this.#stagePoints += match.red.stagePoints;
                 } else if (match.blue.teamNumbers.includes(this.number)) {
@@ -73,8 +73,8 @@ export class Team {
                     } else {
                         this.#losses++;
                     }
-                    if (match.blue.sustainability) this.#rankingPoints += 1;
-                    if (match.blue.activation) this.#rankingPoints += 1;
+                    if (match.blue.ensemble) this.#rankingPoints += 1;
+                    if (match.blue.melody) this.#rankingPoints += 1;
                     this.#autoPoints += match.blue.autoPoints;
                     this.#stagePoints += match.blue.stagePoints;
                 }

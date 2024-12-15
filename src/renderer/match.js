@@ -209,16 +209,33 @@ export class Match {
     static getNextMatch() {
 
         const PLAYOFF_STRUCTURE = {
-            5: ["L", 1, "L", 2, Match.Type.PLAYOFF, 5],
-            6: ["L", 3, "L", 4, Match.Type.PLAYOFF, 6],
-            7: ["W", 1, "W", 2, Match.Type.PLAYOFF, 7],
-            8: ["W", 3, "W", 4, Match.Type.PLAYOFF, 8],
-            9: ["L", 7, "W", 6, Match.Type.PLAYOFF, 9],
-            10: ["L", 8, "W", 5, Match.Type.PLAYOFF, 10],
-            11: ["W", 10, "W", 9, Match.Type.PLAYOFF, 11],
-            12: ["W", 7, "W", 8, Match.Type.PLAYOFF, 12],
-            13: ["L", 12, "W", 11, Match.Type.PLAYOFF, 13],
-            14: ["W", 12, "W", 13, Match.Type.FINAL, 1],
+            // 1vBye (1)
+            // 1: 4v5 (2)
+            // 2: 2v7 (3)
+            // 3: 3v6 (4)
+            // L2vBye (5)
+            // 4: L2vL3 (6)
+            // 5: 1vW1 (7)
+            // 6: W2vW3 (8)
+            // 7: L5vW4 (9)
+            // 8: L6vL1 (10)
+            // 9: W5vW6 (11)
+            // 10: W8vW7 (12)
+            // 11: L9vW10 (13)
+            // 12: W9vW11 finals
+
+            // 1: 4v5 (2)
+            // 2: 2v7 (3)
+            // 3: 3v6 (4)
+            4: ["L", 2, "L", 3, Match.Type.PLAYOFF, 4],
+            // 5: 1vW1
+            6: ["W", 2, "W", 3, Match.Type.PLAYOFF, 6],
+            7: ["L", 5, "W", 4, Match.Type.PLAYOFF, 7],
+            8: ["L", 6, "L", 1, Match.Type.PLAYOFF, 8],
+            9: ["W", 5, "W", 6, Match.Type.PLAYOFF, 9],
+            10: ["W", 8, "W", 7, Match.Type.PLAYOFF, 10],
+            11: ["L", 9, "W", 10, Match.Type.PLAYOFF, 11],
+            12: ["W", 9, "W", 11, Match.Type.FINAL, 1],
         };
 
         let matches = this.getSortedMatches();
